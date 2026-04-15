@@ -2,6 +2,7 @@ package com.marcoromanofinaa.jazzlogs.logbook.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -9,20 +10,21 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 @Getter
-@Setter
-@NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Entity
 @Table(name = "album_logs")
 public class AlbumLog {
 
     @Id
+    @GeneratedValue
+    @UuidGenerator
     @Column(nullable = false, updatable = false)
     private UUID id;
 
@@ -61,4 +63,42 @@ public class AlbumLog {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
+
+    public static AlbumLog create(
+            Integer logNumber,
+            String album,
+            String artist,
+            String caption,
+            LocalDate postedAt,
+            String instagramPermalink,
+            String style,
+            String[] moods,
+            String notes
+    ) {
+        var albumLog = new AlbumLog();
+        albumLog.updateEditorialData(logNumber, album, artist, caption, postedAt, instagramPermalink, style, moods, notes);
+        return albumLog;
+    }
+
+    public void updateEditorialData(
+            Integer logNumber,
+            String album,
+            String artist,
+            String caption,
+            LocalDate postedAt,
+            String instagramPermalink,
+            String style,
+            String[] moods,
+            String notes
+    ) {
+        this.logNumber = logNumber;
+        this.album = album;
+        this.artist = artist;
+        this.caption = caption;
+        this.postedAt = postedAt;
+        this.instagramPermalink = instagramPermalink;
+        this.style = style;
+        this.moods = moods;
+        this.notes = notes;
+    }
 }

@@ -18,6 +18,14 @@ docker compose up -d
 
 Flyway runs automatically on startup and creates the initial `album_logs` table.
 
+To run the JSON seed ingestion on startup:
+
+```bash
+./mvnw spring-boot:run -Djazzlogs.ingestion.json.enabled=true
+```
+
+The default seed path is `data/albums.json`.
+
 ## Current foundations
 
 - PostgreSQL via Docker Compose
