@@ -11,7 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +29,24 @@ public class AlbumLogImportService {
     @Transactional
     public int importFromJson(Path path) {
         var seeds = readSeeds(path);
+        return importSeeds(seeds);
+    }
+
+    @Transactional
+    public boolean importSeed(AlbumLogSeed seed) {
+        return importSeeds(List.of(seed)) == 1;
+    }
+
+    private List<AlbumLog> loadExistingAlbumLogs(List<AlbumLogSeed> seeds) {
+        var logNumbers = seeds.stream()
+                .map(AlbumLogSeed::logNumber)
+                .distinct()
+                .toList();
+
+        return albumLogRepository.findAllByLogNumberIn(logNumbers);
+    }
+
+    private int importSeeds(List<AlbumLogSeed> seeds) {
         validate(seeds);
 
         var existingAlbumLogs = loadExistingAlbumLogs(seeds);
@@ -48,15 +65,6 @@ public class AlbumLogImportService {
 
         albumLogRepository.saveAll(albumLogsToSave);
         return albumLogsToSave.size();
-    }
-
-    private List<AlbumLog> loadExistingAlbumLogs(List<AlbumLogSeed> seeds) {
-        var logNumbers = seeds.stream()
-                .map(AlbumLogSeed::logNumber)
-                .distinct()
-                .toList();
-
-        return albumLogRepository.findAllByLogNumberIn(logNumbers);
     }
 
     private List<AlbumLogSeed> readSeeds(Path path) {
