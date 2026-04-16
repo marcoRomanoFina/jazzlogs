@@ -76,27 +76,14 @@ public class SpotifyAlbum {
         this.releaseDatePrecision = releaseDatePrecision;
     }
 
-    public static SpotifyAlbum create(
-            String spotifyAlbumId,
-            String sourcePlaylistId,
-            String name,
-            String spotifyUrl,
-            String coverImageUrl,
-            String albumType,
-            Integer totalTracks,
-            String releaseDate,
-            String releaseDatePrecision
-    ) {
-        return SpotifyAlbum.builder()
-                .spotifyAlbumId(spotifyAlbumId)
-                .sourcePlaylistId(sourcePlaylistId)
-                .name(name)
-                .spotifyUrl(spotifyUrl)
-                .coverImageUrl(coverImageUrl)
-                .albumType(albumType)
-                .totalTracks(totalTracks)
-                .releaseDate(releaseDate)
-                .releaseDatePrecision(releaseDatePrecision)
-                .build();
+    public void updateSyncData(SpotifyAlbumSyncData syncData) {
+        this.sourcePlaylistId = syncData.sourcePlaylistId();
+        this.name = syncData.name();
+        this.spotifyUrl = syncData.spotifyUrl();
+        this.coverImageUrl = syncData.coverImageUrl();
+        this.albumType = syncData.albumType();
+        this.totalTracks = syncData.totalTracks();
+        this.releaseDate = syncData.releaseDate();
+        this.releaseDatePrecision = syncData.releaseDatePrecision();
     }
 }

@@ -61,21 +61,11 @@ public class SpotifyArtist {
         this.type = type;
     }
 
-    public static SpotifyArtist create(
-            String spotifyArtistId,
-            String name,
-            String spotifyUrl,
-            String href,
-            String uri,
-            String type
-    ) {
-        return SpotifyArtist.builder()
-                .spotifyArtistId(spotifyArtistId)
-                .name(name)
-                .spotifyUrl(spotifyUrl)
-                .href(href)
-                .uri(uri)
-                .type(type)
-                .build();
+    public void updateSyncData(SpotifyArtistSyncData syncData) {
+        this.name = syncData.name();
+        this.spotifyUrl = syncData.spotifyUrl();
+        this.href = syncData.href();
+        this.uri = syncData.uri();
+        this.type = syncData.type();
     }
 }

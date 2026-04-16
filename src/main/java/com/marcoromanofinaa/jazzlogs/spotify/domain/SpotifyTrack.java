@@ -105,33 +105,20 @@ public class SpotifyTrack {
         this.addedToPlaylistAt = addedToPlaylistAt;
     }
 
-    public static SpotifyTrack create(
-            String spotifyTrackId,
-            String sourcePlaylistId,
-            SpotifyAlbum album,
-            SpotifyArtist mainArtist,
-            Set<SpotifyArtist> secondaryArtists,
-            String name,
-            String artistNames,
-            String spotifyUrl,
-            Integer durationMs,
-            Integer discNumber,
-            Integer trackNumber,
-            OffsetDateTime addedToPlaylistAt
-    ) {
-        return SpotifyTrack.builder()
-                .spotifyTrackId(spotifyTrackId)
-                .sourcePlaylistId(sourcePlaylistId)
-                .album(album)
-                .mainArtist(mainArtist)
-                .secondaryArtists(secondaryArtists)
-                .name(name)
-                .artistNames(artistNames)
-                .spotifyUrl(spotifyUrl)
-                .durationMs(durationMs)
-                .discNumber(discNumber)
-                .trackNumber(trackNumber)
-                .addedToPlaylistAt(addedToPlaylistAt)
-                .build();
+    public void updateSyncData(SpotifyTrackSyncData syncData) {
+        this.sourcePlaylistId = syncData.sourcePlaylistId();
+        this.album = syncData.album();
+        this.mainArtist = syncData.mainArtist();
+        this.secondaryArtists.clear();
+        if (syncData.secondaryArtists() != null) {
+            this.secondaryArtists.addAll(syncData.secondaryArtists());
+        }
+        this.name = syncData.name();
+        this.artistNames = syncData.artistNames();
+        this.spotifyUrl = syncData.spotifyUrl();
+        this.durationMs = syncData.durationMs();
+        this.discNumber = syncData.discNumber();
+        this.trackNumber = syncData.trackNumber();
+        this.addedToPlaylistAt = syncData.addedToPlaylistAt();
     }
 }
