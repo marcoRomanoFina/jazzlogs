@@ -13,6 +13,8 @@ public interface AlbumLogRepository extends JpaRepository<AlbumLog, UUID> {
 
     List<AlbumLog> findAllByOrderByLogNumberAsc();
 
+    List<AlbumLog> findAllBySpotifyAlbumIsNullOrderByLogNumberAsc();
+
     List<AlbumLog> findAllByLogNumberIn(Collection<Integer> logNumbers);
 
     Optional<AlbumLog> findByLogNumber(Integer logNumber);

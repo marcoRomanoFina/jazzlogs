@@ -3,16 +3,26 @@ Jazzlogs is an AI-powered assistant that recommends music based on a curated arc
 
 ## Local infra
 
-1. Copy `.env.example` to `.env` if you want to customize credentials.
-2. Start PostgreSQL with Docker:
+1. Copy `.env.example` to `.env` and fill in the values you need:
+
+```bash
+cp .env.example .env
+```
+
+2. Export the variables before running the app:
+
+```bash
+export $(grep -v '^#' .env | xargs)
+```
+3. Start PostgreSQL with Docker:
 
 ```bash
 docker compose up -d
 ```
 
-The container is exposed on `localhost:5433` to avoid conflicts with a local PostgreSQL running on `5432`.
+The container is exposed on `127.0.0.1:5433` to avoid conflicts with a local PostgreSQL running on `5432`.
 
-3. Run the application:
+4. Run the application:
 
 ```bash
 ./mvnw spring-boot:run
@@ -59,7 +69,7 @@ curl -X POST http://localhost:8080/admin/ingestion/album-logs \
   }'
 ```
 
-Set `JAZZLOGS_ADMIN_API_KEY` in your environment before using the admin endpoint.
+Set `JAZZLOGS_ADMIN_API_KEY` in `.env` before using the admin endpoints.
 
 From Swagger UI you can already test:
 
@@ -67,6 +77,36 @@ From Swagger UI you can already test:
 - `DELETE /admin/ingestion/album-logs/{logNumber}`
 - `GET /logs`
 - `GET /logs/{logNumber}`
+
+## Spotify setup
+
+For the Spotify playlist sync flow, configure:
+
+```bash
+SPOTIFY_CLIENT_ID=...
+SPOTIFY_CLIENT_SECRET=...
+SPOTIFY_PLAYLIST_ID=...
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:8080/admin/spotify/callback
+SPOTIFY_SYNC_ENABLED=false
+SPOTIFY_SYNC_CRON=0 0 1 * * *
+SPOTIFY_SYNC_ZONE=America/Argentina/Buenos_Aires
+SPOTIFY_SYNC_ON_STARTUP=false
+```
+
+The backend uses the Authorization Code flow on the server side and stores the refresh token so the playlist sync can keep working after app restarts.
+
+Current Spotify admin flow:
+
+1. Call `POST /admin/spotify/authorization-url` with `X-Admin-Key`
+2. Open the returned URL in the browser and authorize the app with your Spotify account
+3. Let Spotify redirect back to `/admin/spotify/callback`
+4. Call `POST /admin/spotify/playlist-items/sync` with `X-Admin-Key`
+
+This sync uses `GET /playlists/{playlist_id}/items` and stores a local Spotify catalog of albums and tracks for application use.
+
+If you want the sync to run automatically every day, set `SPOTIFY_SYNC_ENABLED=true`. By default it is disabled. The default cron expression runs at `01:00` in `America/Argentina/Buenos_Aires`.
+
+If you also want a full sync whenever the app starts, set `SPOTIFY_SYNC_ON_STARTUP=true`.
 
 ## Current foundations
 
