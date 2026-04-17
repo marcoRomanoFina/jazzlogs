@@ -44,7 +44,8 @@ class AlbumLogImportServiceTest {
                     "style": "Hard Bop",
                     "logNumber": 99,
                     "moods": ["warm", "groovy"],
-                    "notes": "Standout track: Test Track."
+                    "notes": "Standout track: Test Track.",
+                    "spotifyAlbumId": "TEST123"
                   }
                 ]
                 """;
@@ -66,6 +67,7 @@ class AlbumLogImportServiceTest {
         assertThat(savedAlbumLog.getStyle()).isEqualTo("Hard Bop");
         assertThat(savedAlbumLog.getMoods()).containsExactly("warm", "groovy");
         assertThat(savedAlbumLog.getNotes()).isEqualTo("Standout track: Test Track.");
+        assertThat(savedAlbumLog.getSpotifyAlbumSeedId()).isEqualTo("TEST123");
     }
 
     @Test
@@ -89,7 +91,8 @@ class AlbumLogImportServiceTest {
                     "style": "Hard Bop",
                     "logNumber": 100,
                     "moods": ["warm"],
-                    "notes": "Broken permalink."
+                    "notes": "Broken permalink.",
+                    "spotifyAlbumId": "BROKEN123"
                   }
                 ]
                 """;
@@ -101,6 +104,60 @@ class AlbumLogImportServiceTest {
                 .hasMessageContaining("instagramPermalink");
 
         assertThat(storage).isEmpty();
+    }
+
+    @Test
+    void updatesExistingAlbumLogWhenLogNumberAlreadyExists() throws Exception {
+        var existingAlbumLog = AlbumLog.create(
+                99,
+                "Old Album",
+                "Old Artist",
+                "Old caption",
+                LocalDate.of(2026, 1, 1),
+                "https://www.instagram.com/p/OLD123/",
+                "Old Style",
+                new String[]{"old"},
+                "Old notes",
+                null
+        );
+        var storage = new HashMap<Integer, AlbumLog>();
+        storage.put(99, existingAlbumLog);
+        var repository = inMemoryRepository(storage);
+        var service = new AlbumLogImportService(
+                JsonMapper.builder().findAndAddModules().build(),
+                Validation.buildDefaultValidatorFactory().getValidator(),
+                repository
+        );
+
+        var json = """
+                [
+                  {
+                    "album": "Updated Album",
+                    "artist": "Updated Artist",
+                    "caption": "Updated caption",
+                    "postedAt": "2026-04-15",
+                    "instagramPermalink": "https://www.instagram.com/p/UPDATED123/",
+                    "style": "Hard Bop",
+                    "logNumber": 99,
+                    "moods": ["warm", "groovy"],
+                    "notes": "Updated notes.",
+                    "spotifyAlbumId": "UPDATED123"
+                  }
+                ]
+                """;
+
+        var path = writeSeedFile(json);
+
+        var importedCount = service.importFromJson(path);
+
+        assertThat(importedCount).isEqualTo(1);
+        assertThat(storage).hasSize(1);
+        assertThat(storage.get(99)).isSameAs(existingAlbumLog);
+        assertThat(existingAlbumLog.getAlbum()).isEqualTo("Updated Album");
+        assertThat(existingAlbumLog.getArtist()).isEqualTo("Updated Artist");
+        assertThat(existingAlbumLog.getCaption()).isEqualTo("Updated caption");
+        assertThat(existingAlbumLog.getInstagramPermalink()).isEqualTo("https://www.instagram.com/p/UPDATED123/");
+        assertThat(existingAlbumLog.getSpotifyAlbumSeedId()).isEqualTo("UPDATED123");
     }
 
     private Path writeSeedFile(String json) throws Exception {

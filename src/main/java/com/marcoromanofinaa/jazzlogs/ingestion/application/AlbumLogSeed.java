@@ -37,6 +37,8 @@ public record AlbumLogSeed(
         @Size(max = 10)
         List<@NotBlank @Size(max = 50) String> moods,
         @Size(max = 1000)
-        String notes
+        String notes,
+        @Size(max = 64)
+        String spotifyAlbumId
 ) {
 }

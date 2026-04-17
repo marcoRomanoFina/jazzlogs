@@ -50,17 +50,31 @@ public class AlbumLogImportService {
         validate(seeds);
 
         var existingAlbumLogs = loadExistingAlbumLogs(seeds);
-        var totalKnownLogNumbers = new LinkedHashSet<Integer>();
-        existingAlbumLogs.stream()
-                .map(AlbumLog::getLogNumber)
-                .forEach(totalKnownLogNumbers::add);
+        var existingAlbumLogsByLogNumber = existingAlbumLogs.stream()
+                .collect(java.util.stream.Collectors.toMap(AlbumLog::getLogNumber, albumLog -> albumLog));
 
         var albumLogsToSave = new LinkedHashSet<AlbumLog>();
 
         for (var seed : seeds) {
-            if (totalKnownLogNumbers.add(seed.logNumber())) {
-                albumLogsToSave.add(mapSeed(seed));
+            var existingAlbumLog = existingAlbumLogsByLogNumber.get(seed.logNumber());
+            if (existingAlbumLog != null) {
+                existingAlbumLog.updateEditorialData(
+                        seed.logNumber(),
+                        seed.album(),
+                        seed.artist(),
+                        seed.caption(),
+                        seed.postedAt(),
+                        seed.instagramPermalink(),
+                        seed.style(),
+                        seed.moods().toArray(String[]::new),
+                        seed.notes(),
+                        seed.spotifyAlbumId()
+                );
+                albumLogsToSave.add(existingAlbumLog);
+                continue;
             }
+
+            albumLogsToSave.add(mapSeed(seed));
         }
 
         albumLogRepository.saveAll(albumLogsToSave);
@@ -102,7 +116,8 @@ public class AlbumLogImportService {
                 seed.instagramPermalink(),
                 seed.style(),
                 seed.moods().toArray(String[]::new),
-                seed.notes()
+                seed.notes(),
+                seed.spotifyAlbumId()
         );
     }
 }

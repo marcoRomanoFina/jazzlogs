@@ -19,6 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @org.junit.jupiter.api.condition.EnabledIfSystemProperty(named = "runTestcontainers", matches = "true")
 @SpringBootTest
+@SuppressWarnings("resource")
 class AlbumLogImportIntegrationTest {
 
     @Container
@@ -58,7 +59,8 @@ class AlbumLogImportIntegrationTest {
                     "style": "Hard Bop / Soul Jazz",
                     "logNumber": 501,
                     "moods": ["warm", "groovy"],
-                    "notes": "Standout track: Integration Track."
+                    "notes": "Standout track: Integration Track.",
+                    "spotifyAlbumId": "SPOTIFY501"
                   }
                 ]
                 """;
@@ -82,5 +84,6 @@ class AlbumLogImportIntegrationTest {
         assertThat(savedAlbumLog.getStyle()).isEqualTo("Hard Bop / Soul Jazz");
         assertThat(savedAlbumLog.getMoods()).containsExactly("warm", "groovy");
         assertThat(savedAlbumLog.getNotes()).isEqualTo("Standout track: Integration Track.");
+        assertThat(savedAlbumLog.getSpotifyAlbumSeedId()).isEqualTo("SPOTIFY501");
     }
 }

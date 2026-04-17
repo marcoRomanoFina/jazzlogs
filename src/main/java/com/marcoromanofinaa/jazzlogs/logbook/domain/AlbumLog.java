@@ -1,9 +1,13 @@
 package com.marcoromanofinaa.jazzlogs.logbook.domain;
 
+import com.marcoromanofinaa.jazzlogs.spotify.domain.SpotifyAlbum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -56,6 +60,13 @@ public class AlbumLog {
     @Column(columnDefinition = "text")
     private String notes;
 
+    @Column(name = "spotify_album_seed_id", length = 64)
+    private String spotifyAlbumSeedId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "spotify_album_id", unique = true)
+    private SpotifyAlbum spotifyAlbum;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -73,10 +84,11 @@ public class AlbumLog {
             String instagramPermalink,
             String style,
             String[] moods,
-            String notes
+            String notes,
+            String spotifyAlbumSeedId
     ) {
         var albumLog = new AlbumLog();
-        albumLog.updateEditorialData(logNumber, album, artist, caption, postedAt, instagramPermalink, style, moods, notes);
+        albumLog.updateEditorialData(logNumber, album, artist, caption, postedAt, instagramPermalink, style, moods, notes, spotifyAlbumSeedId);
         return albumLog;
     }
 
@@ -89,7 +101,8 @@ public class AlbumLog {
             String instagramPermalink,
             String style,
             String[] moods,
-            String notes
+            String notes,
+            String spotifyAlbumSeedId
     ) {
         this.logNumber = logNumber;
         this.album = album;
@@ -100,5 +113,10 @@ public class AlbumLog {
         this.style = style;
         this.moods = moods;
         this.notes = notes;
+        this.spotifyAlbumSeedId = spotifyAlbumSeedId;
+    }
+
+    public void linkSpotifyAlbum(SpotifyAlbum spotifyAlbum) {
+        this.spotifyAlbum = spotifyAlbum;
     }
 }

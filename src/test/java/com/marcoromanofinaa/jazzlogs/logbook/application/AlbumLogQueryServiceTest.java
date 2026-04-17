@@ -38,6 +38,8 @@ class AlbumLogQueryServiceTest {
 
         assertThat(response.logNumber()).isEqualTo(7);
         assertThat(response.album()).isEqualTo("Sonny Rollins and the Contemporary Leaders");
+        assertThat(response.spotifyAlbumSeedId()).isNull();
+        assertThat(response.spotifyAlbumId()).isNull();
     }
 
     @Test
@@ -49,7 +51,6 @@ class AlbumLogQueryServiceTest {
                 .hasMessageContaining("404");
     }
 
-    @SuppressWarnings("unchecked")
     private AlbumLogRepository repository(Map<Integer, AlbumLog> storage) {
         return (AlbumLogRepository) Proxy.newProxyInstance(
                 AlbumLogRepository.class.getClassLoader(),
@@ -77,7 +78,8 @@ class AlbumLogQueryServiceTest {
                 "https://www.instagram.com/p/TEST123/",
                 "Hard Bop",
                 new String[]{"warm", "groovy"},
-                "Test notes"
+                "Test notes",
+                null
         );
     }
 }
