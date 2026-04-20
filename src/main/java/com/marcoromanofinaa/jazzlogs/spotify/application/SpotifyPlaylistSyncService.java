@@ -189,7 +189,6 @@ public class SpotifyPlaylistSyncService {
                         mainArtist,
                         secondaryArtists,
                         fetchedTrack.getName(),
-                        fetchedTrack.getArtistNames(),
                         fetchedTrack.getSpotifyUrl(),
                         fetchedTrack.getDurationMs(),
                         fetchedTrack.getDiscNumber(),
@@ -206,7 +205,6 @@ public class SpotifyPlaylistSyncService {
                     mainArtist,
                     secondaryArtists,
                     fetchedTrack.getName(),
-                    fetchedTrack.getArtistNames(),
                     fetchedTrack.getSpotifyUrl(),
                     fetchedTrack.getDurationMs(),
                     fetchedTrack.getDiscNumber(),
@@ -368,7 +366,6 @@ public class SpotifyPlaylistSyncService {
                 .mainArtist(mainArtist)
                 .secondaryArtists(secondaryArtists)
                 .name(trackNode.path("name").asText(""))
-                .artistNames(extractArtistNames(trackNode.path("artists")))
                 .spotifyUrl(readText(trackNode.path("external_urls"), "spotify").orElse(null))
                 .durationMs(trackNode.hasNonNull("duration_ms") ? trackNode.path("duration_ms").asInt() : null)
                 .discNumber(trackNode.hasNonNull("disc_number") ? trackNode.path("disc_number").asInt() : null)
@@ -413,28 +410,6 @@ public class SpotifyPlaylistSyncService {
                         .uri(readText(artistNode, "uri").orElse(null))
                         .type(readText(artistNode, "type").orElse(null))
                         .build());
-    }
-
-    // Keeps a denormalized comma-separated artist string on the track for quick
-    // display and text use cases without having to traverse relations.
-    private String extractArtistNames(JsonNode artistsNode) {
-        if (artistsNode == null || !artistsNode.isArray()) {
-            return "";
-        }
-
-        var artistNames = new StringBuilder();
-        for (var artistNode : artistsNode) {
-            var artistName = artistNode.path("name").asText("");
-            if (artistName.isBlank()) {
-                continue;
-            }
-
-            if (!artistNames.isEmpty()) {
-                artistNames.append(", ");
-            }
-            artistNames.append(artistName);
-        }
-        return artistNames.toString();
     }
 
     // Uses the first album image returned by Spotify as the canonical cover URL

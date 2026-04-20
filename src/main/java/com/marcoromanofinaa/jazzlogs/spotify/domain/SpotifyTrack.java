@@ -50,9 +50,6 @@ public class SpotifyTrack {
     @Column(name = "name", nullable = false, length = 512)
     private String name;
 
-    @Column(name = "artist_names", nullable = false, columnDefinition = "text")
-    private String artistNames;
-
     @Column(name = "spotify_url", length = 512)
     private String spotifyUrl;
 
@@ -84,7 +81,6 @@ public class SpotifyTrack {
             SpotifyArtist mainArtist,
             Set<SpotifyArtist> secondaryArtists,
             String name,
-            String artistNames,
             String spotifyUrl,
             Integer durationMs,
             Integer discNumber,
@@ -97,7 +93,6 @@ public class SpotifyTrack {
         this.mainArtist = mainArtist;
         this.secondaryArtists = secondaryArtists == null ? new LinkedHashSet<>() : new LinkedHashSet<>(secondaryArtists);
         this.name = name;
-        this.artistNames = artistNames;
         this.spotifyUrl = spotifyUrl;
         this.durationMs = durationMs;
         this.discNumber = discNumber;
@@ -114,7 +109,6 @@ public class SpotifyTrack {
             this.secondaryArtists.addAll(syncData.secondaryArtists());
         }
         this.name = syncData.name();
-        this.artistNames = syncData.artistNames();
         this.spotifyUrl = syncData.spotifyUrl();
         this.durationMs = syncData.durationMs();
         this.discNumber = syncData.discNumber();

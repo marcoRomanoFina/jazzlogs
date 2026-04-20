@@ -95,7 +95,6 @@ class SpotifyPlaylistSyncServiceTest {
                 .mainArtist(existingArtist)
                 .secondaryArtists(new LinkedHashSet<>())
                 .name("Old Track Name")
-                .artistNames("Old Artist Name")
                 .spotifyUrl("https://open.spotify.com/track/track-1-old")
                 .durationMs(1000)
                 .build();
@@ -106,7 +105,6 @@ class SpotifyPlaylistSyncServiceTest {
                 .mainArtist(removedArtist)
                 .secondaryArtists(new LinkedHashSet<>())
                 .name("Removed Track")
-                .artistNames("Removed Artist")
                 .spotifyUrl("https://open.spotify.com/track/track-removed")
                 .durationMs(1000)
                 .build();

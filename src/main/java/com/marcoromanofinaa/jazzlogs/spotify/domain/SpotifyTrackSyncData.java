@@ -9,7 +9,6 @@ public record SpotifyTrackSyncData(
         SpotifyArtist mainArtist,
         Set<SpotifyArtist> secondaryArtists,
         String name,
-        String artistNames,
         String spotifyUrl,
         Integer durationMs,
         Integer discNumber,
