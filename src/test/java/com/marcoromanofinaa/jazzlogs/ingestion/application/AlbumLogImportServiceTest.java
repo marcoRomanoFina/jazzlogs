@@ -42,9 +42,28 @@ class AlbumLogImportServiceTest {
                     "postedAt": "2026-04-15",
                     "instagramPermalink": "https://www.instagram.com/p/TEST123/",
                     "style": "Hard Bop",
+                    "releaseYear": "1965",
                     "logNumber": 99,
                     "moods": ["warm", "groovy"],
+                    "tier": "essential",
+                    "vibe": ["cálido", "groovy"],
+                    "energy": "high",
+                    "moodIntensity": "medium",
+                    "accessibility": "easy",
+                    "bestMoment": "Friday night",
+                    "listeningContext": ["friday-night", "vinyl-session"],
                     "notes": "Standout track: Test Track.",
+                    "whyItMatters": "Important test context.",
+                    "editorialNote": "Editorial test note.",
+                    "recommendedIf": "Recommended for tests.",
+                    "avoidIf": "Avoid if tests are too slow.",
+                    "albumContext": "Historical test context.",
+                    "personnel": [
+                      {
+                        "name": "Test Musician",
+                        "role": "piano"
+                      }
+                    ],
                     "spotifyAlbumId": "TEST123"
                   }
                 ]
@@ -65,8 +84,27 @@ class AlbumLogImportServiceTest {
         assertThat(savedAlbumLog.getPostedAt()).isEqualTo(LocalDate.of(2026, 4, 15));
         assertThat(savedAlbumLog.getInstagramPermalink()).isEqualTo("https://www.instagram.com/p/TEST123/");
         assertThat(savedAlbumLog.getStyle()).isEqualTo("Hard Bop");
+        assertThat(savedAlbumLog.getReleaseYear()).isEqualTo("1965");
         assertThat(savedAlbumLog.getMoods()).containsExactly("warm", "groovy");
+        assertThat(savedAlbumLog.getTier()).isEqualTo("essential");
+        assertThat(savedAlbumLog.getVibe()).containsExactly("cálido", "groovy");
+        assertThat(savedAlbumLog.getEnergy()).isEqualTo("high");
+        assertThat(savedAlbumLog.getMoodIntensity()).isEqualTo("medium");
+        assertThat(savedAlbumLog.getAccessibility()).isEqualTo("easy");
+        assertThat(savedAlbumLog.getBestMoment()).isEqualTo("Friday night");
+        assertThat(savedAlbumLog.getListeningContext()).containsExactly("friday-night", "vinyl-session");
         assertThat(savedAlbumLog.getNotes()).isEqualTo("Standout track: Test Track.");
+        assertThat(savedAlbumLog.getWhyItMatters()).isEqualTo("Important test context.");
+        assertThat(savedAlbumLog.getEditorialNote()).isEqualTo("Editorial test note.");
+        assertThat(savedAlbumLog.getRecommendedIf()).isEqualTo("Recommended for tests.");
+        assertThat(savedAlbumLog.getAvoidIf()).isEqualTo("Avoid if tests are too slow.");
+        assertThat(savedAlbumLog.getAlbumContext()).isEqualTo("Historical test context.");
+        assertThat(savedAlbumLog.getPersonnel())
+                .singleElement()
+                .satisfies(person -> {
+                    assertThat(person.name()).isEqualTo("Test Musician");
+                    assertThat(person.role()).isEqualTo("piano");
+                });
         assertThat(savedAlbumLog.getSpotifyAlbumSeedId()).isEqualTo("TEST123");
     }
 
@@ -138,9 +176,28 @@ class AlbumLogImportServiceTest {
                     "postedAt": "2026-04-15",
                     "instagramPermalink": "https://www.instagram.com/p/UPDATED123/",
                     "style": "Hard Bop",
+                    "releaseYear": "1966",
                     "logNumber": 99,
                     "moods": ["warm", "groovy"],
+                    "tier": "deep_cut",
+                    "vibe": ["nocturno"],
+                    "energy": "medium",
+                    "moodIntensity": "high",
+                    "accessibility": "medium",
+                    "bestMoment": "Updated moment",
+                    "listeningContext": ["late-night"],
                     "notes": "Updated notes.",
+                    "whyItMatters": "Updated why.",
+                    "editorialNote": "Updated editorial.",
+                    "recommendedIf": "Updated recommended.",
+                    "avoidIf": "Updated avoid.",
+                    "albumContext": "Updated context.",
+                    "personnel": [
+                      {
+                        "name": "Updated Musician",
+                        "role": "bass"
+                      }
+                    ],
                     "spotifyAlbumId": "UPDATED123"
                   }
                 ]
@@ -157,6 +214,16 @@ class AlbumLogImportServiceTest {
         assertThat(existingAlbumLog.getArtist()).isEqualTo("Updated Artist");
         assertThat(existingAlbumLog.getCaption()).isEqualTo("Updated caption");
         assertThat(existingAlbumLog.getInstagramPermalink()).isEqualTo("https://www.instagram.com/p/UPDATED123/");
+        assertThat(existingAlbumLog.getReleaseYear()).isEqualTo("1966");
+        assertThat(existingAlbumLog.getTier()).isEqualTo("deep_cut");
+        assertThat(existingAlbumLog.getVibe()).containsExactly("nocturno");
+        assertThat(existingAlbumLog.getListeningContext()).containsExactly("late-night");
+        assertThat(existingAlbumLog.getPersonnel())
+                .singleElement()
+                .satisfies(person -> {
+                    assertThat(person.name()).isEqualTo("Updated Musician");
+                    assertThat(person.role()).isEqualTo("bass");
+                });
         assertThat(existingAlbumLog.getSpotifyAlbumSeedId()).isEqualTo("UPDATED123");
     }
 

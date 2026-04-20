@@ -1,5 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.ingestion.application;
 
+import com.marcoromanofinaa.jazzlogs.logbook.domain.AlbumLogPersonnel;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +31,8 @@ public record AlbumLogSeed(
         String instagramPermalink,
         @Size(max = 255)
         String style,
+        @Size(max = 16)
+        String releaseYear,
         @NotNull
         @Positive
         Integer logNumber,
@@ -36,9 +40,44 @@ public record AlbumLogSeed(
         @NotEmpty
         @Size(max = 10)
         List<@NotBlank @Size(max = 50) String> moods,
+        @Size(max = 64)
+        String tier,
+        @NotNull
+        @Size(max = 10)
+        List<@NotBlank @Size(max = 50) String> vibe,
+        @Size(max = 32)
+        String energy,
+        @Size(max = 32)
+        String moodIntensity,
+        @Size(max = 32)
+        String accessibility,
+        @Size(max = 1000)
+        String bestMoment,
+        @NotNull
+        @Size(max = 20)
+        List<@NotBlank @Size(max = 50) String> listeningContext,
         @Size(max = 1000)
         String notes,
+        @Size(max = 4000)
+        String whyItMatters,
+        @Size(max = 4000)
+        String editorialNote,
+        @Size(max = 2000)
+        String recommendedIf,
+        @Size(max = 2000)
+        String avoidIf,
+        @Size(max = 4000)
+        String albumContext,
+        @NotNull
+        @Size(max = 30)
+        List<@Valid AlbumLogPersonnel> personnel,
         @Size(max = 64)
         String spotifyAlbumId
 ) {
+    public AlbumLogSeed {
+        moods = moods == null ? List.of() : moods;
+        vibe = vibe == null ? List.of() : vibe;
+        listeningContext = listeningContext == null ? List.of() : listeningContext;
+        personnel = personnel == null ? List.of() : personnel;
+    }
 }
