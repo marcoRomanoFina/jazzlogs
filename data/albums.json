@@ -6,13 +6,68 @@
     "postedAt": "2026-02-02",
     "instagramPermalink": "https://www.instagram.com/p/DUReEzNEfyX/?hl=en",
     "style": "Hard Bop / Soul Jazz",
+    "releaseYear": "1965",
     "logNumber": 1,
     "moods": [
       "energetic",
       "groovy",
       "warm"
     ],
-    "notes": "Standout track: Rattlesnake. Opening post of Jazzlogs."
+    "tier": "essential",
+    "vibe": [
+      "cálido",
+      "luminoso",
+      "festivo",
+      "eufórico",
+      "confiado"
+    ],
+    "energy": "high",
+    "moodIntensity": "medium",
+    "accessibility": "easy",
+    "bestMoment": "viernes a la noche para arrancar el fin de semana con energía",
+    "listeningContext": [
+      "friday-night",
+      "weekend",
+      "after-work",
+      "bar-night"
+    ],
+    "notes": "Standout track: Rattlesnake. Opening post of Jazzlogs.",
+    "whyItMatters": "Es la piedra fundacional del archivo y presenta a un Monty Alexander de apenas 21 años. Funciona como una clase magistral de química grupal y demuestra cómo el alma caribeña puede revitalizar el formato tradicional del trío de jazz.",
+    "editorialNote": "Primer disco de jazzlogs, aca empezo un viaje que no tiene fin y es el mejor inicio posible con un album que me llega al alma y siempre me saca una sonrisa,Un debut magnético que captura la esencia del hard bop cruzado con un groove innegable. La energía es constante y contagiosa, destacándose por un interplay dinámico donde el pulso nunca decae, demostrando madurez técnica y una identidad sonora ya definida desde el primer día.",
+    "recommendedIf": "Si querés entrar al hard bop y al soul jazz con un disco directo, vibrante y lleno de groove que te engancha desde el primer track.",
+    "spotifyAlbumId": "4d79hIlGnvNvHe1EFovzLw",
+    "avoidIf": "Si buscás un álbum introspectivo, oscuro o de baja energía para escuchar en calma.",
+    "albumContext": "Debut temprano de Monty Alexander en Pacific Jazz, grabado cuando todavía era muy joven y ya mostraba una identidad clara: hard bop con pulso caribeño, swing directo y una energía pianística muy física. Dentro de Jazzlogs funciona como punto de partida del archivo y como presentación de una sensibilidad alegre, técnica y profundamente groovera.",
+    "personnel": [
+      {
+        "name": "Monty Alexander",
+        "role": "piano"
+      },
+      {
+        "name": "Victor Gaskin",
+        "role": "bass"
+      },
+      {
+        "name": "Bob Cranshaw",
+        "role": "bass"
+      },
+      {
+        "name": "Paul Humphrey",
+        "role": "drums"
+      },
+      {
+        "name": "Bruno Carr",
+        "role": "drums"
+      },
+      {
+        "name": "Gene Bertoncini",
+        "role": "guitar"
+      },
+      {
+        "name": "Scott Turner",
+        "role": "guitar"
+      }
+    ]
   },
   {
     "album": "Cornbread",
@@ -21,13 +76,65 @@
     "postedAt": "2026-02-03",
     "instagramPermalink": "https://www.instagram.com/p/DUUD5X4kaXu/?hl=en",
     "style": "Hard Bop / Soul Jazz",
+    "releaseYear": "1967",
     "logNumber": 2,
     "moods": [
-      "smoky",
+      "explosive",
       "groovy",
       "confident"
     ],
-    "notes": "Standout track: Ceora. Soul-jazz energy with a softer melodic side."
+    "tier": "essential",
+    "vibe": [
+      "smoky",
+      "urbano",
+      "confiado",
+      "elegante",
+      "nocturno"
+    ],
+    "energy": "medium",
+    "moodIntensity": "medium",
+    "accessibility": "easy",
+    "bestMoment": "noche de vinilo y whisky",
+    "listeningContext": [
+      "late-night",
+      "whiskey",
+      "vinyl-session",
+      "city-lights",
+      "after-hours"
+    ],
+    "notes": "Standout track: Ceora. Soul-jazz energy with a softer melodic side.",
+    "whyItMatters": "Documenta el pico creativo de Lee Morgan en los 60s y define el sonido definitivo del Soul-Jazz de Blue Note. Es un disco crucial porque equilibra a la perfección la actitud cruda del hard bop con composiciones de extrema sofisticación melódica.",
+    "editorialNote": "Un álbum sin puntos débiles que encapsula la energía urbana y humeante del jazz neoyorquino de mediados de los sesenta. Con un quinteto estelar y el toque distintivo de Herbie Hancock en el piano, ofrece un viaje sumamente equilibrado entre el groove innegable, la actitud desafiante y momentos de pura elegancia lírica.",
+    "recommendedIf": "Si buscás sumergirte en el sonido clásico de Blue Note con un disco que destila actitud urbana, groove contagioso y elegancia nocturna en partes iguales.",
+    "spotifyAlbumId": "5aY4PliFxsCd55sgU5A2KQ",
+    "avoidIf": "Si preferís jazz suave, discreto o sin tanta actitud urbana y presencia de trompeta.",
+    "albumContext": "Grabado en plena etapa dorada de Lee Morgan para Blue Note, Cornbread pertenece a la tradición hard bop y soul jazz de mediados de los sesenta. Llega después del impacto de The Sidewinder y muestra a Morgan combinando actitud urbana, melodías memorables y una banda de altísimo nivel, con Herbie Hancock como figura clave en el color armónico.",
+    "personnel": [
+      {
+        "name": "Lee Morgan",
+        "role": "trumpet"
+      },
+      {
+        "name": "Herbie Hancock",
+        "role": "piano"
+      },
+      {
+        "name": "Hank Mobley",
+        "role": "tenor sax"
+      },
+      {
+        "name": "Jackie McLean",
+        "role": "alto sax"
+      },
+      {
+        "name": "Larry Ridley",
+        "role": "bass"
+      },
+      {
+        "name": "Billy Higgins",
+        "role": "drums"
+      }
+    ]
   },
   {
     "album": "Aretha (with The Ray Bryant Combo)",
@@ -36,13 +143,49 @@
     "postedAt": "2026-02-04",
     "instagramPermalink": "https://www.instagram.com/p/DUWWQgEEaPc/?hl=en",
     "style": "Vocal Jazz / Pop",
+    "releaseYear": "1961",
     "logNumber": 3,
     "moods": [
       "soulful",
       "swinging",
       "youthful"
     ],
-    "notes": "Standout track: Right Now. Start of VocalWednesdays."
+    "tier": "essential",
+    "vibe": [
+      "cálido",
+      "brillante",
+      "confiado",
+      "vintage",
+      "elegante"
+    ],
+    "energy": "medium",
+    "moodIntensity": "medium",
+    "accessibility": "easy",
+    "bestMoment": "mañana tranquila con café",
+    "listeningContext": [
+      "slow-morning",
+      "coffee",
+      "sunday",
+      "vinyl-session",
+      "cooking"
+    ],
+    "notes": "Standout track: Right Now. Start of VocalWednesdays.",
+    "whyItMatters": "Es un documento histórico invaluable que captura a una Aretha Franklin de apenas 18 años dando sus primeros pasos. Demuestra cómo, incluso cantando estándares de jazz y pop antes de su explosión en el soul, ya poseía una voz, un swing y una confianza magnética que cambiarían la industria.",
+    "editorialNote": "Un debut vibrante y lleno de frescura. Lejos de la megaestrella en la que se convertiría años después, aquí encontramos a una joven prodigio interpretando clásicos con una energía cruda y un swing contagioso. El acompañamiento de Ray Bryant proporciona el marco perfecto y dinámico para una voz que exige atención desde el primer fraseo.",
+    "recommendedIf": "Si querés una puerta de entrada elegante al jazz vocal y te intriga descubrir el talento puro y crudo de una de las mejores voces de la historia antes de su salto al estrellato masivo.",
+    "spotifyAlbumId": "5Fl6XHaArAnESQOThJktXv",
+    "avoidIf": "Si buscás jazz instrumental puro o una escucha más sobria, sin protagonismo vocal tan marcado.",
+    "albumContext": "Primer álbum de Aretha Franklin para Columbia, registrado antes de su explosión soul en Atlantic. El disco captura a una cantante de apenas 18 años enfrentándose a standards de jazz y pop con una autoridad vocal inusual, acompañada por el Ray Bryant Combo. Es importante porque documenta el nacimiento de una voz histórica antes de convertirse en icono global.",
+    "personnel": [
+      {
+        "name": "Aretha Franklin",
+        "role": "vocals"
+      },
+      {
+        "name": "Ray Bryant Combo",
+        "role": "backing combo"
+      }
+    ]
   },
   {
     "album": "Blue & Sentimental",
@@ -57,7 +200,67 @@
       "soulful",
       "late-night"
     ],
-    "notes": "Standout track: Blues for Charlie. Strong Grant Green chemistry."
+    "tier": "deep_cut",
+    "vibe": [
+      "nocturno",
+      "íntimo",
+      "melancólico",
+      "blusero",
+      "relajado"
+    ],
+    "energy": "low",
+    "moodIntensity": "high",
+    "accessibility": "easy",
+    "bestMoment": "madrugada en soledad para desconectar",
+    "listeningContext": [
+      "late-night",
+      "after-work",
+      "alone-at-home",
+      "wine",
+      "rain"
+    ],
+    "notes": "Standout track: Blues for Charlie. Strong Grant Green chemistry.",
+    "whyItMatters": "Es el testamento musical de una figura clave en las sombras de Blue Note. Demuestra que la madurez emocional y el manejo de los silencios valen tanto como la destreza técnica, destacando además por una formación inusual (sin piano en casi todo el disco) que le da todo el espacio al diálogo crudo entre el saxo y la guitarra.",
+    "editorialNote": "Un álbum profundamente conmovedor, ideal para las altas horas de la noche. Ike Quebec sopla con una vulnerabilidad absoluta, cargando cada nota con un peso biográfico innegable. La interacción descarnada y llena de aire con la guitarra de Grant Green genera un blues lento, honesto y maravillosamente melancólico, priorizando el sentimiento por sobre la velocidad.",
+    "recommendedIf": "Si buscás jazz nocturno, íntimo y blusero; un disco relajado pero emocionalmente profundo, ideal para dejar que la música llene los silencios de la habitación.",
+    "spotifyAlbumId": "5TYNurFvKuz9z5L4Klwsl6",
+    "avoidIf": "Si necesitás energía alta, clima festivo o un disco que funcione como impulso inmediato.",
+    "albumContext": "Blue & Sentimental pertenece al regreso final de Ike Quebec a Blue Note a comienzos de los sesenta. Es un álbum marcado por el tono maduro, nocturno y blusero del saxo tenor, con una formación especialmente espaciosa donde la guitarra de Grant Green ocupa un rol central. Su valor está en la emoción contenida, el silencio y la vulnerabilidad antes que en la velocidad.",
+    "releaseYear": "",
+    "personnel": [
+      {
+        "name": "Ike Quebec",
+        "role": "tenor sax"
+      },
+      {
+        "name": "Ike Quebec",
+        "role": "piano"
+      },
+      {
+        "name": "Grant Green",
+        "role": "guitar"
+      },
+      {
+        "name": "Paul Chambers",
+        "role": "bass"
+      },
+      {
+        "name": "Philly Joe Jones",
+        "role": "drums"
+      },
+      {
+        "name": "Sonny Clark",
+        "role": "piano"
+      },
+      {
+        "name": "Sam Jones",
+        "role": "bass"
+      },
+      {
+        "name": "Louis Hayes",
+        "role": "drums"
+      }
+    ]
   },
   {
     "album": "Moanin’",
@@ -72,7 +275,55 @@
       "fiery",
       "classic"
     ],
-    "notes": "Standout track: Along Came Betty. EssentialsFridays entry."
+    "tier": "hall_of_fame",
+    "vibe": [
+      "blusero",
+      "confiado",
+      "urbano",
+      "cálido",
+      "eufórico"
+    ],
+    "energy": "high",
+    "moodIntensity": "medium",
+    "accessibility": "easy",
+    "bestMoment": "viernes a la tarde para arrancar el fin de semana con toda la energía",
+    "listeningContext": [
+      "friday-night",
+      "weekend",
+      "vinyl-session",
+      "after-work",
+      "bar-night"
+    ],
+    "notes": "Standout track: Along Came Betty. EssentialsFridays entry.",
+    "whyItMatters": "Es el manifiesto definitivo del Hard Bop. Art Blakey no solo grabó un disco, sino que estableció una institución, inyectándole al jazz el fuego del blues y las raíces gospel para contrarrestar la frialdad del Cool Jazz.",
+    "editorialNote": "Una obra maestra indiscutible y el arquetipo sonoro del hard bop. Impulsado por los tambores incombustibles de Blakey, el álbum es un derroche de energía, melodías memorables y solos ardientes. El fuego rítmico se equilibra a la perfección con la elegancia lírica de Lee Morgan y composiciones como 'Along Came Betty', creando un clásico que nunca pierde su vigencia.",
+    "recommendedIf": "Si querés la puerta de entrada definitiva al hard bop y buscás un disco con melodías icónicas, raíces bluseras y una energía inagotable.",
+    "spotifyAlbumId": "5PzlTnVafjgt5RtjTdIKoC",
+    "avoidIf": "Si querés algo sutil, ambiental o de fondo tranquilo que no reclame tanta atención.",
+    "albumContext": "Moanin’ es uno de los manifiestos definitivos del hard bop. Art Blakey y The Jazz Messengers condensan blues, gospel, energía urbana y disciplina de banda en un sonido que funcionó como escuela para generaciones de músicos. El álbum fija un lenguaje: temas memorables, arreglos potentes, solos encendidos y una batería que lidera desde el centro.",
+    "releaseYear": "",
+    "personnel": [
+      {
+        "name": "Lee Morgan",
+        "role": "trumpet"
+      },
+      {
+        "name": "Benny Golson",
+        "role": "tenor sax"
+      },
+      {
+        "name": "Bobby Timmons",
+        "role": "piano"
+      },
+      {
+        "name": "Jymie Merritt",
+        "role": "bass"
+      },
+      {
+        "name": "Art Blakey",
+        "role": "drums"
+      }
+    ]
   },
   {
     "album": "Scenery",
@@ -87,8 +338,47 @@
       "late-night",
       "precise"
     ],
+    "tier": "essential",
+    "vibe": [
+      "nocturno",
+      "melancólico",
+      "sofisticado",
+      "íntimo",
+      "urbano"
+    ],
+    "energy": "medium",
+    "moodIntensity": "medium",
+    "accessibility": "easy",
+    "bestMoment": "domingo a la noche con las luces bajas para cerrar la semana",
+    "listeningContext": [
+      "sunday-evening",
+      "late-night",
+      "city-lights",
+      "alone-at-home",
+      "whiskey"
+    ],
     "notes": "Standout track: Willow Weep For Me. Sunday selection and J-Jazz gateway.",
-    "spotifyAlbumId": "5Uny0mkKiVGDat7H6SNDyS"
+    "whyItMatters": "Se convirtió en la puerta de entrada definitiva y el clásico de culto por excelencia del jazz japonés en Occidente. Demuestra cómo una sensibilidad distinta puede reinterpretar el bop americano, probando además que un inicio tardío y autodidacta no es barrera para tocar con verdadera alma y precisión.",
+    "editorialNote": "Una obra de culto que captura a la perfección la atmósfera íntima y melancólica de un bar de jazz tokiota en la madrugada. Ryo Fukui, con un sonido cristalino y preciso, lidera un trío que equilibra el swing tradicional con una sensibilidad japonesa única. El álbum brilla en su capacidad de llevar al oyente por un viaje dinámico, pasando fluidamente de la calma nocturna a construcciones de tensión magistrales.",
+    "recommendedIf": "Si querés descubrir el jazz japonés con un disco accesible y nostálgico, ideal para transportarte a la soledad de la gran ciudad en plena noche.",
+    "spotifyAlbumId": "5Uny0mkKiVGDat7H6SNDyS",
+    "avoidIf": "Si buscás voces, arreglos grandes o un jazz más festivo y menos introspectivo.",
+    "albumContext": "Scenery es una puerta de entrada fundamental al jazz japonés. Grabado por Ryo Fukui en 1976, combina standards del repertorio bop estadounidense con una sensibilidad melancólica, precisa y nocturna. Su historia también lo volvió un clásico de culto redescubierto décadas después, ideal para entender cómo el jazz puede viajar y adquirir una identidad local propia.",
+    "releaseYear": "",
+    "personnel": [
+      {
+        "name": "Ryo Fukui",
+        "role": "piano"
+      },
+      {
+        "name": "Satoshi Denpo",
+        "role": "bass"
+      },
+      {
+        "name": "Yoshinori Fukui",
+        "role": "drums"
+      }
+    ]
   },
   {
     "album": "Sonny Rollins and the Contemporary Leaders",
@@ -103,7 +393,28 @@
       "relaxed",
       "articulate"
     ],
-    "notes": "Standout track: How High the Moon. East Coast fire meets West Coast cool."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: How High the Moon. East Coast fire meets West Coast cool.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Green Street",
@@ -118,7 +429,28 @@
       "stripped-back",
       "groovy"
     ],
-    "notes": "Standout track: Alone Together. Trio setting with no piano."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Alone Together. Trio setting with no piano.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Me and the Blues",
@@ -133,7 +465,28 @@
       "soulful",
       "late-night"
     ],
-    "notes": "Standout track: Kansas City. VocalWednesdays blues-heavy pick."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Kansas City. VocalWednesdays blues-heavy pick.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Dippin’",
@@ -148,7 +501,28 @@
       "soulful",
       "lyrical"
     ],
-    "notes": "Standout track: I See Your Face Before Me. Strong Lee Morgan contrast and hard bop feel."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: I See Your Face Before Me. Strong Lee Morgan contrast and hard bop feel.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Time Out",
@@ -163,7 +537,28 @@
       "cool",
       "sophisticated"
     ],
-    "notes": "Standout track: Take Five. EssentialsFridays pick built around unusual rhythms."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Take Five. EssentialsFridays pick built around unusual rhythms.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Super Black Blues",
@@ -178,7 +573,28 @@
       "heavy",
       "soulful"
     ],
-    "notes": "Standout track: Here I Am Broken Hearted. Sunday blues closer."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Here I Am Broken Hearted. Sunday blues closer.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Know What I Mean?",
@@ -193,7 +609,28 @@
       "lyrical",
       "relaxed"
     ],
-    "notes": "Bill Evans collaboration with a softer and deeper texture."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Bill Evans collaboration with a softer and deeper texture.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Naturally!",
@@ -208,7 +645,28 @@
       "moody",
       "cinematic"
     ],
-    "notes": "Standout track: Images. Soul jazz with a rounder cornet sound."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Images. Soul jazz with a rounder cornet sound.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Ella and Louis",
@@ -223,7 +681,28 @@
       "warm",
       "playful"
     ],
-    "notes": "Standout track: Can't We Be Friends. Classic vocal chemistry backed by the Oscar Peterson Quartet."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Can't We Be Friends. Classic vocal chemistry backed by the Oscar Peterson Quartet.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Blues in the Night",
@@ -238,7 +717,28 @@
       "relaxed",
       "bluesy"
     ],
-    "notes": "Standout track: Gee Baby, Ain't I Good to You. Hidden-gem trio session recorded in 1958."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Gee Baby, Ain't I Good to You. Hidden-gem trio session recorded in 1958.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Kind of Blue",
@@ -253,7 +753,28 @@
       "sophisticated",
       "timeless"
     ],
-    "notes": "Standout track: So What. Modal jazz monument and weekend essential."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: So What. Modal jazz monument and weekend essential.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Blue Hour",
@@ -268,7 +789,28 @@
       "soulful",
       "late-night"
     ],
-    "notes": "Standout track: I Want a Little Girl. Ideal Sunday evening album."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: I Want a Little Girl. Ideal Sunday evening album.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "The Great Jazz Piano of Phineas Newborn Jr.",
@@ -283,7 +825,28 @@
       "soulful",
       "romantic"
     ],
-    "notes": "Standout track: Prelude to a Kiss. Virtuosic piano rooted in the blues."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Prelude to a Kiss. Virtuosic piano rooted in the blues.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Introducing Kenny Burrell",
@@ -298,7 +861,28 @@
       "warm",
       "late-night"
     ],
-    "notes": "Standout track: Weaver of Dreams. Debut leader date with a buttery guitar tone."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Weaver of Dreams. Debut leader date with a buttery guitar tone.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "John Coltrane and Johnny Hartman",
@@ -313,7 +897,28 @@
       "tender",
       "intimate"
     ],
-    "notes": "Standout track: You Are Too Beautiful. Ballad session with Hartman and Coltrane's classic quartet."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: You Are Too Beautiful. Ballad session with Hartman and Coltrane's classic quartet.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Sit Down and Relax with Jimmy Forrest",
@@ -328,7 +933,28 @@
       "warm",
       "relaxing"
     ],
-    "notes": "Standout track: The Moon Was Yellow. Restrained late-night Prestige session."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: The Moon Was Yellow. Restrained late-night Prestige session.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Chet",
@@ -343,7 +969,28 @@
       "melancholic",
       "elegant"
     ],
-    "notes": "Standout track: September Song. Deeply restrained and late-night Chet Baker session."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: September Song. Deeply restrained and late-night Chet Baker session.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Midnight Special",
@@ -358,7 +1005,28 @@
       "late-night",
       "groovy"
     ],
-    "notes": "Standout track: Midnight Special. Essential Sunday-night organ session."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Midnight Special. Essential Sunday-night organ session.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Art Pepper Meets the Rhythm Section",
@@ -373,7 +1041,28 @@
       "vulnerable",
       "swinging"
     ],
-    "notes": "Standout track: Imagination. One-take feel with Miles Davis's rhythm section."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Imagination. One-take feel with Miles Davis's rhythm section.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "The Incredible Jazz Guitar of Wes Montgomery",
@@ -388,7 +1077,28 @@
       "energetic",
       "groovy"
     ],
-    "notes": "Standout track: Mister Walker. Thumb-picked guitar with a calypso feel."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Mister Walker. Thumb-picked guitar with a calypso feel.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Songs for Distingué Lovers",
@@ -403,7 +1113,28 @@
       "intimate",
       "melancholic"
     ],
-    "notes": "Standout track: A Foggy Day. Late-career Billie Holiday with an all-star band."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: A Foggy Day. Late-career Billie Holiday with an all-star band.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Go!",
@@ -418,7 +1149,28 @@
       "powerful",
       "timeless"
     ],
-    "notes": "Standout track: Cheese Cake. Quintessential Blue Note session and Dexter favorite."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Cheese Cake. Quintessential Blue Note session and Dexter favorite.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Portrait in Jazz",
@@ -433,7 +1185,28 @@
       "intimate",
       "haunting"
     ],
-    "notes": "Standout track: Blue in Green. Trio interplay that changed the format."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Blue in Green. Trio interplay that changed the format.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Getz/Gilberto",
@@ -448,7 +1221,28 @@
       "sophisticated",
       "soothing"
     ],
-    "notes": "Standout track: The Girl from Ipanema. Bossa nova classic with global impact."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: The Girl from Ipanema. Bossa nova classic with global impact.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Takin’ Off",
@@ -463,7 +1257,28 @@
       "funky",
       "energetic"
     ],
-    "notes": "Standout track: Watermelon Man. Debut leader date with deep bluesy grooves."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Watermelon Man. Debut leader date with deep bluesy grooves.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "The Quota",
@@ -478,7 +1293,28 @@
       "sophisticated",
       "soulful"
     ],
-    "notes": "Standout track: The Quota. Hard bop session with distinctive French horn texture."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: The Quota. Hard bop session with distinctive French horn texture.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Embers and Ashes",
@@ -493,7 +1329,28 @@
       "smoky",
       "melancholic"
     ],
-    "notes": "Standout track: Like Someone in Love. Shirley Horn accompanies herself with spacious restraint."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Like Someone in Love. Shirley Horn accompanies herself with spacious restraint.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Ready for Freddie",
@@ -508,7 +1365,28 @@
       "sophisticated",
       "fiery"
     ],
-    "notes": "Standout track: Birdlike. Modern jazz session with unusual euphonium texture."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Birdlike. Modern jazz session with unusual euphonium texture.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Duke Ellington & John Coltrane",
@@ -523,7 +1401,28 @@
       "serene",
       "subtle"
     ],
-    "notes": "Standout track: In a Sentimental Mood. Intimate conversation between two giants."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: In a Sentimental Mood. Intimate conversation between two giants.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Back to Back",
@@ -538,7 +1437,28 @@
       "sophisticated",
       "elegant"
     ],
-    "notes": "Standout track: Wabash Blues. Comeback post with a late-night blues feel."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Wabash Blues. Comeback post with a late-night blues feel.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "Speakin’ My Piece",
@@ -553,7 +1473,28 @@
       "grounded",
       "melancholic"
     ],
-    "notes": "Standout track: Oh So Blue. Structured hard bop with the Turrentine brothers."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Oh So Blue. Structured hard bop with the Turrentine brothers.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "For Django",
@@ -568,7 +1509,28 @@
       "laid-back",
       "late-night"
     ],
-    "notes": "Standout track: Django's Castle. Tribute session with elegant late-night swing."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: Django's Castle. Tribute session with elegant late-night swing.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   },
   {
     "album": "That's Life",
@@ -583,6 +1545,27 @@
       "soulful",
       "bluesy"
     ],
-    "notes": "Standout track: That's Life. Heavy, blues-driven vocal session with mature, defiant Sinatra phrasing."
+    "tier": "",
+    "vibe": [
+
+    ],
+    "energy": "",
+    "moodIntensity": "",
+    "accessibility": "",
+    "bestMoment": "",
+    "listeningContext": [
+
+    ],
+    "notes": "Standout track: That's Life. Heavy, blues-driven vocal session with mature, defiant Sinatra phrasing.",
+    "whyItMatters": "",
+    "editorialNote": "",
+    "recommendedIf": "",
+    "spotifyAlbumId": "",
+    "avoidIf": "",
+    "albumContext": "",
+    "releaseYear": "",
+    "personnel": [
+
+    ]
   }
 ]

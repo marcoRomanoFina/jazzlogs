@@ -1,0 +1,229 @@
+{
+  "vocabularyVersion": "1.0",
+  "language": "es",
+  "purpose": "Chuleta editorial para completar campos semánticos de albums.json.",
+  "keys": {
+    "tier": {
+      "description": "Peso curatorial del álbum dentro del universo Jazzlogs.",
+      "recommendedValues": [
+        {
+          "id": "hall_of_fame",
+          "label": "Hall of Fame",
+          "description": "Álbumes intocables. Obras maestras absolutas y puertas de entrada inevitables."
+        },
+        {
+          "id": "essential",
+          "label": "Essential",
+          "description": "Discos fundamentales para entender un artista, estilo, sello o época."
+        },
+        {
+          "id": "deep_cut",
+          "label": "Deep Cut",
+          "description": "Joyas menos obvias, muy valiosas para recomendar algo fuera del canon típico."
+        },
+        {
+          "id": "daily_vibe",
+          "label": "Daily Vibe",
+          "description": "Discos muy escuchables, buenos para rotación diaria o acompañar momentos."
+        },
+        {
+          "id": "experimental",
+          "label": "Experimental",
+          "description": "Álbumes con cruces, rarezas, apuestas estéticas o formatos menos tradicionales."
+        }
+      ]
+    },
+    "energy": {
+      "description": "Energía general del álbum como experiencia completa.",
+      "recommendedValues": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "guide": {
+        "low": "Disco calmo, íntimo, lento o de baja exigencia física.",
+        "medium": "Tiene pulso y presencia, pero no domina el ambiente.",
+        "high": "Disco movedizo, intenso, explosivo o muy corporal."
+      }
+    },
+    "moodIntensity": {
+      "description": "Carga emocional general del álbum.",
+      "recommendedValues": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "guide": {
+        "low": "Agradable, liviano, no demasiado emocional.",
+        "medium": "Tiene clima emocional claro, pero sigue siendo balanceado.",
+        "high": "Disco emocionalmente pesado, profundo, conmovedor o catártico."
+      }
+    },
+    "accessibility": {
+      "description": "Qué tan fácil es recomendar el álbum a alguien que no conoce mucho.",
+      "recommendedValues": [
+        "easy",
+        "medium",
+        "demanding"
+      ],
+      "guide": {
+        "easy": "Entra rápido, tiene melodías claras o groove inmediato.",
+        "medium": "Requiere algo de atención o afinidad con el estilo.",
+        "demanding": "Pide paciencia, contexto o escucha más activa."
+      }
+    },
+    "vibe": {
+      "description": "Atmósfera principal del álbum completo.",
+      "recommendedValues": [
+        "cálido",
+        "frío",
+        "nocturno",
+        "luminoso",
+        "melancólico",
+        "íntimo",
+        "sofisticado",
+        "espiritual",
+        "terrenal",
+        "elegante",
+        "áspero",
+        "suave",
+        "cinemático",
+        "hipnótico",
+        "meditativo",
+        "sensual",
+        "festivo",
+        "solemne",
+        "juguetón",
+        "vulnerable",
+        "sombrío",
+        "relajado",
+        "tenso",
+        "flotante",
+        "blusero",
+        "smoky",
+        "nostálgico",
+        "romántico",
+        "contemplativo",
+        "sereno",
+        "catártico",
+        "resistente",
+        "esperanzador",
+        "desafiante",
+        "misterioso",
+        "expansivo",
+        "recogido",
+        "urbano",
+        "crepuscular",
+        "lluvioso",
+        "envolvente",
+        "etéreo",
+        "terciopelado",
+        "rugoso",
+        "eufórico",
+        "reflexivo",
+        "devocional",
+        "brillante",
+        "inquieto",
+        "confiado",
+        "majestuoso",
+        "minimalista",
+        "terapéutico",
+        "acogedor",
+        "vintage",
+        "delicado",
+        "sobrio"
+      ],
+      "rule": "Usar 3 a 5 valores. Pensar en el clima general del álbum, no en un solo track."
+    },
+    "listeningContext": {
+      "description": "Situaciones o actividades donde el álbum funciona especialmente bien.",
+      "recommendedValues": [
+        "late-night",
+        "rain",
+        "sunrise",
+        "sunset",
+        "solo-walk",
+        "study",
+        "background",
+        "wine",
+        "whiskey",
+        "coffee",
+        "after-hours",
+        "weekend",
+        "sunday",
+        "friday-night",
+        "focus",
+        "reflection",
+        "city-lights",
+        "winter",
+        "summer-night",
+        "reading",
+        "working",
+        "writing",
+        "cooking",
+        "dinner",
+        "date-night",
+        "heartbreak",
+        "healing",
+        "self-reflection",
+        "deep-focus",
+        "vinyl-session",
+        "headphones-only",
+        "golden-hour",
+        "storm",
+        "cold-night",
+        "weekend-morning",
+        "sunday-evening",
+        "after-work",
+        "commute",
+        "slow-morning",
+        "insomnia",
+        "bar-night",
+        "alone-at-home"
+      ],
+      "rule": "Usar contextos que apliquen al álbum completo. Evitar contextos demasiado específicos de un único track."
+    },
+    "bestMoment": {
+      "description": "Frase humana sobre el momento ideal para escuchar el álbum completo.",
+      "examples": [
+        "domingo lluvioso a la tarde",
+        "viernes a la noche con luces bajas",
+        "mañana tranquila con café",
+        "madrugada en soledad",
+        "fin de tarde después del trabajo",
+        "noche de vinilo y whisky",
+        "caminata lenta por la ciudad",
+        "mañana de fin de semana sin apuro",
+        "cena tranquila con amigos",
+        "noche fría mirando por la ventana"
+      ]
+    },
+    "whyItMatters": {
+      "description": "Por qué este álbum importa dentro de Jazzlogs.",
+      "rule": "Responder desde curaduría, no solo desde historia. Puede hablar de sonido, contexto, artista, sensibilidad o valor de entrada."
+    },
+    "editorialNote": {
+      "description": "Mini párrafo limpio y personal sobre el álbum, sin ruido de Instagram.",
+      "rule": "Debe capturar tu lectura del disco como experiencia completa. Ideal para embeddings."
+    },
+    "recommendedIf": {
+      "description": "Para quién o para qué estado recomendarías el álbum.",
+      "examples": [
+        "Si querés entrar al hard bop con algo directo y lleno de energía.",
+        "Si buscás jazz nocturno, cálido y emocionalmente contenido.",
+        "Si necesitás un disco relajado pero con mucha personalidad.",
+        "Si querés una puerta de entrada elegante al jazz vocal.",
+        "Si te interesa escuchar un álbum que mezcla groove, historia y carácter.",
+        "Si querés algo para escuchar completo sin saltar tracks."
+      ]
+    }
+  },
+  "albumLevelRules": [
+    "No copiar simplemente la caption: estos campos deben limpiar y concentrar la semántica del álbum.",
+    "Pensar en el álbum completo, no solo en el standout track.",
+    "Usar caption como contexto, pero priorizar editorialNote, whyItMatters, recommendedIf, vibe y listeningContext para embeddings.",
+    "Mantener los valores de vibe y listeningContext consistentes con track-tags cuando aplique.",
+    "Si un álbum tiene muchos climas distintos, describir el clima dominante o el arco general.",
+    "No sobrecargar vibe con más de 5 palabras."
+  ]
+}

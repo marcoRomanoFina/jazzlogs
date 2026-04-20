@@ -1,0 +1,218 @@
+[
+  {
+    "spotifyArtistId": "30V1rKijENF5MFcGidInfh",
+    "name": "Monty Alexander",
+    "primaryInstrument": "piano",
+    "mainStyles": [
+      "hard_bop",
+      "soul_jazz",
+      "caribbean_jazz",
+      "jazz_piano"
+    ],
+    "signatureSound": "Piano luminoso, rítmico y muy físico, con swing de hard bop atravesado por una sensibilidad caribeña cálida y contagiosa.",
+    "artistContext": "Monty Alexander representa una forma de jazz profundamente alegre, técnica y corporal. Su sonido mezcla la tradición del piano bop con raíces jamaiquinas, logrando que el virtuosismo nunca se sienta frío ni académico.",
+    "jazzlogsTake": "Para Jazzlogs, Monty es energía pura con corazón. Es de esos artistas que sirven para abrir una puerta amable al jazz: suena sofisticado, pero también directo, movedizo y lleno de vida.",
+    "recommendedEntryPoint": "Spunky",
+    "bestFor": [
+      "arrancar el día con energía",
+      "escuchar piano con groove",
+      "entrar al hard bop desde un lugar luminoso",
+      "momentos de buen humor"
+    ],
+    "avoidIf": "Si buscás jazz oscuro, cerebral o emocionalmente pesado.",
+    "relatedArtists": [
+      "Oscar Peterson",
+      "Ahmad Jamal",
+      "Ray Bryant",
+      "Sonny Rollins"
+    ],
+    "importance": "Figura clave para entender un cruce accesible y personal entre jazz estadounidense, swing pianístico y raíces caribeñas.",
+    "logAppearances": [
+      1
+    ]
+  },
+  {
+    "spotifyArtistId": "38C3okxv3fyyOIQUVPCdGX",
+    "name": "Lee Morgan",
+    "primaryInstrument": "trumpet",
+    "mainStyles": [
+      "hard_bop",
+      "soul_jazz",
+      "blue_note",
+      "post_bop"
+    ],
+    "signatureSound": "Trompeta filosa, confiada y urbana, capaz de pasar del fuego hard bop a melodías líricas con una elegancia enorme.",
+    "artistContext": "Lee Morgan fue una de las voces centrales del hard bop de Blue Note. Su sonido combina juventud, actitud, blues, precisión y una capacidad melódica muy reconocible.",
+    "jazzlogsTake": "Para Jazzlogs, Lee Morgan es carisma puro. Tiene esa mezcla perfecta entre calle, sofisticación y fuego: cuando entra su trompeta, el disco automáticamente gana personalidad.",
+    "recommendedEntryPoint": "Cornbread",
+    "bestFor": [
+      "noche urbana",
+      "vinilo y whisky",
+      "hard bop con actitud",
+      "trompeta con personalidad"
+    ],
+    "avoidIf": "Si preferís jazz muy suave, ambiental o sin protagonismo de metales.",
+    "relatedArtists": [
+      "Freddie Hubbard",
+      "Art Blakey",
+      "Hank Mobley",
+      "Herbie Hancock"
+    ],
+    "importance": "Una de las figuras esenciales del sonido Blue Note de los años sesenta y un puente perfecto entre hard bop, soul jazz y melodía popular.",
+    "logAppearances": [
+      2,
+      5
+    ]
+  },
+  {
+    "spotifyArtistId": "7nwUJBm0HE4ZxD3f5cy5ok",
+    "name": "Aretha Franklin",
+    "primaryInstrument": "voice",
+    "mainStyles": [
+      "vocal_jazz",
+      "soul",
+      "gospel",
+      "rhythm_and_blues"
+    ],
+    "signatureSound": "Voz poderosa, expresiva y profundamente emocional, con raíces gospel y una autoridad interpretativa imposible de ignorar.",
+    "artistContext": "Antes de convertirse en la gran reina del soul, Aretha Franklin grabó material jazzístico y pop para Columbia. Esa etapa muestra a una cantante joven, todavía en formación pública, pero ya con una presencia vocal descomunal.",
+    "jazzlogsTake": "Para Jazzlogs, Aretha es una fuerza de la naturaleza. Incluso en sus primeras grabaciones, cada frase tiene intención, carácter y una seguridad que transforma cualquier standard en algo propio.",
+    "recommendedEntryPoint": "Aretha (with The Ray Bryant Combo)",
+    "bestFor": [
+      "jazz vocal con alma",
+      "cocinar o arrancar la mañana",
+      "voces expresivas",
+      "escuchar una artista antes de su explosión histórica"
+    ],
+    "avoidIf": "Si buscás jazz instrumental puro o una escucha sin protagonismo vocal.",
+    "relatedArtists": [
+      "Ray Bryant",
+      "Dinah Washington",
+      "Ella Fitzgerald",
+      "Nina Simone"
+    ],
+    "importance": "Una de las voces más importantes de la música popular del siglo XX, cuyo paso temprano por el jazz permite entender la raíz técnica y emocional de su grandeza.",
+    "logAppearances": [
+      3
+    ]
+  },
+  {
+    "spotifyArtistId": "6y7dRlvApiCjP12JrxWQjh",
+    "name": "Ike Quebec",
+    "primaryInstrument": "tenor_sax",
+    "mainStyles": [
+      "soul_jazz",
+      "hard_bop",
+      "blues",
+      "blue_note"
+    ],
+    "signatureSound": "Saxo tenor ahumado, cálido y vulnerable, con un fraseo lento que prioriza el peso emocional de cada nota.",
+    "artistContext": "Ike Quebec fue una figura clave dentro de Blue Note, no solo como saxofonista sino también como puente interno del sello. Sus grabaciones finales muestran una voz madura, nocturna y profundamente blusera.",
+    "jazzlogsTake": "Para Jazzlogs, Ike representa la belleza del jazz lento y honesto. No necesita demostrar velocidad: le alcanza con una nota bien colocada para cambiar el clima completo de una habitación.",
+    "recommendedEntryPoint": "Blue & Sentimental",
+    "bestFor": [
+      "madrugada",
+      "lluvia",
+      "vino o whisky",
+      "jazz nocturno y blusero"
+    ],
+    "avoidIf": "Si necesitás energía alta, virtuosismo explosivo o melodías brillantes.",
+    "relatedArtists": [
+      "Grant Green",
+      "Stanley Turrentine",
+      "Gene Ammons",
+      "Sonny Clark"
+    ],
+    "importance": "Una voz esencial para entender el costado más íntimo, maduro y nocturno del catálogo Blue Note.",
+    "logAppearances": [
+      4
+    ]
+  },
+  {
+    "spotifyArtistId": "6ykfXAed2KOLOMI3R0TZdz",
+    "name": "Art Blakey & The Jazz Messengers",
+    "primaryInstrument": "drums",
+    "mainStyles": [
+      "hard_bop",
+      "blue_note",
+      "gospel_jazz",
+      "blues"
+    ],
+    "signatureSound": "Hard bop ardiente, con batería explosiva, raíces gospel, arreglos de vientos memorables y una energía colectiva inagotable.",
+    "artistContext": "Art Blakey convirtió a The Jazz Messengers en una verdadera escuela de hard bop. La banda funcionó como plataforma para músicos jóvenes y como vehículo para mantener vivo el fuego del blues, el gospel y el swing.",
+    "jazzlogsTake": "Para Jazzlogs, Blakey es el motor. Su música no solo se escucha: te empuja. Es el punto perfecto cuando querés entender por qué el hard bop suena tan humano, físico y urgente.",
+    "recommendedEntryPoint": "Moanin’",
+    "bestFor": [
+      "entrar al hard bop",
+      "viernes con energía",
+      "estudiar arreglos de banda",
+      "escuchar batería como fuerza líder"
+    ],
+    "avoidIf": "Si buscás música ambiental, minimalista o que quede completamente de fondo.",
+    "relatedArtists": [
+      "Lee Morgan",
+      "Benny Golson",
+      "Bobby Timmons",
+      "Freddie Hubbard"
+    ],
+    "importance": "Institución central del hard bop y una de las bandas más influyentes para la formación de generaciones de músicos de jazz.",
+    "logAppearances": [
+      5
+    ]
+  },
+  {
+    "spotifyArtistId": "4V7Ate3UISn8cy06xnAprh",
+    "name": "Ryo Fukui",
+    "primaryInstrument": "piano",
+    "mainStyles": [
+      "j_jazz",
+      "post_bop",
+      "jazz_piano",
+      "modal_jazz"
+    ],
+    "signatureSound": "Piano claro, melódico y preciso, con una mezcla de swing bop estadounidense y sensibilidad japonesa nocturna e introspectiva.",
+    "artistContext": "Ryo Fukui fue un pianista japonés autodidacta que empezó tarde y aun así desarrolló una voz profundamente expresiva. Scenery se volvió décadas después una puerta de entrada global al jazz japonés.",
+    "jazzlogsTake": "Para Jazzlogs, Ryo es prueba de que el jazz también puede sentirse como paisaje interior. Su música tiene una mezcla hermosa de disciplina, nostalgia y emoción contenida.",
+    "recommendedEntryPoint": "Scenery",
+    "bestFor": [
+      "domingo a la noche",
+      "ciudad con luces bajas",
+      "piano introspectivo",
+      "descubrir jazz japonés"
+    ],
+    "avoidIf": "Si buscás voces, arreglos grandes o jazz festivo y expansivo.",
+    "relatedArtists": [
+      "Bill Evans",
+      "Wynton Kelly",
+      "Tsuyoshi Yamamoto",
+      "Ahmad Jamal"
+    ],
+    "importance": "Figura de culto del jazz japonés y una puerta de entrada accesible para entender cómo el bop puede adquirir una sensibilidad local distinta.",
+    "logAppearances": [
+      6
+    ]
+  },
+  {
+    "spotifyArtistId": "",
+    "name": "",
+    "primaryInstrument": "",
+    "mainStyles": [
+
+    ],
+    "signatureSound": "",
+    "artistContext": "",
+    "jazzlogsTake": "",
+    "recommendedEntryPoint": "",
+    "bestFor": [
+
+    ],
+    "avoidIf": "",
+    "relatedArtists": [
+
+    ],
+    "importance": "",
+    "logAppearances": [
+
+    ]
+  }
+]
