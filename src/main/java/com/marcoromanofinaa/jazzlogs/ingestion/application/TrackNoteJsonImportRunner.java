@@ -10,20 +10,20 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Order(1)
+@Order(2)
 @RequiredArgsConstructor
-public class AlbumLogJsonImportRunner implements ApplicationRunner {
+public class TrackNoteJsonImportRunner implements ApplicationRunner {
 
     private final AlbumLogIngestionProperties properties;
-    private final AlbumLogImportService albumLogImportService;
+    private final TrackNoteImportService trackNoteImportService;
 
     @Override
     public void run(ApplicationArguments args) {
-        if (!properties.enabled()) {
+        if (!properties.enabled() || properties.trackNotesPath() == null || properties.trackNotesPath().isBlank()) {
             return;
         }
 
-        var imported = albumLogImportService.importFromJson(Path.of(properties.path()));
-        log.info("Imported {} album logs from {}", imported, properties.path());
+        var imported = trackNoteImportService.importFromJson(Path.of(properties.trackNotesPath()));
+        log.info("Imported {} track notes from {}", imported, properties.trackNotesPath());
     }
 }
