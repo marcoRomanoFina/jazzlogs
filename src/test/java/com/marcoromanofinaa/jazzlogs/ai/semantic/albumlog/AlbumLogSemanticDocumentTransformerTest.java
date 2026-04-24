@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogData;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogPersonnel;
 import java.time.LocalDate;
 import java.util.List;
@@ -15,7 +16,7 @@ class AlbumLogSemanticDocumentTransformerTest {
 
     @Test
     void transformsAlbumLogIntoSemanticDocument() {
-        var albumLog = AlbumLog.create(
+        var albumLog = AlbumLog.create(new AlbumLogData(
                 1,
                 "Moanin'",
                 "Art Blakey & The Jazz Messengers",
@@ -40,7 +41,7 @@ class AlbumLogSemanticDocumentTransformerTest {
                 "Recorded at a peak moment for the Jazz Messengers.",
                 List.of(new AlbumLogPersonnel("Lee Morgan", "trumpet")),
                 "spotify-album-1"
-        );
+        ));
 
         var document = transformer.transform(albumLog);
 

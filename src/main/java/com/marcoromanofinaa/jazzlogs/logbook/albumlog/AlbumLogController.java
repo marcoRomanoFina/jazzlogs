@@ -1,7 +1,5 @@
-package com.marcoromanofinaa.jazzlogs.logbook.web;
+package com.marcoromanofinaa.jazzlogs.logbook.albumlog;
 
-import com.marcoromanofinaa.jazzlogs.logbook.application.AlbumLogQueryService;
-import com.marcoromanofinaa.jazzlogs.logbook.application.AlbumLogResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

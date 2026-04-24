@@ -121,104 +121,14 @@ public class AlbumLog {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    public static AlbumLog create(
-            Integer logNumber,
-            String album,
-            String artist,
-            String caption,
-            LocalDate postedAt,
-            String instagramPermalink,
-            String style,
-            String[] moods,
-            String notes,
-            String spotifyAlbumSeedId
-    ) {
-        return create(
-                logNumber,
-                album,
-                artist,
-                caption,
-                postedAt,
-                instagramPermalink,
-                style,
-                null,
-                moods,
-                null,
-                new String[]{},
-                null,
-                null,
-                null,
-                null,
-                new String[]{},
-                notes,
-                null,
-                null,
-                null,
-                null,
-                null,
-                List.of(),
-                spotifyAlbumSeedId
-        );
-    }
-
-    public static AlbumLog create(
-            Integer logNumber,
-            String album,
-            String artist,
-            String caption,
-            LocalDate postedAt,
-            String instagramPermalink,
-            String style,
-            String releaseYear,
-            String[] moods,
-            String tier,
-            String[] vibe,
-            String energy,
-            String moodIntensity,
-            String accessibility,
-            String bestMoment,
-            String[] listeningContext,
-            String notes,
-            String whyItMatters,
-            String editorialNote,
-            String recommendedIf,
-            String avoidIf,
-            String albumContext,
-            List<AlbumLogPersonnel> personnel,
-            String spotifyAlbumSeedId
-    ) {
+    public static AlbumLog create(AlbumLogData data) {
         var albumLog = new AlbumLog();
-        albumLog.updateEditorialData(
-                logNumber,
-                album,
-                artist,
-                caption,
-                postedAt,
-                instagramPermalink,
-                style,
-                releaseYear,
-                moods,
-                tier,
-                vibe,
-                energy,
-                moodIntensity,
-                accessibility,
-                bestMoment,
-                listeningContext,
-                notes,
-                whyItMatters,
-                editorialNote,
-                recommendedIf,
-                avoidIf,
-                albumContext,
-                personnel,
-                spotifyAlbumSeedId
-        );
+        albumLog.update(data);
         return albumLog;
     }
 
     public void update(AlbumLog source) {
-        updateEditorialData(
+        update(new AlbumLogData(
                 source.getLogNumber(),
                 source.getAlbum(),
                 source.getArtist(),
@@ -243,59 +153,34 @@ public class AlbumLog {
                 source.getAlbumContext(),
                 source.getPersonnel(),
                 source.getSpotifyAlbumSeedId()
-        );
+        ));
     }
 
-    public void updateEditorialData(
-            Integer logNumber,
-            String album,
-            String artist,
-            String caption,
-            LocalDate postedAt,
-            String instagramPermalink,
-            String style,
-            String releaseYear,
-            String[] moods,
-            String tier,
-            String[] vibe,
-            String energy,
-            String moodIntensity,
-            String accessibility,
-            String bestMoment,
-            String[] listeningContext,
-            String notes,
-            String whyItMatters,
-            String editorialNote,
-            String recommendedIf,
-            String avoidIf,
-            String albumContext,
-            List<AlbumLogPersonnel> personnel,
-            String spotifyAlbumSeedId
-    ) {
-        this.logNumber = logNumber;
-        this.album = album;
-        this.artist = artist;
-        this.caption = caption;
-        this.postedAt = postedAt;
-        this.instagramPermalink = instagramPermalink;
-        this.style = style;
-        this.releaseYear = releaseYear;
-        this.moods = moods;
-        this.tier = tier;
-        this.vibe = vibe;
-        this.energy = energy;
-        this.moodIntensity = moodIntensity;
-        this.accessibility = accessibility;
-        this.bestMoment = bestMoment;
-        this.listeningContext = listeningContext;
-        this.notes = notes;
-        this.whyItMatters = whyItMatters;
-        this.editorialNote = editorialNote;
-        this.recommendedIf = recommendedIf;
-        this.avoidIf = avoidIf;
-        this.albumContext = albumContext;
-        this.personnel = personnel;
-        this.spotifyAlbumSeedId = spotifyAlbumSeedId;
+    public void update(AlbumLogData data) {
+        this.logNumber = data.logNumber();
+        this.album = data.album();
+        this.artist = data.artist();
+        this.caption = data.caption();
+        this.postedAt = data.postedAt();
+        this.instagramPermalink = data.instagramPermalink();
+        this.style = data.style();
+        this.releaseYear = data.releaseYear();
+        this.moods = data.moods();
+        this.tier = data.tier();
+        this.vibe = data.vibe();
+        this.energy = data.energy();
+        this.moodIntensity = data.moodIntensity();
+        this.accessibility = data.accessibility();
+        this.bestMoment = data.bestMoment();
+        this.listeningContext = data.listeningContext();
+        this.notes = data.notes();
+        this.whyItMatters = data.whyItMatters();
+        this.editorialNote = data.editorialNote();
+        this.recommendedIf = data.recommendedIf();
+        this.avoidIf = data.avoidIf();
+        this.albumContext = data.albumContext();
+        this.personnel = data.personnel();
+        this.spotifyAlbumSeedId = data.spotifyAlbumSeedId();
     }
 
     public void linkSpotifyAlbum(SpotifyAlbum spotifyAlbum) {

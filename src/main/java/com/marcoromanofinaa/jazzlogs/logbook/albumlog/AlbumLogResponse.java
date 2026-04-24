@@ -1,7 +1,5 @@
-package com.marcoromanofinaa.jazzlogs.logbook.application;
+package com.marcoromanofinaa.jazzlogs.logbook.albumlog;
 
-import com.marcoromanofinaa.jazzlogs.logbook.domain.AlbumLog;
-import com.marcoromanofinaa.jazzlogs.logbook.domain.AlbumLogPersonnel;
 import java.time.LocalDate;
 import java.util.List;
 

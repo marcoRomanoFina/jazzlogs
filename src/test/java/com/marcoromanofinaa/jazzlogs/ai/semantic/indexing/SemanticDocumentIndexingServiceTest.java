@@ -12,6 +12,7 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.indexer.ArtistProfileS
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.indexer.TrackNoteSemanticDocumentIndexer;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.tracknote.TrackNoteSemanticDocumentTransformer;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogData;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;
 import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfile;
 import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfileData;
@@ -104,7 +105,7 @@ class SemanticDocumentIndexingServiceTest {
     }
 
     private AlbumLog albumLog() {
-        return AlbumLog.create(
+        return AlbumLog.create(new AlbumLogData(
                 1,
                 "Spunky",
                 "Monty Alexander",
@@ -112,10 +113,24 @@ class SemanticDocumentIndexingServiceTest {
                 LocalDate.of(2026, 2, 2),
                 "https://www.instagram.com/p/TEST123/",
                 "Hard Bop / Soul Jazz",
+                null,
                 new String[]{"energetic", "groovy"},
+                null,
+                new String[]{},
+                null,
+                null,
+                null,
+                null,
+                new String[]{},
                 "Opening log.",
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
                 "spotify-album-1"
-        );
+        ));
     }
 
     private TrackNote trackNote() {

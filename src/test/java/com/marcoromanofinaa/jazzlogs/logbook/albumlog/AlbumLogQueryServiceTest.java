@@ -1,24 +1,21 @@
-package com.marcoromanofinaa.jazzlogs.logbook.application;
+package com.marcoromanofinaa.jazzlogs.logbook.albumlog;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.marcoromanofinaa.jazzlogs.logbook.domain.AlbumLog;
-import com.marcoromanofinaa.jazzlogs.logbook.infrastructure.AlbumLogRepository;
 import java.lang.reflect.Proxy;
 import java.time.LocalDate;
-import java.util.Map;
-import java.util.Optional;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class AlbumLogQueryServiceTest {
 
     @Test
-    void returnsAllAlbumLogsOrderedByLogNumber() {
+    void returnsAllAlbumLogs() {
         var repository = repository(
-                Map.of(
-                        2, albumLog(2, "Cornbread"),
-                        1, albumLog(1, "Spunky")
+                List.of(
+                        albumLog(1, "Spunky"),
+                        albumLog(2, "Cornbread")
                 )
         );
         var service = new AlbumLogQueryService(repository);
@@ -31,7 +28,7 @@ class AlbumLogQueryServiceTest {
 
     @Test
     void returnsAlbumLogByLogNumber() {
-        var repository = repository(Map.of(7, albumLog(7, "Sonny Rollins and the Contemporary Leaders")));
+        var repository = repository(List.of(albumLog(7, "Sonny Rollins and the Contemporary Leaders")));
         var service = new AlbumLogQueryService(repository);
 
         var response = service.findByLogNumber(7);
@@ -44,22 +41,22 @@ class AlbumLogQueryServiceTest {
 
     @Test
     void throwsWhenAlbumLogDoesNotExist() {
-        var service = new AlbumLogQueryService(repository(Map.of()));
+        var service = new AlbumLogQueryService(repository(List.of()));
 
         assertThatThrownBy(() -> service.findByLogNumber(404))
                 .isInstanceOf(AlbumLogNotFoundException.class)
                 .hasMessageContaining("404");
     }
 
-    private AlbumLogRepository repository(Map<Integer, AlbumLog> storage) {
+    private AlbumLogRepository repository(List<AlbumLog> storage) {
         return (AlbumLogRepository) Proxy.newProxyInstance(
                 AlbumLogRepository.class.getClassLoader(),
                 new Class<?>[]{AlbumLogRepository.class},
                 (proxy, method, args) -> switch (method.getName()) {
-                    case "findAllByOrderByLogNumberAsc" -> storage.values().stream()
-                            .sorted(java.util.Comparator.comparing(AlbumLog::getLogNumber))
-                            .toList();
-                    case "findByLogNumber" -> Optional.ofNullable(storage.get((Integer) args[0]));
+                    case "findAllByOrderByLogNumberAsc" -> storage;
+                    case "findByLogNumber" -> storage.stream()
+                            .filter(albumLog -> albumLog.getLogNumber().equals(args[0]))
+                            .findFirst();
                     case "toString" -> "AlbumLogQueryRepository";
                     case "hashCode" -> System.identityHashCode(proxy);
                     case "equals" -> proxy == args[0];
@@ -69,7 +66,7 @@ class AlbumLogQueryServiceTest {
     }
 
     private AlbumLog albumLog(int logNumber, String album) {
-        return AlbumLog.create(
+        return AlbumLog.create(new AlbumLogData(
                 logNumber,
                 album,
                 "Test Artist",
@@ -77,9 +74,23 @@ class AlbumLogQueryServiceTest {
                 LocalDate.of(2026, 4, 15),
                 "https://www.instagram.com/p/TEST123/",
                 "Hard Bop",
+                null,
                 new String[]{"warm", "groovy"},
+                null,
+                new String[]{},
+                null,
+                null,
+                null,
+                null,
+                new String[]{},
                 "Test notes",
+                null,
+                null,
+                null,
+                null,
+                null,
+                List.of(),
                 null
-        );
+        ));
     }
 }
