@@ -1,0 +1,15 @@
+alter table album_logs
+    add column release_year varchar(16),
+    add column tier varchar(64),
+    add column vibe text[] not null default '{}',
+    add column energy varchar(32),
+    add column mood_intensity varchar(32),
+    add column accessibility varchar(32),
+    add column best_moment text,
+    add column listening_context text[] not null default '{}',
+    add column why_it_matters text,
+    add column editorial_note text,
+    add column recommended_if text,
+    add column avoid_if text,
+    add column album_context text,
+    add column personnel jsonb not null default '[]'::jsonb;
