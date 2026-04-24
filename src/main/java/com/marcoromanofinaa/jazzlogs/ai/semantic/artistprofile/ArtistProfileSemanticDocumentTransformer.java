@@ -17,7 +17,7 @@ public class ArtistProfileSemanticDocumentTransformer
      */
     @Override
     public ArtistProfileSemanticDocument transform(ArtistProfile source) {
-        return ArtistProfileSemanticDocument.create(
+        return new ArtistProfileSemanticDocument(
                 sourceId(source),
                 source.getName(),
                 embeddingText(source),

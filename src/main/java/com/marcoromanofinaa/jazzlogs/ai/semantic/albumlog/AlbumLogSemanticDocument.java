@@ -2,6 +2,7 @@ package com.marcoromanofinaa.jazzlogs.ai.semantic.albumlog;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocument;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
+import java.util.Map;
 import lombok.Getter;
 
 @Getter
@@ -12,7 +13,7 @@ public class AlbumLogSemanticDocument extends SemanticDocument {
     private final String album;
     private final String artist;
 
-    private AlbumLogSemanticDocument(
+    public AlbumLogSemanticDocument(
             String sourceId,
             String title,
             String embeddingText,
@@ -26,19 +27,15 @@ public class AlbumLogSemanticDocument extends SemanticDocument {
         this.artist = artist;
     }
 
-    public static AlbumLogSemanticDocument create(
-            String sourceId,
-            String title,
-            String embeddingText,
-            Integer logNumber,
-            String album,
-            String artist
-    ) {
-        return new AlbumLogSemanticDocument(sourceId, title, embeddingText, logNumber, album, artist);
-    }
-
     @Override
     public SemanticDocumentType type() {
         return SemanticDocumentType.ALBUM_LOG;
+    }
+
+    @Override
+    protected void appendMetadata(Map<String, Object> metadata) {
+        metadata.put("logNumber", logNumber);
+        metadata.put("album", album);
+        metadata.put("artist", artist);
     }
 }

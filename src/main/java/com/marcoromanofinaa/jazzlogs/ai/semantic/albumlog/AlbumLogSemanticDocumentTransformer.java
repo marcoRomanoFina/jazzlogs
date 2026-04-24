@@ -14,13 +14,12 @@ public class AlbumLogSemanticDocumentTransformer
         implements SemanticDocumentTransformer<AlbumLog, AlbumLogSemanticDocument> {
 
     /*
-     * Los album logs se transforman con templates determinísticos en vez de un LLM.
-     * Eso hace que el embedding text sea reproducible, barato de regenerar y fácil de revisar.
+     * Los album logs se transforman con templates determinísticos.
      */
     @Override
     public AlbumLogSemanticDocument transform(AlbumLog source) {
         var title = "%s by %s".formatted(source.getAlbum(), source.getArtist());
-        return AlbumLogSemanticDocument.create(
+        return new AlbumLogSemanticDocument(
                 sourceId(source),
                 title,
                 embeddingText(source),

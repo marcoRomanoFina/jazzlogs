@@ -1,6 +1,6 @@
 package com.marcoromanofinaa.jazzlogs.curation.tracknote;
 
-import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticIndexingRequestPublisher;
+import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.event.SemanticIndexingRequestPublisher;
 import com.marcoromanofinaa.jazzlogs.curation.admin.UpsertTrackNoteRequest;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteData;

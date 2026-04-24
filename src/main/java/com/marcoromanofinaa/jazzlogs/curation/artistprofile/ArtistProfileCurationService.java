@@ -1,6 +1,6 @@
 package com.marcoromanofinaa.jazzlogs.curation.artistprofile;
 
-import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticIndexingRequestPublisher;
+import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.event.SemanticIndexingRequestPublisher;
 import com.marcoromanofinaa.jazzlogs.curation.admin.UpsertArtistProfileRequest;
 import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfile;
 import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfileData;

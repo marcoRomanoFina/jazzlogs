@@ -1,4 +1,4 @@
-package com.marcoromanofinaa.jazzlogs.ai.web;
+package com.marcoromanofinaa.jazzlogs.ai.semantic.admin;
 
 import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskRequest;
 import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskResponse;
@@ -8,11 +8,6 @@ import com.marcoromanofinaa.jazzlogs.core.exception.InvalidAdminApiKeyException;
 import com.marcoromanofinaa.jazzlogs.core.exception.VectorStoreNotConfiguredException;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingResult;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingService;
-import com.marcoromanofinaa.jazzlogs.ai.semantic.preview.SemanticDocumentPreview;
-import com.marcoromanofinaa.jazzlogs.ai.semantic.preview.SemanticDocumentPreviewService;
-import com.marcoromanofinaa.jazzlogs.ai.semantic.search.SemanticSearchRequest;
-import com.marcoromanofinaa.jazzlogs.ai.semantic.search.SemanticSearchResponse;
-import com.marcoromanofinaa.jazzlogs.ai.semantic.search.SemanticSearchService;
 import com.marcoromanofinaa.jazzlogs.curation.admin.AdminApiProperties;
 import jakarta.validation.Valid;
 import java.util.Optional;
@@ -33,11 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AiAdminController {
 
     // Los endpoints de IA son solo para admin mientras el pipeline RAG se diseña y valida.
+    // TODO: sumar endpoints para listar failures de indexado y reintentar uno puntual desde admin.
     private static final String ADMIN_HEADER = "X-Admin-Key";
 
     private final AdminApiProperties adminProperties;
     private final SemanticDocumentPreviewService previewService;
-    private final SemanticSearchService semanticSearchService;
     private final AiAskService aiAskService;
     private final Optional<SemanticDocumentIndexingService> indexingService;
 
@@ -78,16 +73,6 @@ public class AiAdminController {
         return indexingService
                 .map(SemanticDocumentIndexingService::indexAll)
                 .orElseThrow(VectorStoreNotConfiguredException::new);
-    }
-
-    @PostMapping("/semantic-documents/search")
-    public SemanticSearchResponse searchSemanticDocuments(
-            @RequestHeader(ADMIN_HEADER) String adminKey,
-            @Valid @RequestBody SemanticSearchRequest request
-    ) {
-        authorize(adminKey);
-        log.info("Admin requested semantic search query='{}' topK={}", request.query(), request.resolvedTopK());
-        return semanticSearchService.search(request);
     }
 
     @PostMapping("/ask")

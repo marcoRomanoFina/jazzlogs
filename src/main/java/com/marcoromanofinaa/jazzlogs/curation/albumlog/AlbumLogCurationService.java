@@ -1,6 +1,6 @@
 package com.marcoromanofinaa.jazzlogs.curation.albumlog;
 
-import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticIndexingRequestPublisher;
+import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.event.SemanticIndexingRequestPublisher;
 import com.marcoromanofinaa.jazzlogs.curation.admin.UpsertAlbumLogRequest;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;

@@ -1,5 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.ai.semantic.core;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import lombok.Getter;
 
 @Getter
@@ -21,6 +23,22 @@ public abstract class SemanticDocument {
         this.title = title;
         this.embeddingText = embeddingText;
     }
+
+    public final String documentId() {
+        return "%s:%s".formatted(type().name(), sourceId);
+    }
+
+    public final Map<String, Object> metadata(String transformerVersion) {
+        var metadata = new LinkedHashMap<String, Object>();
+        metadata.put("type", type().name());
+        metadata.put("sourceId", sourceId);
+        metadata.put("title", title);
+        metadata.put("transformerVersion", transformerVersion);
+        appendMetadata(metadata);
+        return metadata;
+    }
+
+    protected abstract void appendMetadata(Map<String, Object> metadata);
 
     public abstract SemanticDocumentType type();
 }

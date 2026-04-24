@@ -18,7 +18,7 @@ public class TrackNoteSemanticDocumentTransformer
     @Override
     public TrackNoteSemanticDocument transform(TrackNote source) {
         var title = "%s from %s".formatted(source.getTrack(), source.getAlbum());
-        return TrackNoteSemanticDocument.create(
+        return new TrackNoteSemanticDocument(
                 sourceId(source),
                 title,
                 embeddingText(source),

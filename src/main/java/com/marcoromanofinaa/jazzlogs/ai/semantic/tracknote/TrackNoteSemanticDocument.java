@@ -2,6 +2,7 @@ package com.marcoromanofinaa.jazzlogs.ai.semantic.tracknote;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocument;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
+import java.util.Map;
 import lombok.Getter;
 
 @Getter
@@ -13,7 +14,7 @@ public class TrackNoteSemanticDocument extends SemanticDocument {
     private final String track;
     private final String artistId;
 
-    private TrackNoteSemanticDocument(
+    public TrackNoteSemanticDocument(
             String sourceId,
             String title,
             String embeddingText,
@@ -29,28 +30,16 @@ public class TrackNoteSemanticDocument extends SemanticDocument {
         this.artistId = artistId;
     }
 
-    public static TrackNoteSemanticDocument create(
-            String sourceId,
-            String title,
-            String embeddingText,
-            String spotifyTrackId,
-            String spotifyAlbumId,
-            String track,
-            String artistId
-    ) {
-        return new TrackNoteSemanticDocument(
-                sourceId,
-                title,
-                embeddingText,
-                spotifyTrackId,
-                spotifyAlbumId,
-                track,
-                artistId
-        );
-    }
-
     @Override
     public SemanticDocumentType type() {
         return SemanticDocumentType.TRACK_NOTE;
+    }
+
+    @Override
+    protected void appendMetadata(Map<String, Object> metadata) {
+        metadata.put("spotifyTrackId", spotifyTrackId);
+        metadata.put("spotifyAlbumId", spotifyAlbumId);
+        metadata.put("track", track);
+        metadata.put("artistId", artistId);
     }
 }
