@@ -8,14 +8,6 @@ The project is currently optimized around three backend flows:
 - Spotify playlist synchronization into a local normalized catalog
 - semantic document generation and indexing for future AI-powered recommendation experiences
 
-## Why this project is interesting
-
-JazzLogs is not just a CRUD app. It explores how to model:
-
-- editorial domain entities with distinct write flows
-- deterministic synchronization between human-curated content and external catalog data
-- semantic indexing as a derived, eventually consistent projection
-- admin-first product development before public auth and multi-user support
 
 ## Tech stack
 
