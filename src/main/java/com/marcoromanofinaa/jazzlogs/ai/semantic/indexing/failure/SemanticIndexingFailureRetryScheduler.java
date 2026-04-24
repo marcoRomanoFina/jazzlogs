@@ -3,6 +3,7 @@ package com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.failure;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticIndexingRequestProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
         havingValue = "true",
         matchIfMissing = true
 )
+@ConditionalOnBean(SemanticIndexingRequestProcessor.class)
 public class SemanticIndexingFailureRetryScheduler {
 
     private final SemanticIndexingRequestProcessor requestProcessor;

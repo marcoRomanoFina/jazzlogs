@@ -1,0 +1,31 @@
+[
+  {
+    "spotifyArtistId": "sample-artist-001",
+    "name": "The Sample Quartet",
+    "primaryInstrument": "piano",
+    "mainStyles": [
+      "hard_bop",
+      "soul_jazz",
+      "jazz_piano"
+    ],
+    "signatureSound": "Piano cálido, swing directo y una base rítmica simple que prioriza groove y claridad.",
+    "artistContext": "Artista ficticio usado para demostrar cómo JazzLogs modela una mirada curatorial sobre intérpretes sin depender de datos privados.",
+    "jazzlogsTake": "Para JazzLogs, este perfil sample representa una puerta amable al jazz: accesible, nocturno y suficientemente musical para probar recomendaciones reales.",
+    "recommendedEntryPoint": "Midnight Compass",
+    "bestFor": [
+      "entrar al hard bop desde un lugar accesible",
+      "jazz nocturno con groove",
+      "escuchar piano con calidez"
+    ],
+    "avoidIf": "Si buscás free jazz, abstracción intensa o una escucha deliberadamente difícil.",
+    "relatedArtists": [
+      "Oscar Peterson",
+      "Ahmad Jamal",
+      "Horace Silver"
+    ],
+    "importance": "Perfil de ejemplo para probar ingesta, semantic documents y metadata de artistas.",
+    "logAppearances": [
+      1
+    ]
+  }
+]

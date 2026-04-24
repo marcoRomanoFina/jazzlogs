@@ -9,11 +9,11 @@
     "releaseYear": "1965",
     "logNumber": 1,
     "moods": [
-      "energetic",
+      "energético",
       "groovy",
-      "warm"
+      "cálido"
     ],
-    "tier": "essential",
+    "tier": "esencial",
     "vibe": [
       "cálido",
       "luminoso",
@@ -21,15 +21,15 @@
       "eufórico",
       "confiado"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
     "bestMoment": "viernes a la noche para arrancar el fin de semana con energía",
     "listeningContext": [
-      "friday-night",
-      "weekend",
-      "after-work",
-      "bar-night"
+      "viernes a la noche",
+      "fin de semana",
+      "después del trabajo",
+      "noche de bar"
     ],
     "notes": "Standout track: Rattlesnake. Opening post of Jazzlogs.",
     "whyItMatters": "Es la piedra fundacional del archivo y presenta a un Monty Alexander de apenas 21 años. Funciona como una clase magistral de química grupal y demuestra cómo el alma caribeña puede revitalizar el formato tradicional del trío de jazz.",
@@ -83,24 +83,24 @@
       "groovy",
       "confident"
     ],
-    "tier": "essential",
+    "tier": "esencial",
     "vibe": [
-      "smoky",
+      "ahumado",
       "urbano",
       "confiado",
       "elegante",
       "nocturno"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
     "bestMoment": "noche de vinilo y whisky",
     "listeningContext": [
-      "late-night",
-      "whiskey",
-      "vinyl-session",
-      "city-lights",
-      "after-hours"
+      "madrugada",
+      "whisky",
+      "sesión de vinilo",
+      "luces de ciudad",
+      "fuera de hora"
     ],
     "notes": "Standout track: Ceora. Soul-jazz energy with a softer melodic side.",
     "whyItMatters": "Documenta el pico creativo de Lee Morgan en los 60s y define el sonido definitivo del Soul-Jazz de Blue Note. Es un disco crucial porque equilibra a la perfección la actitud cruda del hard bop con composiciones de extrema sofisticación melódica.",
@@ -146,11 +146,11 @@
     "releaseYear": "1961",
     "logNumber": 3,
     "moods": [
-      "soulful",
+      "con alma",
       "swinging",
       "youthful"
     ],
-    "tier": "essential",
+    "tier": "esencial",
     "vibe": [
       "cálido",
       "brillante",
@@ -158,16 +158,16 @@
       "vintage",
       "elegante"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
     "bestMoment": "mañana tranquila con café",
     "listeningContext": [
-      "slow-morning",
-      "coffee",
-      "sunday",
-      "vinyl-session",
-      "cooking"
+      "mañana lenta",
+      "café",
+      "domingo",
+      "sesión de vinilo",
+      "cocinar"
     ],
     "notes": "Standout track: Right Now. Start of VocalWednesdays.",
     "whyItMatters": "Es un documento histórico invaluable que captura a una Aretha Franklin de apenas 18 años dando sus primeros pasos. Demuestra cómo, incluso cantando estándares de jazz y pop antes de su explosión en el soul, ya poseía una voz, un swing y una confianza magnética que cambiarían la industria.",
@@ -196,11 +196,11 @@
     "style": "Jazz",
     "logNumber": 4,
     "moods": [
-      "relaxed",
-      "soulful",
-      "late-night"
+      "relajado",
+      "con alma",
+      "madrugada"
     ],
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "vibe": [
       "nocturno",
       "íntimo",
@@ -208,16 +208,16 @@
       "blusero",
       "relajado"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "easy",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
     "bestMoment": "madrugada en soledad para desconectar",
     "listeningContext": [
-      "late-night",
-      "after-work",
-      "alone-at-home",
-      "wine",
-      "rain"
+      "madrugada",
+      "después del trabajo",
+      "solo en casa",
+      "vino",
+      "lluvia"
     ],
     "notes": "Standout track: Blues for Charlie. Strong Grant Green chemistry.",
     "whyItMatters": "Es el testamento musical de una figura clave en las sombras de Blue Note. Demuestra que la madurez emocional y el manejo de los silencios valen tanto como la destreza técnica, destacando además por una formación inusual (sin piano en casi todo el disco) que le da todo el espacio al diálogo crudo entre el saxo y la guitarra.",
@@ -271,11 +271,11 @@
     "style": "Hard Bop / Jazz",
     "logNumber": 5,
     "moods": [
-      "driving",
+      "manejar",
       "fiery",
-      "classic"
+      "clásico"
     ],
-    "tier": "hall_of_fame",
+    "tier": "salon_de_la_fama",
     "vibe": [
       "blusero",
       "confiado",
@@ -283,16 +283,16 @@
       "cálido",
       "eufórico"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
     "bestMoment": "viernes a la tarde para arrancar el fin de semana con toda la energía",
     "listeningContext": [
-      "friday-night",
-      "weekend",
-      "vinyl-session",
-      "after-work",
-      "bar-night"
+      "viernes a la noche",
+      "fin de semana",
+      "sesión de vinilo",
+      "después del trabajo",
+      "noche de bar"
     ],
     "notes": "Standout track: Along Came Betty. EssentialsFridays entry.",
     "whyItMatters": "Es el manifiesto definitivo del Hard Bop. Art Blakey no solo grabó un disco, sino que estableció una institución, inyectándole al jazz el fuego del blues y las raíces gospel para contrarrestar la frialdad del Cool Jazz.",
@@ -334,11 +334,11 @@
     "style": "J-Jazz / Post-Bop",
     "logNumber": 6,
     "moods": [
-      "melancholic",
-      "late-night",
+      "melancólico",
+      "madrugada",
       "precise"
     ],
-    "tier": "essential",
+    "tier": "esencial",
     "vibe": [
       "nocturno",
       "melancólico",
@@ -346,16 +346,16 @@
       "íntimo",
       "urbano"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
     "bestMoment": "domingo a la noche con las luces bajas para cerrar la semana",
     "listeningContext": [
-      "sunday-evening",
-      "late-night",
-      "city-lights",
-      "alone-at-home",
-      "whiskey"
+      "domingo al atardecer",
+      "madrugada",
+      "luces de ciudad",
+      "solo en casa",
+      "whisky"
     ],
     "notes": "Standout track: Willow Weep For Me. Sunday selection and J-Jazz gateway.",
     "whyItMatters": "Se convirtió en la puerta de entrada definitiva y el clásico de culto por excelencia del jazz japonés en Occidente. Demuestra cómo una sensibilidad distinta puede reinterpretar el bop americano, probando además que un inicio tardío y autodidacta no es barrera para tocar con verdadera alma y precisión.",
@@ -389,8 +389,8 @@
     "style": "Hard Bop / West Coast Jazz",
     "logNumber": 7,
     "moods": [
-      "warm",
-      "relaxed",
+      "cálido",
+      "relajado",
       "articulate"
     ],
     "tier": "",
@@ -426,7 +426,7 @@
     "logNumber": 8,
     "moods": [
       "cool",
-      "stripped-back",
+      "despojado",
       "groovy"
     ],
     "tier": "",
@@ -461,9 +461,9 @@
     "style": "Vocal Jazz / Blues",
     "logNumber": 9,
     "moods": [
-      "dark",
-      "soulful",
-      "late-night"
+      "oscuro",
+      "con alma",
+      "madrugada"
     ],
     "tier": "",
     "vibe": [
@@ -497,8 +497,8 @@
     "style": "Hard Bop",
     "logNumber": 10,
     "moods": [
-      "late-night",
-      "soulful",
+      "madrugada",
+      "con alma",
       "lyrical"
     ],
     "tier": "",
@@ -569,9 +569,9 @@
     "style": "Electric Blues / Chicago Blues",
     "logNumber": 12,
     "moods": [
-      "slow",
-      "heavy",
-      "soulful"
+      "lento",
+      "pesado",
+      "con alma"
     ],
     "tier": "",
     "vibe": [
@@ -605,9 +605,9 @@
     "style": "Jazz / Post-Bop",
     "logNumber": 13,
     "moods": [
-      "warm",
+      "cálido",
       "lyrical",
-      "relaxed"
+      "relajado"
     ],
     "tier": "",
     "vibe": [
@@ -641,9 +641,9 @@
     "style": "Jazz",
     "logNumber": 14,
     "moods": [
-      "warm",
-      "moody",
-      "cinematic"
+      "cálido",
+      "climático",
+      "cinemático"
     ],
     "tier": "",
     "vibe": [
@@ -677,9 +677,9 @@
     "style": "Vocal Jazz / Swing",
     "logNumber": 15,
     "moods": [
-      "intimate",
-      "warm",
-      "playful"
+      "íntimo",
+      "cálido",
+      "juguetón"
     ],
     "tier": "",
     "vibe": [
@@ -713,9 +713,9 @@
     "style": "Hard Bop / Piano Jazz",
     "logNumber": 16,
     "moods": [
-      "smoky",
-      "relaxed",
-      "bluesy"
+      "ahumado",
+      "relajado",
+      "blusero"
     ],
     "tier": "",
     "vibe": [
@@ -751,7 +751,7 @@
     "moods": [
       "cool",
       "sophisticated",
-      "timeless"
+      "atemporal"
     ],
     "tier": "",
     "vibe": [
@@ -786,8 +786,8 @@
     "logNumber": 18,
     "moods": [
       "comforting",
-      "soulful",
-      "late-night"
+      "con alma",
+      "madrugada"
     ],
     "tier": "",
     "vibe": [
@@ -821,9 +821,9 @@
     "style": "Hard Bop / Jazz",
     "logNumber": 19,
     "moods": [
-      "high-energy",
-      "soulful",
-      "romantic"
+      "energía alta",
+      "con alma",
+      "romántico"
     ],
     "tier": "",
     "vibe": [
@@ -858,8 +858,8 @@
     "logNumber": 20,
     "moods": [
       "smooth",
-      "warm",
-      "late-night"
+      "cálido",
+      "madrugada"
     ],
     "tier": "",
     "vibe": [
@@ -893,9 +893,9 @@
     "style": "Ballad / Vocal / Hard Bop",
     "logNumber": 21,
     "moods": [
-      "soulful",
-      "tender",
-      "intimate"
+      "con alma",
+      "tierno",
+      "íntimo"
     ],
     "tier": "",
     "vibe": [
@@ -929,8 +929,8 @@
     "style": "Soul Jazz",
     "logNumber": 22,
     "moods": [
-      "smoky",
-      "warm",
+      "ahumado",
+      "cálido",
       "relaxing"
     ],
     "tier": "",
@@ -965,9 +965,9 @@
     "style": "Hard Bop / Cool Jazz",
     "logNumber": 23,
     "moods": [
-      "introspective",
-      "melancholic",
-      "elegant"
+      "introspectivo",
+      "melancólico",
+      "elegante"
     ],
     "tier": "",
     "vibe": [
@@ -1001,8 +1001,8 @@
     "style": "Soul Jazz / Hard Bop",
     "logNumber": 24,
     "moods": [
-      "gritty",
-      "late-night",
+      "rugoso",
+      "madrugada",
       "groovy"
     ],
     "tier": "",
@@ -1073,8 +1073,8 @@
     "style": "Hard Bop",
     "logNumber": 26,
     "moods": [
-      "warm",
-      "energetic",
+      "cálido",
+      "energético",
       "groovy"
     ],
     "tier": "",
@@ -1110,8 +1110,8 @@
     "logNumber": 27,
     "moods": [
       "raw",
-      "intimate",
-      "melancholic"
+      "íntimo",
+      "melancólico"
     ],
     "tier": "",
     "vibe": [
@@ -1145,9 +1145,9 @@
     "style": "Hard Bop",
     "logNumber": 28,
     "moods": [
-      "relaxed",
+      "relajado",
       "powerful",
-      "timeless"
+      "atemporal"
     ],
     "tier": "",
     "vibe": [
@@ -1182,7 +1182,7 @@
     "logNumber": 29,
     "moods": [
       "delicate",
-      "intimate",
+      "íntimo",
       "haunting"
     ],
     "tier": "",
@@ -1253,9 +1253,9 @@
     "style": "",
     "logNumber": 31,
     "moods": [
-      "soulful",
+      "con alma",
       "funky",
-      "energetic"
+      "energético"
     ],
     "tier": "",
     "vibe": [
@@ -1289,9 +1289,9 @@
     "style": "",
     "logNumber": 32,
     "moods": [
-      "warm",
+      "cálido",
       "sophisticated",
-      "soulful"
+      "con alma"
     ],
     "tier": "",
     "vibe": [
@@ -1325,9 +1325,9 @@
     "style": "Vocal / Cool Jazz / Ballads",
     "logNumber": 33,
     "moods": [
-      "intimate",
-      "smoky",
-      "melancholic"
+      "íntimo",
+      "ahumado",
+      "melancólico"
     ],
     "tier": "",
     "vibe": [
@@ -1361,7 +1361,7 @@
     "style": "Hard Bop",
     "logNumber": 34,
     "moods": [
-      "energetic",
+      "energético",
       "sophisticated",
       "fiery"
     ],
@@ -1397,7 +1397,7 @@
     "style": "Cool Jazz",
     "logNumber": 35,
     "moods": [
-      "melancholic",
+      "melancólico",
       "serene",
       "subtle"
     ],
@@ -1433,9 +1433,9 @@
     "style": "Jazz Blues / Swing",
     "logNumber": 36,
     "moods": [
-      "slow",
+      "lento",
       "sophisticated",
-      "elegant"
+      "elegante"
     ],
     "tier": "",
     "vibe": [
@@ -1469,9 +1469,9 @@
     "style": "Hard Bop / Soul Jazz",
     "logNumber": 37,
     "moods": [
-      "elegant",
-      "grounded",
-      "melancholic"
+      "elegante",
+      "terrenal",
+      "melancólico"
     ],
     "tier": "",
     "vibe": [
@@ -1505,9 +1505,9 @@
     "style": "Hard Bop / Cool Jazz",
     "logNumber": 38,
     "moods": [
-      "warm",
-      "laid-back",
-      "late-night"
+      "cálido",
+      "relajado",
+      "madrugada"
     ],
     "tier": "",
     "vibe": [
@@ -1542,8 +1542,8 @@
     "logNumber": 39,
     "moods": [
       "resilient",
-      "soulful",
-      "bluesy"
+      "con alma",
+      "blusero"
     ],
     "tier": "",
     "vibe": [

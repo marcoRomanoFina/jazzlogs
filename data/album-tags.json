@@ -7,23 +7,23 @@
       "description": "Peso curatorial del álbum dentro del universo Jazzlogs.",
       "recommendedValues": [
         {
-          "id": "hall_of_fame",
-          "label": "Hall of Fame",
+          "id": "salon_de_la_fama",
+          "label": "Salón de la Fama",
           "description": "Álbumes intocables. Obras maestras absolutas y puertas de entrada inevitables."
         },
         {
-          "id": "essential",
-          "label": "Essential",
+          "id": "esencial",
+          "label": "Esencial",
           "description": "Discos fundamentales para entender un artista, estilo, sello o época."
         },
         {
-          "id": "deep_cut",
-          "label": "Deep Cut",
+          "id": "joya_oculta",
+          "label": "Joya Oculta",
           "description": "Joyas menos obvias, muy valiosas para recomendar algo fuera del canon típico."
         },
         {
-          "id": "daily_vibe",
-          "label": "Daily Vibe",
+          "id": "rotacion_diaria",
+          "label": "Rotación Diaria",
           "description": "Discos muy escuchables, buenos para rotación diaria o acompañar momentos."
         },
         {
@@ -36,40 +36,40 @@
     "energy": {
       "description": "Energía general del álbum como experiencia completa.",
       "recommendedValues": [
-        "low",
-        "medium",
-        "high"
+        "baja",
+        "media",
+        "alta"
       ],
       "guide": {
-        "low": "Disco calmo, íntimo, lento o de baja exigencia física.",
-        "medium": "Tiene pulso y presencia, pero no domina el ambiente.",
-        "high": "Disco movedizo, intenso, explosivo o muy corporal."
+        "baja": "Disco calmo, íntimo, lento o de baja exigencia física.",
+        "media": "Tiene pulso y presencia, pero no domina el ambiente.",
+        "alta": "Disco movedizo, intenso, explosivo o muy corporal."
       }
     },
     "moodIntensity": {
       "description": "Carga emocional general del álbum.",
       "recommendedValues": [
-        "low",
-        "medium",
-        "high"
+        "baja",
+        "media",
+        "alta"
       ],
       "guide": {
-        "low": "Agradable, liviano, no demasiado emocional.",
-        "medium": "Tiene clima emocional claro, pero sigue siendo balanceado.",
-        "high": "Disco emocionalmente pesado, profundo, conmovedor o catártico."
+        "baja": "Agradable, liviano, no demasiado emocional.",
+        "media": "Tiene clima emocional claro, pero sigue siendo balanceado.",
+        "alta": "Disco emocionalmente pesado, profundo, conmovedor o catártico."
       }
     },
     "accessibility": {
       "description": "Qué tan fácil es recomendar el álbum a alguien que no conoce mucho.",
       "recommendedValues": [
-        "easy",
-        "medium",
-        "demanding"
+        "fácil",
+        "media",
+        "exigente"
       ],
       "guide": {
-        "easy": "Entra rápido, tiene melodías claras o groove inmediato.",
-        "medium": "Requiere algo de atención o afinidad con el estilo.",
-        "demanding": "Pide paciencia, contexto o escucha más activa."
+        "fácil": "Entra rápido, tiene melodías claras o groove inmediato.",
+        "media": "Requiere algo de atención o afinidad con el estilo.",
+        "exigente": "Pide paciencia, contexto o escucha más activa."
       }
     },
     "vibe": {
@@ -100,7 +100,7 @@
         "tenso",
         "flotante",
         "blusero",
-        "smoky",
+        "ahumado",
         "nostálgico",
         "romántico",
         "contemplativo",
@@ -138,48 +138,48 @@
     "listeningContext": {
       "description": "Situaciones o actividades donde el álbum funciona especialmente bien.",
       "recommendedValues": [
-        "late-night",
-        "rain",
-        "sunrise",
-        "sunset",
-        "solo-walk",
-        "study",
-        "background",
-        "wine",
-        "whiskey",
-        "coffee",
-        "after-hours",
-        "weekend",
-        "sunday",
-        "friday-night",
-        "focus",
-        "reflection",
-        "city-lights",
-        "winter",
-        "summer-night",
-        "reading",
-        "working",
-        "writing",
-        "cooking",
-        "dinner",
-        "date-night",
-        "heartbreak",
-        "healing",
-        "self-reflection",
-        "deep-focus",
-        "vinyl-session",
-        "headphones-only",
-        "golden-hour",
-        "storm",
-        "cold-night",
-        "weekend-morning",
-        "sunday-evening",
-        "after-work",
-        "commute",
-        "slow-morning",
-        "insomnia",
-        "bar-night",
-        "alone-at-home"
+        "madrugada",
+        "lluvia",
+        "amanecer",
+        "atardecer",
+        "caminata solo",
+        "estudiar",
+        "de fondo",
+        "vino",
+        "whisky",
+        "café",
+        "fuera de hora",
+        "fin de semana",
+        "domingo",
+        "viernes a la noche",
+        "concentración",
+        "reflexión",
+        "luces de ciudad",
+        "invierno",
+        "noche de verano",
+        "leer",
+        "trabajar",
+        "escribir",
+        "cocinar",
+        "cena",
+        "noche de cita",
+        "corazón roto",
+        "sanador",
+        "introspección",
+        "concentración profunda",
+        "sesión de vinilo",
+        "solo con auriculares",
+        "hora dorada",
+        "tormenta",
+        "noche fria",
+        "mañana de fin de semana",
+        "domingo al atardecer",
+        "después del trabajo",
+        "viaje diario",
+        "mañana lenta",
+        "insomnio",
+        "noche de bar",
+        "solo en casa"
       ],
       "rule": "Usar contextos que apliquen al álbum completo. Evitar contextos demasiado específicos de un único track."
     },

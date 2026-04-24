@@ -6,7 +6,7 @@
     "track": "Spunky",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -14,18 +14,18 @@
       "festivo",
       "juguetón"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "opener",
+    "trackRole": "apertura",
     "compositionType": "original",
     "bestMoment": "ideal para arrancar el día con todas las energías, o para momentos de felicidad y movidos para saltar, bailar y liberar energía",
     "listeningContext": [
-      "weekend",
-      "background",
-      "focus"
+      "fin de semana",
+      "de fondo",
+      "concentración"
     ],
     "whyItHits": "Tiene un swing contagioso y un groove que no te suelta desde el primer acorde, junto a la exquisita sensación de escuchar el piano de Monty",
     "editorialNote": "este track fue unos de los primeros en enamorarme de la música de Monty Alexander, es atrevido, movedizo y me enganchó desde el primer segundo, un clásico oculto",
@@ -34,9 +34,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "warm",
+      "cálido",
       "groovy",
-      "playful"
+      "juguetón"
     ]
   },
   {
@@ -46,7 +46,7 @@
     "track": "Naturally",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -54,18 +54,18 @@
       "blusero",
       "cálido"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "blues",
-    "trackRole": "groove_piece",
+    "trackRole": "pieza de groove",
     "compositionType": "original",
     "bestMoment": "ideal para bajar un cambio en la tarde, armar una picada o preparar la cena sin apuro o Caminando sin apuro, auriculares puestos, después de hacer algo productivo. Todo fluye, no estás pensando demasiado, simplemente estás.",
     "listeningContext": [
-      "sunday",
-      "background",
-      "after-hours"
+      "domingo",
+      "de fondo",
+      "fuera de hora"
     ],
     "whyItHits": "Tiene un caminar en el contrabajo súper hipnótico y un fraseo blusero en el piano que te relaja los hombros al instante, acá siento algo más fluido y orgánico, como si todo saliera sin esfuerzo. Me genera la imagen de alguien tocando con total naturalidad, sin querer impresionar, pero igual brillando. Tiene un mood cálido, relajado y elegante.",
     "editorialNote": "Es el contrapeso perfecto a la energía explosiva de Spunky. Acá Monty demuestra que también sabe tocar 'en el bolsillo', armando un groove elegante y fluido, sin perder su esencia principal y generando una combinación fascinante.",
@@ -74,9 +74,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "bluesy",
+      "blusero",
       "groovy",
-      "warm"
+      "cálido"
     ]
   },
   {
@@ -86,7 +86,7 @@
     "track": "Jamaican Shake",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -94,18 +94,18 @@
       "luminoso",
       "terrenal"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
-    "rhythmicFeel": "caribbean",
-    "trackRole": "standout",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "caribeño",
+    "trackRole": "destacado",
     "compositionType": "original",
     "bestMoment": "Previa tranquila con amigos, cuando todavía no explotó nada pero ya hay risas. Algo para tomar, calorcito, y la charla empieza a soltarse.",
     "listeningContext": [
-      "weekend",
-      "friday-night",
-      "background"
+      "fin de semana",
+      "viernes a la noche",
+      "de fondo"
     ],
     "whyItHits": "Trae todo el sabor caribeño de Monty a la mesa y lo mezcla con un hard bop que no te deja quedarte quieto, me lleva directo al costado más rítmico y corporal del disco. Me transmite sol, calle, groove, una cosa casi festiva pero sin perder fineza. Es de esos temas que no te empujan: te contagian.",
     "editorialNote": "Una declaración de principios. Monty agarra sus raíces jamaiquinas y las hace chocar de frente con el formato de trío de jazz clásico. El resultado es pura tracción a sangre.",
@@ -114,9 +114,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "playful",
+      "juguetón",
       "groovy",
-      "bold"
+      "audaz"
     ]
   },
   {
@@ -126,7 +126,7 @@
     "track": "Heartstrings",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -134,18 +134,18 @@
       "melancólico",
       "suave"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "medium",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
     "trackRole": "ballad",
     "compositionType": "original",
     "bestMoment": "madrugada en soledad con luces bajas y algo para tomar",
     "listeningContext": [
-      "late-night",
-      "whiskey",
-      "reflection"
+      "madrugada",
+      "whisky",
+      "reflexión"
     ],
     "whyItHits": "Este me suena más emocional, más de sensibilidad expuesta. Me genera esa melancolía linda que no pesa, sino que acaricia. Como un recuerdo tierno que vuelve sin romperte, pero sí dejándote un poco quieto. Es el momento de respiro del disco, donde el piano se vuelve súper lírico y te obliga a prestarle atención a los silencios.",
     "editorialNote": "Después de tanto movimiento, este track funciona como un ancla emocional. Monty demuestra que no solo es técnica y velocidad; también tiene una sensibilidad tremenda para armar baladas.",
@@ -154,9 +154,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "late-night",
-      "melancholic",
-      "intimate"
+      "madrugada",
+      "melancólico",
+      "íntimo"
     ]
   },
   {
@@ -166,7 +166,7 @@
     "track": "Taggies Tune",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -174,18 +174,18 @@
       "luminoso",
       "relajado"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "groove_piece",
+    "trackRole": "pieza de groove",
     "compositionType": "original",
     "bestMoment": "Tarde activa, moviéndote de un lado a otro. Puede ser estudiando, ordenando, o incluso laburando concentrado pero con buena energía.",
     "listeningContext": [
-      "study",
-      "focus",
-      "background"
+      "estudiar",
+      "concentración",
+      "de fondo"
     ],
     "whyItHits": "Lo siento juguetón, ágil, casi conversado entre los músicos. Me genera una energía simpática, despierta, como de tarde en movimiento, con ideas que van y vienen. Tiene algo muy vivo, muy de interacción y sonrisa. Un swing de medio tiempo impecable que camina solo sin pedirte demasiada atención.",
     "editorialNote": "Es el clásico 'caballito de batalla' de un buen disco de jazz. Cumple su función a la perfección: mantiene el clima arriba, suena sofisticado y te acompaña en cualquier tarea.",
@@ -194,8 +194,8 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "elegant",
-      "warm",
+      "elegante",
+      "cálido",
       "cool"
     ]
   },
@@ -206,7 +206,7 @@
     "track": "Rattlesnake",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -214,18 +214,18 @@
       "juguetón",
       "tenso"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "standout",
+    "trackRole": "destacado",
     "compositionType": "original",
     "bestMoment": "cuando necesitás un empuje fuerte de energía para terminar una actividad, Noche en movimiento — manejando, volviendo a casa, o caminando rápido. Tiene ese nervio justo para acompañar cuando estás medio acelerado",
     "listeningContext": [
-      "focus",
-      "weekend",
-      "friday-night"
+      "concentración",
+      "fin de semana",
+      "viernes a la noche"
     ],
     "whyItHits": "Tiene una agresividad súper rítmica, las líneas de bajo y piano dialogan como si estuvieran peleando amistosamente. Este nombre me dispara tensión, filo y nervio. Me imagino algo más seco, más incisivo, con una energía que serpentea y no se queda quieta. Me da sensación de peligro controlado, de groove con dientes.",
     "editorialNote": "El nombre le queda pintado. Tiene un veneno y una agilidad increíbles. Acá el trío se saca chispas y demuestra el nivel de virtuosismo puro que manejan cuando aprietan el acelerador.",
@@ -234,8 +234,8 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "bold",
-      "restless",
+      "audaz",
+      "inquieto",
       "groovy"
     ]
   },
@@ -254,18 +254,18 @@
       "nocturno",
       "elegante"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
     "trackRole": "standard",
     "compositionType": "standard",
     "bestMoment": "Más que bar oscuro, esto es noche con movimiento. Puede ser caminando con ritmo, o incluso en una previa que ya levantó. Tiene ese groove que te hace asentir con la cabeza, no quedarte quieto, noche de whisky y humo, luces apagadas",
     "listeningContext": [
-      "late-night",
-      "city-lights",
-      "weekend"
+      "madrugada",
+      "luces de ciudad",
+      "fin de semana"
     ],
     "whyItHits": "Agarran uno de los mejores standards de Benny Golson y le dan una elegancia que parece de película.",
     "editorialNote": "es una canción donde ya en los primeros segundos arranca con tensión, y va generando un clímax más al final donde cada instrumento va avanzando y generan una combinación intensa pero a la vez coordinada y armoniosa donde el piano de Monty es donde más brilla",
@@ -274,9 +274,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "elegant",
-      "late-night",
-      "timeless"
+      "elegante",
+      "madrugada",
+      "atemporal"
     ]
   },
   {
@@ -286,7 +286,7 @@
     "track": "I'm An Old Cowhand",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -294,18 +294,18 @@
       "relajado",
       "cálido"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
-    "trackRole": "breather",
+    "trackRole": "respiro",
     "compositionType": "standard",
     "bestMoment": "domingo al atardecer relajando en casa, o cualquier día de la semana para relajar y distenderse o estudiar tranqui, ideal para situaciones relajadas",
     "listeningContext": [
-      "sunday",
-      "solo-walk",
-      "background"
+      "domingo",
+      "caminata solo",
+      "de fondo"
     ],
     "whyItHits": "Este me despierta una cosa más descontracturada y lúdica. Casi como si el disco se permitiera guiñar un ojo y jugar con una tradición más vieja desde un lugar fresco. Me transmite humor, soltura y swing sin solemnidad, Le saca el peso solemne al jazz con una melodía recontra conocida y divertida, jugándola desde el swing.",
     "editorialNote": "Siguiendo los pasos de Sonny Rollins que inmortalizó este tema bizarro en el jazz, Monty se suma al chiste pero le inyecta su propio groove. Es un recreo musical divino.",
@@ -314,8 +314,8 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "playful",
-      "warm",
+      "juguetón",
+      "cálido",
       "groovy"
     ]
   },
@@ -326,7 +326,7 @@
     "track": "Little Children Of Peru",
     "album": "Spunky",
     "artistId": "30V1rKijENF5MFcGidInfh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -334,18 +334,18 @@
       "suave",
       "íntimo"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
-    "rhythmicFeel": "latin",
-    "trackRole": "mood_piece",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "latino",
+    "trackRole": "pieza de clima",
     "compositionType": "original",
     "bestMoment": "Viaje — literal o mental. Mirando por la ventana (auto, bondi, tren), dejando que la cabeza se vaya lejos.",
     "listeningContext": [
-      "background",
-      "resting",
-      "summer-night"
+      "de fondo",
+      "descansar",
+      "noche de verano"
     ],
     "whyItHits": "Me genera un clima más evocativo, como de viaje o de postal imaginada. Tiene algo delicado y hasta un poco cinematográfico en el título, como si abriera una ventana a otro paisaje dentro del disco. Lo siento tierno, curioso y contemplativo, Es una explosión de ritmo que te obliga a prestarle atención a la conexión casi telepática entre el bajo y el piano.",
     "editorialNote": "bueno este tema de Monty es genial para subir el ánimo, de principio a fin me genera una felicidad y a la vez lleva el ritmo de una forma sutil pero no tan ligera que con los acordes felices te hace vivir un momento especial y despejar la mente",
@@ -354,9 +354,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "warm",
-      "playful",
-      "serenity"
+      "cálido",
+      "juguetón",
+      "serenidad"
     ]
   },
   {
@@ -374,18 +374,18 @@
       "luminoso",
       "juguetón"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "free",
-    "trackRole": "closer",
+    "trackRole": "cierre",
     "compositionType": "original",
     "bestMoment": "Viaje — literal o mental. Mirando por la ventana (auto, bondi, tren), dejando que la cabeza se vaya lejos.",
     "listeningContext": [
-      "late-night",
-      "weekend",
-      "reflection"
+      "madrugada",
+      "fin de semana",
+      "reflexión"
     ],
     "whyItHits": "El cierre me suena a algo más libre, más espiritual pero todavía con pulso. Me genera la sensación de final con personalidad: no apaga el disco, lo deja flotando. Tiene ese aire de despedida con sabor raro, simpático y memorable.",
     "editorialNote": "bueno el tema final del álbum de Monty, lo cierra de una manera exótica jugando con todos los estilos que mantuvo durante todo el disco, generando una sensación de cierre pero a la vez de querer más, como siempre bien intenso y con el piano como estrella",
@@ -394,9 +394,9 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "spiritual",
-      "bold",
-      "playful"
+      "espiritual",
+      "audaz",
+      "juguetón"
     ]
   },
   {
@@ -406,7 +406,7 @@
     "track": "Cornbread",
     "album": "Cornbread",
     "artistId": "38C3okxv3fyyOIQUVPCdGX",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -416,18 +416,18 @@
       "ardiente",
       "expansivo"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "shuffle",
-    "trackRole": "opener",
+    "trackRole": "apertura",
     "compositionType": "original",
     "bestMoment": "mañana tranquila con café",
     "listeningContext": [
-      "night-walk",
-      "city-lights",
-      "friday-afternoon"
+      "caminata nocturna",
+      "luces de ciudad",
+      "viernes a la tarde"
     ],
     "whyItHits": "Tiene un groove inmediato y sólido que engancha sin esfuerzo, es excelente para entrar al groove un poco más fuerte pero siendo bastante melódico",
     "editorialNote": "este tema es una de las razones porque me encanta Lee, va con fuego explosivo pero manteniendo una melodía única y que con el piano y trompeta hacen una combinación inigualable que te atrapa de principio a fin",
@@ -438,7 +438,7 @@
     "standoutTags": [
       "groovy",
       "cool",
-      "timeless"
+      "atemporal"
     ]
   },
   {
@@ -448,7 +448,7 @@
     "track": "Our Man Higgins",
     "album": "Cornbread",
     "artistId": "38C3okxv3fyyOIQUVPCdGX",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -457,18 +457,18 @@
       "volátil",
       "inquieto"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "instrumental_showcase",
+    "trackRole": "lucimiento instrumental",
     "compositionType": "original",
     "bestMoment": "haciendo actividades que necesitan energía y velocidad",
     "listeningContext": [
-      "party",
-      "bar-night",
-      "focus"
+      "fiesta",
+      "noche de bar",
+      "concentración"
     ],
     "whyItHits": "Una explosión de jazz, muy movido y lleno de energía ideal porque la interacción entre músicos se siente liviana y orgánica.",
     "editorialNote": "bueno es uno de los temas más explosivos que escuché, pero es quirúrgico como Lee lo lleva adelante con la melodía de la trompeta con la batería marcando ritmo intenso, sabor a fuego",
@@ -477,9 +477,9 @@
     "instrumentFocus": "trumpet",
     "vocalStyle": "",
     "standoutTags": [
-      "uplifting",
-      "euphoric",
-      "restless"
+      "animador",
+      "eufórico",
+      "inquieto"
     ]
   },
   {
@@ -489,7 +489,7 @@
     "track": "Ceora",
     "album": "Cornbread",
     "artistId": "38C3okxv3fyyOIQUVPCdGX",
-    "tier": "hall_of_fame",
+    "tier": "salon_de_la_fama",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -498,18 +498,18 @@
       "melancólico",
       "suave"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "easy",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
     "trackRole": "ballad",
     "compositionType": "original",
     "bestMoment": "noche tranquila en casa abriendo un buen vino de fondo",
     "listeningContext": [
-      "late-night",
-      "reflection",
-      "wine"
+      "madrugada",
+      "reflexión",
+      "vino"
     ],
     "whyItHits": "La melodía es simple pero profundamente emotiva.",
     "editorialNote": "Acá conocemos un lado más soft de Lee Morgan, se nota la suavidad de esa trompeta y termina siendo una de las baladas más hermosas del jazz. No necesita dramatismo: la emoción está en cada nota sostenida.",
@@ -518,9 +518,9 @@
     "instrumentFocus": "trumpet",
     "vocalStyle": "",
     "standoutTags": [
-      "elegant",
-      "intimate",
-      "timeless"
+      "elegante",
+      "íntimo",
+      "atemporal"
     ]
   },
   {
@@ -530,27 +530,27 @@
     "track": "Ill Wind",
     "album": "Cornbread",
     "artistId": "38C3okxv3fyyOIQUVPCdGX",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
       "nocturno",
       "sombrío",
-      "smoky"
+      "ahumado"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "medium",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
-    "trackRole": "mood_piece",
+    "trackRole": "pieza de clima",
     "compositionType": "standard",
     "bestMoment": "noche de whisky y humo, luces apagadas mirando a la calle, claramente es para escuchar a la noche, observando la vida y pensando",
     "listeningContext": [
-      "after-hours",
-      "city-lights",
-      "whiskey",
-      "resting"
+      "fuera de hora",
+      "luces de ciudad",
+      "whisky",
+      "descansar"
     ],
     "whyItHits": "te capta con su melodía suave y tranquilizadora desde un principio",
     "editorialNote": "Lee Morgan tiene esa capacidad única de sonar canchero pero roto a la vez. Es el track perfecto para la estética de alto contraste de la página. Oscuro, denso y con muchísimo estilo.",
@@ -559,9 +559,9 @@
     "instrumentFocus": "trumpet",
     "vocalStyle": "",
     "standoutTags": [
-      "smoky",
-      "late-night",
-      "intimate"
+      "ahumado",
+      "madrugada",
+      "íntimo"
     ]
   },
   {
@@ -571,7 +571,7 @@
     "track": "Most Like Lee",
     "album": "Cornbread",
     "artistId": "38C3okxv3fyyOIQUVPCdGX",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -579,19 +579,19 @@
       "afilado",
       "desafiante"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "closer",
+    "trackRole": "cierre",
     "compositionType": "original",
     "bestMoment": "en alguna actividad nocturna activa no tranquila ajaj es muy movida y esta buena para hacer algo",
     "listeningContext": [
-      "weekend",
-      "after-hours",
-      "party",
-      "city-lights"
+      "fin de semana",
+      "fuera de hora",
+      "fiesta",
+      "luces de ciudad"
     ],
     "whyItHits": "Combina el groove blusero del inicio del disco con unos ataques súper afilados de los caños, dándole un cierre espectacular y energético al álbum",
     "editorialNote": "el cierre perfecto a esta aventura de disco, cerrando fiel a su estilo, con mucha energía y no perdiendo la melodía tan característica de Lee en Cornbread",
@@ -600,9 +600,9 @@
     "instrumentFocus": "trumpet",
     "vocalStyle": "",
     "standoutTags": [
-      "uplifting",
-      "euphoric",
-      "bold"
+      "animador",
+      "eufórico",
+      "audaz"
     ]
   },
   {
@@ -612,7 +612,7 @@
     "track": "Won't Be Long",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": false,
     "isStandout": true,
     "vibe": [
@@ -620,17 +620,17 @@
       "blusero",
       "cálido"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
     "rhythmicFeel": "shuffle",
-    "trackRole": "opener",
-    "compositionType": "vocal_standard",
+    "trackRole": "apertura",
+    "compositionType": "standard vocal",
     "bestMoment": "para bailar y divertirse con amigos/pareja",
     "listeningContext": [
-      "weekend",
-      "friday-night",
+      "fin de semana",
+      "viernes a la noche",
       "cocinar",
       "bailar"
     ],
@@ -641,9 +641,9 @@
     "instrumentFocus": "voice",
     "vocalStyle": "potente",
     "standoutTags": [
-      "soulful",
+      "con alma",
       "groovy",
-      "bluesy"
+      "blusero"
     ]
   },
   {
@@ -653,7 +653,7 @@
     "track": "Over The Rainbow",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": false,
     "isStandout": true,
     "vibe": [
@@ -661,17 +661,17 @@
       "melancólico",
       "vulnerable"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "medium",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
-    "trackRole": "vocal_showcase",
-    "compositionType": "vocal_standard",
+    "trackRole": "lucimiento vocal",
+    "compositionType": "standard vocal",
     "bestMoment": "madrugada en soledad absoluta, luces bajas y silencio",
     "listeningContext": [
-      "late-night",
-      "reflection"
+      "madrugada",
+      "reflexión"
     ],
     "whyItHits": "Lleva un standard de manual a un terreno de soul súper íntimo y pesado, sacándole todo lo empalagoso.",
     "editorialNote": "Es difícil hacer algo nuevo con este tema, pero Aretha lo canta con un dolor y una madurez que no encaja para nada con los 18 años que tenía cuando lo grabó. Te desarma por completo.",
@@ -680,9 +680,9 @@
     "instrumentFocus": "voice",
     "vocalStyle": "vulnerable",
     "standoutTags": [
-      "intimate",
-      "melancholic",
-      "soulful"
+      "íntimo",
+      "melancólico",
+      "con alma"
     ]
   },
   {
@@ -692,7 +692,7 @@
     "track": "Love Is The Only Thing",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": false,
     "isStandout": false,
     "vibe": [
@@ -700,19 +700,19 @@
       "suave",
       "relajado"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
-    "trackRole": "mood_piece",
-    "compositionType": "vocal_standard",
+    "trackRole": "pieza de clima",
+    "compositionType": "standard vocal",
     "bestMoment": "hacer actividades tranqui en casa o para estudiar de fondo",
     "listeningContext": [
-      "sunday",
-      "background",
-      "focus",
-      "study"
+      "domingo",
+      "de fondo",
+      "concentración",
+      "estudiar"
     ],
     "whyItHits": "La voz fluye sin esfuerzo arriba de una base de trío súper elegante y amable, jugando de una manera natural con los agudos y graves",
     "editorialNote": "Un ejemplo espectacular de cómo hacer jazz vocal estándar con muchísima onda. Ray Bryant acompaña de manera impecable sin robarle nunca el protagonismo a la cantante",
@@ -721,9 +721,9 @@
     "instrumentFocus": "voice",
     "vocalStyle": "sedoso",
     "standoutTags": [
-      "warm",
-      "soft",
-      "elegant"
+      "cálido",
+      "suave",
+      "elegante"
     ]
   },
   {
@@ -733,7 +733,7 @@
     "track": "Sweet Lover",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": false,
     "isStandout": false,
     "vibe": [
@@ -741,17 +741,17 @@
       "blusero",
       "relajado"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "slow",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
     "rhythmicFeel": "blues",
-    "trackRole": "groove_piece",
+    "trackRole": "pieza de groove",
     "compositionType": "blues",
     "bestMoment": "con una copa de vino después de un día largo de trabajo",
     "listeningContext": [
-      "wine",
-      "after-hours"
+      "vino",
+      "fuera de hora"
     ],
     "whyItHits": "El fraseo arrastrado y seductor empalma perfecto con el blues clásico.",
     "editorialNote": "Un tema que funciona casi como un guiño al blues más tradicional, pero con ese toque de Aretha que eleva cualquier tema con sus matices únicos y tanta energía en su voz",
@@ -760,9 +760,9 @@
     "instrumentFocus": "voice",
     "vocalStyle": "sedoso",
     "standoutTags": [
-      "bluesy",
-      "intimate",
-      "warm"
+      "blusero",
+      "íntimo",
+      "cálido"
     ]
   },
   {
@@ -772,7 +772,7 @@
     "track": "All Night Long",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "isInstrumental": false,
     "isStandout": false,
     "vibe": [
@@ -781,19 +781,19 @@
       "nostálgico",
       "vulnerable"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "medium",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
-    "trackRole": "vocal_showcase",
+    "trackRole": "lucimiento vocal",
     "compositionType": "blues",
     "bestMoment": "solo en casa con uno mismo, cuando necesitás esas canciones emotivas que te mueven por dentro y te hacen sacar tus propias emociones",
     "listeningContext": [
-      "night-walk",
-      "heartbreak",
-      "self-reflection",
-      "alone-at-home"
+      "caminata nocturna",
+      "corazón roto",
+      "introspección",
+      "solo en casa"
     ],
     "whyItHits": "canción con energía emotiva que te abre y florece todas las emociones a flor de piel",
     "editorialNote": "primera canción de Aretha en otro mood completamente distinto a lo que nos tiene acostumbrados, muy emotiva su voz y como que sus emociones se sienten en cada nota una canción cantada con el alma",
@@ -802,9 +802,9 @@
     "instrumentFocus": "voice",
     "vocalStyle": "potente",
     "standoutTags": [
-      "emotive",
-      "soft",
-      "intimate"
+      "emotivo",
+      "suave",
+      "íntimo"
     ]
   },
   {
@@ -814,7 +814,7 @@
     "track": "Who Needs You?",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": false,
     "isStandout": false,
     "vibe": [
@@ -822,29 +822,29 @@
       "juguetón",
       "expansivo"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
     "trackRole": "standard",
     "compositionType": "standard",
     "bestMoment": "de fondo a la mañana para arrancar el día con la mejor energía",
     "listeningContext": [
-      "walking",
-      "driving",
-      "healing"
+      "caminar",
+      "manejar",
+      "sanador"
     ],
     "whyItHits": "Maneja un sarcasmo increíble en la voz que se complementa con la respuesta de los vientos, es un ida y vuelta que se mantiene durante toda la canción y te engancha",
     "editorialNote": "uno de los temas que más expresa en mi opinión la seguridad e impronta de Aretha, mostrando su carácter en cada nota",
     "recommendedIf": "Si te gusta el soul vocal con actitud y letras que van al frente, con un call and response con los instrumentos",
     "avoidIf": "buscás algo más lento no tan afilado ni desafiante, algo más tranquilo y sin tanta energía",
     "instrumentFocus": "voice",
-    "vocalStyle": "soulful",
+    "vocalStyle": "con alma",
     "standoutTags": [
-      "playful",
+      "juguetón",
       "groovy",
-      "soulful"
+      "con alma"
     ]
   },
   {
@@ -854,7 +854,7 @@
     "track": "Right Now",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "hall_of_fame",
+    "tier": "salon_de_la_fama",
     "isInstrumental": false,
     "isStandout": true,
     "vibe": [
@@ -862,18 +862,18 @@
       "flotante",
       "cálido"
     ],
-    "energy": "high",
-    "moodIntensity": "high",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "alta",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
-    "trackRole": "hidden_gem",
-    "compositionType": "cover",
+    "trackRole": "joya oculta",
+    "compositionType": "versión",
     "bestMoment": "perfecta para escucharla con emociones y amor interno pensando en alguien especial, con ganas de expresar sentimientos, de día es perfecta para arrancarlo o vivir la pasión de Aretha",
     "listeningContext": [
-      "alone-at-home",
-      "cooking",
-      "weekend"
+      "solo en casa",
+      "cocinar",
+      "fin de semana"
     ],
     "whyItHits": "es una declaración directa, impaciente y cargada de confianza. No es una balada romántica sufrida, sino un reclamo de atención inmediata y honestidad, Trata fundamentalmente de la urgencia en el amor",
     "editorialNote": "Right Now es un ultimátum cargado de confianza y urgencia donde Aretha, lejos de la vulnerabilidad clásica, exige una entrega absoluta y sin demoras. La letra rechaza las promesas futuras y los juegos románticos para centrarse en el presente, dictando que el amor debe ser tangible y estar disponible en el momento exacto en que se necesita. Sobre el sofisticado y rítmico acompañamiento de Ray Bryant, la canción se convierte en un himno de empoderamiento juvenil que transforma la impaciencia en una declaración de principios elegante y directa.",
@@ -882,9 +882,9 @@
     "instrumentFocus": "voice",
     "vocalStyle": "potente",
     "standoutTags": [
-      "bold",
-      "romantic",
-      "intimate"
+      "audaz",
+      "romántico",
+      "íntimo"
     ]
   },
   {
@@ -894,7 +894,7 @@
     "track": "Are You Sure",
     "album": "Aretha: With The Ray Bryant Combo",
     "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": false,
     "isStandout": true,
     "vibe": [
@@ -902,28 +902,28 @@
       "festivo",
       "volátil"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
     "rhythmicFeel": "shuffle",
-    "trackRole": "groove_piece",
-    "compositionType": "cover",
+    "trackRole": "pieza de groove",
+    "compositionType": "versión",
     "bestMoment": "es el mediodía o la tarde temprana, especialmente durante ese bache de energía después del almuerzo, cuando necesitás un empujón de energía para destrabar una tarea pesada",
     "listeningContext": [
-      "focus",
-      "cleaning",
-      "cooking"
+      "concentración",
+      "limpiar",
+      "cocinar"
     ],
     "whyItHits": "Es puro gospel trasladado a un club de jazz; Debido a su gospel-shuffle ascendente y su tono inquisitivo, funciona como un reset mental. No tiene la calma de la mañana ni la nostalgia de la noche; tiene la fuerza necesaria para sacudirte el letargo y devolverte el enfoque",
     "editorialNote": "se presenta como una vibrante colisión entre el teatro de Broadway y la profundidad del gospel, donde el shuffle rítmico de Ray Bryant sirve de plataforma para que una joven Aretha despliegue toda su autoridad vocal. La canción abandona la complacencia para transformarse en un interrogatorio espiritual que cuestiona la verdadera satisfacción personal, avanzando con un groove ascendente que contagia una energía casi de procesión. Es una pieza de transición magistral que logra que un estándar comercial suene crudo, auténtico y cargado de un swing eclesiástico irresistible.",
     "recommendedIf": " Recomiendo esta canción para momentos de toma de decisiones o búsqueda de enfoque. Tiene una fuerza motriz y una claridad vocal que ayudan a despejar la mente.",
     "avoidIf": "No la recomiendo para quienes busquen música sutil o de fondo para una conversación. El mensaje de la canción es muy frontal y la interpretación de Aretha es tan potente que tiende a dominar el ambiente, lo que puede resultar intrusivo en una cena tranquila o en un espacio de trabajo que requiera concentración profunda. Tampoco la recomiendo para quienes prefieren el jazz puramente instrumental, ya que aquí la voz es la protagonista absoluta y no deja espacio para la abstracción.",
     "instrumentFocus": "voice",
-    "vocalStyle": "soulful",
+    "vocalStyle": "con alma",
     "standoutTags": [
-      "uplifting",
-      "bold",
+      "animador",
+      "audaz",
       "groovy"
     ]
   },
@@ -934,7 +934,7 @@
   "track": "Maybe I'm A Fool",
   "album": "Aretha: With The Ray Bryant Combo",
   "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-  "tier": "daily_vibe",
+  "tier": "rotacion_diaria",
   "isInstrumental": false,
   "isStandout": false,
   "vibe": [
@@ -943,18 +943,18 @@
     "melancólico",
     "sofisticado"
   ],
-  "energy": "medium",
-  "moodIntensity": "high",
-  "accessibility": "medium",
-  "tempoFeel": "slow",
+  "energy": "media",
+  "moodIntensity": "alta",
+  "accessibility": "media",
+  "tempoFeel": "lento",
   "rhythmicFeel": "ballad",
-  "trackRole": "vocal_showcase",
-  "compositionType": "cover",
+  "trackRole": "lucimiento vocal",
+  "compositionType": "versión",
   "bestMoment": "madrugada en soledad con luces bajas",
   "listeningContext": [
-    "late-night",
-    "reflection",
-    "after-hours"
+    "madrugada",
+    "reflexión",
+    "fuera de hora"
   ],
   "whyItHits": "Transforma la derrota amorosa en un momento de pura elegancia jazzística gracias a un control vocal asombroso y contenido.",
   "editorialNote": "una balada con el estilo y pasión de la voz de Aretha, creando una vibra emotiva pero a la vez que avanza con todas las emociones creando una atmósfera cada vez más grande que termina explotando al final creando algo único y hermoso",
@@ -963,12 +963,12 @@
   "instrumentFocus": "voice",
   "vocalStyle": "contenido",
   "standoutTags": [
-    "late-night",
-    "intimate",
-    "melancholic",
-    "elegant",
+    "madrugada",
+    "íntimo",
+    "melancólico",
+    "elegante",
     "vocal",
-    "moody"
+    "climático"
   ]
 },
   {
@@ -978,7 +978,7 @@
   "track": "It Ain't Necessarily So",
   "album": "Aretha: With The Ray Bryant Combo",
   "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-  "tier": "daily_vibe",
+  "tier": "rotacion_diaria",
   "isInstrumental": false,
   "isStandout": false,
   "vibe": [
@@ -986,18 +986,18 @@
     "juguetón",
     "misterioso"
   ],
-  "energy": "medium",
-  "moodIntensity": "medium",
-  "accessibility": "medium",
-  "tempoFeel": "mid",
+  "energy": "media",
+  "moodIntensity": "media",
+  "accessibility": "media",
+  "tempoFeel": "medio",
   "rhythmicFeel": "blues",
   "trackRole": "standard",
-  "compositionType": "show_tune",
+  "compositionType": "canción de musical",
   "bestMoment": "tarde de domingo cocinando o ordenando",
   "listeningContext": [
-    "cooking",
-    "sunday",
-    "vinyl-session"
+    "cocinar",
+    "domingo",
+    "sesión de vinilo"
   ],
   "whyItHits": "Transforma un clásico intocable de Gershwin en un número lleno de picardía y calle, apoyado en la base terrenal del combo de Bryant, junto a la energía explosiva de Aretha",
   "editorialNote": "acá Aretha cambia un poco la onda, un poco más blusera pero manteniendo la energía que mantuvo durante todo el disco, los acompañantes juegan un papel importante",
@@ -1006,11 +1006,11 @@
   "instrumentFocus": "voice",
   "vocalStyle": "teatral",
   "standoutTags": [
-    "bluesy",
-    "playful",
-    "classic",
+    "blusero",
+    "juguetón",
+    "clásico",
     "vocal",
-    "smoky"
+    "ahumado"
   ]
 },
   {
@@ -1020,7 +1020,7 @@
   "track": "By Myself",
   "album": "Aretha: With The Ray Bryant Combo",
   "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-  "tier": "deep_cut",
+  "tier": "joya_oculta",
   "isInstrumental": false,
   "isStandout": false,
   "vibe": [
@@ -1028,17 +1028,17 @@
     "nocturno",
     "blusero"
   ],
-  "energy": "low",
-  "moodIntensity": "high",
-  "accessibility": "medium",
-  "tempoFeel": "slow",
+  "energy": "baja",
+  "moodIntensity": "alta",
+  "accessibility": "media",
+  "tempoFeel": "lento",
   "rhythmicFeel": "blues",
-  "trackRole": "mood_piece",
+  "trackRole": "pieza de clima",
   "compositionType": "blues",
   "bestMoment": "caminata nocturna en la ciudad con auriculares",
   "listeningContext": [
-    "solo-walk",
-    "late-night"
+    "caminata solo",
+    "madrugada"
   ],
   "whyItHits": "Es el punto más oscuro y denso del disco, un blues puro y desgarrador.",
   "editorialNote": "El dolor a flor de piel. Este track justifica toda la estética noir y de alto contraste que manejás en la bitácora. Es pesado, triste y brillante.",
@@ -1047,10 +1047,10 @@
   "instrumentFocus": "voice",
   "vocalStyle": "dolido",
   "standoutTags": [
-    "late-night",
-    "smoky",
-    "bluesy",
-    "dark",
+    "madrugada",
+    "ahumado",
+    "blusero",
+    "oscuro",
     "vocal"
   ]
 },
@@ -1061,7 +1061,7 @@
   "track": "Today I Sing The Blues",
   "album": "Aretha: With The Ray Bryant Combo",
   "artistId": "7nwUJBm0HE4ZxD3f5cy5ok",
-  "tier": "daily_vibe",
+  "tier": "rotacion_diaria",
   "isInstrumental": false,
   "isStandout": false,
   "vibe": [
@@ -1069,19 +1069,19 @@
     "áspero",
     "nocturno"
   ],
-  "energy": "medium",
-  "moodIntensity": "high",
-  "accessibility": "easy",
-  "tempoFeel": "mid",
+  "energy": "media",
+  "moodIntensity": "alta",
+  "accessibility": "fácil",
+  "tempoFeel": "medio",
   "rhythmicFeel": "blues",
-  "trackRole": "statement",
+  "trackRole": "declaración",
   "compositionType": "blues",
   "bestMoment": "cerrando la noche con las últimas luces prendidas, un domingo a la tarde con lluvia",
   "listeningContext": [
-    "after-hours",
-    "whiskey",
-    "rain",
-    "alone-at-home"
+    "fuera de hora",
+    "whisky",
+    "lluvia",
+    "solo en casa"
   ],
   "whyItHits": "Cierra el disco sentando las bases de lo que iba a ser todo su futuro: puro blues de salón.",
   "editorialNote": "se nota que querían probar hasta dónde llegaba. La gravedad de la voz y el tempo cansino son un cierre de lujo para un disco espectacular.",
@@ -1090,10 +1090,10 @@
   "instrumentFocus": "voice",
   "vocalStyle": "potente",
   "standoutTags": [
-    "bluesy",
-    "soulful",
-    "smoky",
-    "late-night",
+    "blusero",
+    "con alma",
+    "ahumado",
+    "madrugada",
     "vocal"
   ]
 },
@@ -1109,28 +1109,28 @@
     "track": "Blue and Sentimental",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "hall_of_fame",
+    "tier": "salon_de_la_fama",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
       "nocturno",
-      "smoky",
+      "ahumado",
       "melancólico",
       "sofisticado"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "easy",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
-    "trackRole": "opener",
+    "trackRole": "apertura",
     "compositionType": "standard",
     "bestMoment": "madrugada de silencio absoluto estructurando la arquitectura de un nuevo proyecto",
     "listeningContext": [
-      "late-night",
-      "whiskey",
-      "headphones-only",
-      "deep-focus"
+      "madrugada",
+      "whisky",
+      "solo con auriculares",
+      "concentración profunda"
     ],
     "whyItHits": "El saxo tenor de Quebec es puro humo y terciopelo, es como si expresara cada sentimiento en cada nota, sostenido magistralmente por los acordes espaciados de Grant Green, creando un minimalismo perfecto.",
     "editorialNote": "tema principal que muestra desde el primer segundo la gran combinación entre Grant e Ike, donde el saxo tenor brilla de suavidad y paz ",
@@ -1139,12 +1139,12 @@
     "instrumentFocus": "sax",
     "vocalStyle": "",
     "standoutTags": [
-      "late-night",
-      "smoky",
-      "elegant",
+      "madrugada",
+      "ahumado",
+      "elegante",
       "instrumental",
-      "sax-led",
-      "moody"
+      "liderado por saxo",
+      "climático"
     ]
   },
   {
@@ -1154,7 +1154,7 @@
     "track": "Minor Impulse",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1162,18 +1162,18 @@
       "blusero",
       "misterioso"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "blues",
-    "trackRole": "groove_piece",
+    "trackRole": "pieza de groove",
     "compositionType": "original",
     "bestMoment": "de fondo en una juntada de amigos, focus con energía de fondo",
     "listeningContext": [
-      "night-walk",
-      "city-lights",
-      "working"
+      "caminata nocturna",
+      "luces de ciudad",
+      "trabajar"
     ],
     "whyItHits": "Tiene un groove implacable y elegante en tono menor, ideal para sentir cómo camina el contrabajo de Paul Chambers marcando el pulso.",
     "editorialNote": "un tema mostrando más el potencial del saxo de Ike, con una gran combinación con la guía de Paul en el contrabajo y detalles de Green",
@@ -1182,10 +1182,10 @@
     "instrumentFocus": "sax",
     "vocalStyle": "",
     "standoutTags": [
-      "bluesy",
+      "blusero",
       "groovy",
-      "urban",
-      "night-drive",
+      "urbano",
+      "manejo nocturno",
       "instrumental"
     ]
   },
@@ -1196,7 +1196,7 @@
     "track": "Don't Take Your Love From Me",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -1205,18 +1205,18 @@
       "suave",
       "nostálgico"
     ],
-    "energy": "low",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
     "trackRole": "ballad",
-    "compositionType": "ballad_standard",
+    "compositionType": "standard de balada",
     "bestMoment": "acompañando una copa de vino después de cenar",
     "listeningContext": [
-      "after-dinner",
-      "wine",
-      "reflection"
+      "después de cenar",
+      "vino",
+      "reflexión"
     ],
     "whyItHits": "La respiración de Quebec se siente tan cerca y controlada que reemplaza por completo la necesidad de un cantante, exponiendo la melodía casi desnuda.",
     "editorialNote": "la primera balada del disco, mostrando y poniendo el corazón en cada nota y llevándote a un momento íntimo y lleno de sentimientos, me trae a una lucha entre lo que nos pasa adentro, es hipnotizante",
@@ -1225,11 +1225,11 @@
     "instrumentFocus": "sax",
     "vocalStyle": "",
     "standoutTags": [
-      "romantic",
-      "warm",
-      "intimate",
+      "romántico",
+      "cálido",
+      "íntimo",
       "instrumental",
-      "tender"
+      "tierno"
     ]
   },
   {
@@ -1239,7 +1239,7 @@
     "track": "Blues for Charlie",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1248,19 +1248,19 @@
       "cálido",
       "terrenal"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "blues",
     "trackRole": "jam",
     "compositionType": "blues",
     "bestMoment": "ritmo perfecto para hacer actividades tranquilas pero llevar un ritmo alegre",
     "listeningContext": [
-      "cooking",
-      "sunday-evening",
-      "vinyl-session",
-      "friends-over"
+      "cocinar",
+      "domingo al atardecer",
+      "sesión de vinilo",
+      "amigos en casa"
     ],
     "whyItHits": "Es un blues guitarrero donde Grant Green brilla y Quebec se sienta al piano, dándole un color terrenal, orgánico y diferente a la sesión.",
     "editorialNote": "bueno es imposible no destacar la guitarra de Green, donde expone toda su maestría y sensibilidad con el acompañamiento de Ike",
@@ -1269,11 +1269,11 @@
     "instrumentFocus": "guitar",
     "vocalStyle": "",
     "standoutTags": [
-      "bluesy",
-      "warm",
-      "guitar-led",
+      "blusero",
+      "cálido",
+      "liderado por guitarra",
       "groovy",
-      "relaxed"
+      "relajado"
     ]
   },
   {
@@ -1283,7 +1283,7 @@
     "track": "Like",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1292,18 +1292,18 @@
       "elegante",
       "juguetón"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
     "trackRole": "jam",
     "compositionType": "original",
     "bestMoment": "mañana lenta de fin de semana con café, salida a correr en busca de energía",
     "listeningContext": [
-      "running",
-      "coffee",
-      "weekend-morning"
+      "correr",
+      "café",
+      "mañana de fin de semana"
     ],
     "whyItHits": "Levanta sutilmente la energía con un swing ágil y optimista, dando un respiro rítmico necesario tras la densidad del lado A.",
     "editorialNote": "un tema vibrante, donde Ike tiene destellos de energía que combinado con las respuestas de Green es una maravilla energética",
@@ -1312,10 +1312,10 @@
     "instrumentFocus": "sax",
     "vocalStyle": "",
     "standoutTags": [
-      "playful",
-      "elegant",
+      "juguetón",
+      "elegante",
       "swing",
-      "bright",
+      "brillante",
       "instrumental"
     ]
   },
@@ -1326,7 +1326,7 @@
     "track": "Count Every Star",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -1335,18 +1335,18 @@
       "nostálgico",
       "majestuoso"
     ],
-    "energy": "low",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
-    "trackRole": "closer",
+    "trackRole": "cierre",
     "compositionType": "standard",
     "bestMoment": "mirando por la ventana durante la hora azul del atardecer, o volviendo en tren a casa",
     "listeningContext": [
-      "sunset",
-      "golden-hour",
-      "reflection"
+      "atardecer",
+      "hora dorada",
+      "reflexión"
     ],
     "whyItHits": "Es el único track del LP original con Sonny Clark en el piano, aportando una textura armónica amplia y casi celestial que envuelve el saxo.",
     "editorialNote": "hermosa balada, me da una paz mental increíble pero a la vez fluye de una manera homogénea hermosa que te engancha desde el primer momento",
@@ -1355,10 +1355,10 @@
     "instrumentFocus": "sax",
     "vocalStyle": "",
     "standoutTags": [
-      "nostalgic",
-      "sunset",
-      "warm",
-      "classic",
+      "nostálgico",
+      "atardecer",
+      "cálido",
+      "clásico",
       "instrumental"
     ]
   },
@@ -1377,18 +1377,18 @@
       "festivo",
       "ágil"
     ],
-    "energy": "high",
-    "moodIntensity": "low",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "hidden_gem",
+    "trackRole": "joya oculta",
     "compositionType": "standard",
     "bestMoment": "viaje en auto por la ruta o acelerando el ritmo en la cocina",
     "listeningContext": [
-      "road-trip",
-      "driving",
-      "cooking"
+      "viaje en ruta",
+      "manejar",
+      "cocinar"
     ],
     "whyItHits": "Muestra que el veterano Quebec todavía podía soplar con un fuego arrollador a tempos rápidos, empujado por un Philly Joe Jones impecable.",
     "editorialNote": "bueno el tema más movido del álbum, muestra otra faceta de lo que nos tenía acostumbrados, mostrando una capacidad increíble de poder encender la sala si es lo que se quiere y con un estilo único y desafiante",
@@ -1397,11 +1397,11 @@
     "instrumentFocus": "sax",
     "vocalStyle": "",
     "standoutTags": [
-      "upbeat",
+      "movido",
       "swing",
-      "classic",
+      "clásico",
       "instrumental",
-      "energetic"
+      "energético"
     ]
   },
   {
@@ -1411,7 +1411,7 @@
     "track": "It's Alright With Me",
     "album": "Blue & Sentimental",
     "artistId": "6y7dRlvApiCjP12JrxWQjh",
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1419,18 +1419,18 @@
       "sofisticado",
       "movedizo"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "medium",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "media",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
-    "trackRole": "groove_piece",
+    "trackRole": "pieza de groove",
     "compositionType": "standard",
     "bestMoment": "cerrando la semana un viernes a la tarde con buenas energías para empezar el finde",
     "listeningContext": [
-      "friday-afternoon",
-      "after-work",
-      "background"
+      "viernes a la tarde",
+      "después del trabajo",
+      "de fondo"
     ],
     "whyItHits": "Es una toma alternativa que aporta un swing fluido, picante y muy neoyorquino al clásico de Cole Porter, nuevamente con Sonny Clark sumando swing en las teclas.",
     "editorialNote": "último tema de este discazo, cerrando con una energía única y con ganas de seguir tocando para siempre, un hermoso cierre",
@@ -1440,8 +1440,8 @@
     "vocalStyle": "",
     "standoutTags": [
       "swing",
-      "urban",
-      "classic",
+      "urbano",
+      "clásico",
       "instrumental",
       "cool"
     ]
@@ -1454,7 +1454,7 @@
     "track": "Moanin'",
     "album": "Moanin'",
     "artistId": "6ykfXAed2KOLOMI3R0TZdz",
-    "tier": "hall_of_fame",
+    "tier": "salon_de_la_fama",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -1463,18 +1463,18 @@
       "eufórico",
       "urbano"
     ],
-    "energy": "high",
-    "moodIntensity": "high",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "alta",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "gospel",
-    "trackRole": "opener",
+    "trackRole": "apertura",
     "compositionType": "original",
     "bestMoment": "arrancando la mañana con máxima energía, situaciones que necesitás un plus de energía",
     "listeningContext": [
-      "morning-boost",
-      "walking",
-      "focus"
+      "impulso matutino",
+      "caminar",
+      "concentración"
     ],
     "whyItHits": "El diálogo inicial entre el piano y los vientos es una clase magistral de fraseo, combinando el peso espiritual del gospel, uno de los mejores call and response de la historia del jazz.",
     "editorialNote": "una de las canciones más escuchadas e icónicas, Moanin' abre un disco lleno de emoción y energía con uno de los call and response más conocidos de toda la historia, un tema lleno de emoción y buena distribución de los instrumentos dándolo todo en todo momento",
@@ -1484,10 +1484,10 @@
     "vocalStyle": "",
     "standoutTags": [
       "groovy",
-      "timeless",
-      "classic",
-      "piano-led",
-      "uplifting"
+      "atemporal",
+      "clásico",
+      "liderado por piano",
+      "animador"
     ]
   },
   {
@@ -1497,7 +1497,7 @@
     "track": "Are You Real",
     "album": "Moanin'",
     "artistId": "6ykfXAed2KOLOMI3R0TZdz",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1505,18 +1505,18 @@
       "urbano",
       "sofisticado"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "standout",
+    "trackRole": "destacado",
     "compositionType": "original",
     "bestMoment": "sesión intensa de trabajo frente al monitor, situaciones energéticas",
     "listeningContext": [
-      "deep-focus",
-      "working",
-      "bar-night"
+      "concentración profunda",
+      "trabajar",
+      "noche de bar"
     ],
     "whyItHits": "Una masterclass de arreglos para vientos de Benny Golson, con swing rápido que no descansa un segundo, propulsada por el motor incansable y milimétrico de los platillos de Blakey.",
     "editorialNote": "tema para hacerte levantar de la silla y ponerte a saltar, una impecable improvisación constante pero firme y con delicadeza en todo momento, un buen tema para empezar con swings rápidos",
@@ -1526,9 +1526,9 @@
     "vocalStyle": "",
     "standoutTags": [
       "swing",
-      "urban",
-      "energetic",
-      "focus",
+      "urbano",
+      "energético",
+      "concentración",
       "instrumental"
     ]
   },
@@ -1539,7 +1539,7 @@
     "track": "Along Came Betty",
     "album": "Moanin'",
     "artistId": "6ykfXAed2KOLOMI3R0TZdz",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1547,19 +1547,19 @@
       "sofisticado",
       "nocturno"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
-    "trackRole": "centerpiece",
+    "trackRole": "pieza central",
     "compositionType": "original",
     "bestMoment": "excelente para estudiar o trabajar, o salir a disfrutar un paseo",
     "listeningContext": [
-      "late-night",
-      "reflection",
-      "city-lights",
-      "focus"
+      "madrugada",
+      "reflexión",
+      "luces de ciudad",
+      "concentración"
     ],
     "whyItHits": "Tiene un lirismo casi aterciopelado en los vientos que contrasta maravillosamente con el ataque percusivo del resto del disco.",
     "editorialNote": "uno de los mejores temas del álbum, el main theme es una delicadeza suave que a la vez combinada con la improvisación de los vientos crean una atmósfera única donde se puede apreciar la magia de los Jazz Messengers",
@@ -1568,10 +1568,10 @@
     "instrumentFocus": "brass",
     "vocalStyle": "",
     "standoutTags": [
-      "elegant",
+      "elegante",
       "cool",
-      "late-night",
-      "classic",
+      "madrugada",
+      "clásico",
       "instrumental"
     ]
   },
@@ -1590,18 +1590,18 @@
       "terrenal",
       "eufórico"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "demanding",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "exigente",
+    "tempoFeel": "movido",
     "rhythmicFeel": "groove",
-    "trackRole": "instrumental_showcase",
+    "trackRole": "lucimiento instrumental",
     "compositionType": "original",
     "bestMoment": "en pleno movimiento frenético preparando un evento",
     "listeningContext": [
-      "cooking",
-      "focus",
-      "party"
+      "cocinar",
+      "concentración",
+      "fiesta"
     ],
     "whyItHits": "Tres movimientos donde Art Blakey demuestra físicamente por qué su batería era el líder melódico y rítmico de la banda, y no un mero acompañamiento.",
     "editorialNote": "bueno esto es la gloria de la batería, acá Blakey nos demuestra que la batería puede ser la principal razón por la cual una canción destaca con el místico acompañamiento de los vientos respondiendo a ese fantástico drummer",
@@ -1610,11 +1610,11 @@
     "instrumentFocus": "drums",
     "vocalStyle": "",
     "standoutTags": [
-      "energetic",
-      "heavy",
-      "intense",
+      "energético",
+      "pesado",
+      "intenso",
       "instrumental",
-      "bold"
+      "audaz"
     ]
   },
   {
@@ -1624,7 +1624,7 @@
     "track": "Blues March",
     "album": "Moanin'",
     "artistId": "6ykfXAed2KOLOMI3R0TZdz",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1632,18 +1632,18 @@
       "blusero",
       "festivo"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "medium",
-    "tempoFeel": "mid",
-    "rhythmicFeel": "march",
-    "trackRole": "standout",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "media",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "marcha",
+    "trackRole": "destacado",
     "compositionType": "original",
     "bestMoment": "para tareas constantes que requieran un background intenso pero firme y constante, tipo caminar o saltar la soga",
     "listeningContext": [
-      "walking",
-      "sunday",
-      "commute"
+      "caminar",
+      "domingo",
+      "viaje diario"
     ],
     "whyItHits": "Agarraron el espíritu callejero y de comparsa de Nueva Orleans y lo inyectaron en el sonido más moderno de la costa este.",
     "editorialNote": "bueno acá la marcha del álbum, es increíble si le prestan atención a los drums el tempo es perfecto y constante, y los vientos brillan encima",
@@ -1653,7 +1653,7 @@
     "vocalStyle": "",
     "standoutTags": [
       "groovy",
-      "grounded",
+      "terrenal",
       "instrumental"
     ]
   },
@@ -1664,7 +1664,7 @@
     "track": "Come Rain or Come Shine",
     "album": "Moanin'",
     "artistId": "6ykfXAed2KOLOMI3R0TZdz",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1672,18 +1672,18 @@
       "cálido",
       "sofisticado"
     ],
-    "energy": "medium",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "shuffle",
     "trackRole": "standard",
     "compositionType": "standard",
     "bestMoment": "cerrando cualquier día de la semana feliz y con alegría de llegar a casa",
     "listeningContext": [
-      "after-work",
-      "weekend",
-      "vinyl-session"
+      "después del trabajo",
+      "fin de semana",
+      "sesión de vinilo"
     ],
     "whyItHits": "Le tiran encima todo el peso del ensamble a un standard clásico, transformando lo que suele ser una balada en una marcha densa y con muchísima autoridad.",
     "editorialNote": "buena forma de cerrar un hermoso álbum, con un standard que da para hablar, sacando todas las cartas mostradas durante todas las canciones anteriores y generando algo único con la magia que nos tienen acostumbrados",
@@ -1692,11 +1692,11 @@
     "instrumentFocus": "brass section",
     "vocalStyle": "",
     "standoutTags": [
-      "classic",
-      "warm",
-      "heavy",
+      "clásico",
+      "cálido",
+      "pesado",
       "instrumental",
-      "bold"
+      "audaz"
     ]
   },
 
@@ -1709,7 +1709,7 @@
     "track": "It Could Happen To You",
     "album": "Scenery",
     "artistId": "4V7Ate3UISn8cy06xnAprh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1717,18 +1717,18 @@
       "ágil",
       "elegante"
     ],
-    "energy": "medium",
-    "moodIntensity": "low",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "swing",
-    "trackRole": "opener",
+    "trackRole": "apertura",
     "compositionType": "standard",
     "bestMoment": "empezando la mañana con luz natural y el primer café, con ganas de algo movido con un piano electrizante",
     "listeningContext": [
-      "morning-boost",
-      "coffee",
-      "focus"
+      "impulso matutino",
+      "café",
+      "concentración"
     ],
     "whyItHits": "Una carta de presentación inmejorable que muestra el estilo autodidacta de Fukui: limpio, melódico y con un fraseo clarísimo, ideal para sentarse a sacar voicings de oído.",
     "editorialNote": "primera canción de un álbum histórico, arranca con todas las energías y swing justo pudiendo mostrar el adictivo fraseo del hermoso piano de un artista descomunal",
@@ -1737,11 +1737,11 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "piano-led",
+      "liderado por piano",
       "swing",
-      "elegant",
-      "bright",
-      "classic"
+      "elegante",
+      "brillante",
+      "clásico"
     ]
   },
   {
@@ -1751,7 +1751,7 @@
     "track": "I Want To Talk About You",
     "album": "Scenery",
     "artistId": "4V7Ate3UISn8cy06xnAprh",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1759,18 +1759,18 @@
       "nocturno",
       "sofisticado"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "easy",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
     "rhythmicFeel": "ballad",
     "trackRole": "ballad",
-    "compositionType": "ballad_standard",
+    "compositionType": "standard de balada",
     "bestMoment": "día nublado mirando por la ventana y disfrutando el paisaje",
     "listeningContext": [
-      "late-night",
-      "deep-focus",
-      "reflection"
+      "madrugada",
+      "concentración profunda",
+      "reflexión"
     ],
     "whyItHits": "Fukui aprovecha el espacio entre las notas con una madurez impresionante, logrando que el piano cante el clásico de Billy Eckstine como si tuviera pulmones.",
     "editorialNote": "hermosa balada, amo el piano con todo mi ser y es un tributo al mismísimo instrumento, logrando que cada nota tenga vida propia y exprese sus sentimientos",
@@ -1779,11 +1779,11 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "intimate",
-      "late-night",
-      "piano-led",
-      "tender",
-      "romantic"
+      "íntimo",
+      "madrugada",
+      "liderado por piano",
+      "tierno",
+      "romántico"
     ]
   },
   {
@@ -1793,7 +1793,7 @@
     "track": "Early Summer",
     "album": "Scenery",
     "artistId": "4V7Ate3UISn8cy06xnAprh",
-    "tier": "hall_of_fame",
+    "tier": "salon_de_la_fama",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -1802,18 +1802,18 @@
       "urbano",
       "desafiante"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "medium",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "media",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "centerpiece",
+    "trackRole": "pieza central",
     "compositionType": "original",
     "bestMoment": "situaciones donde las cosas se ponen intensas, como salir a correr o estar haciendo algo motivado con energía",
     "listeningContext": [
-      "cooking",
-      "working",
-      "focus"
+      "cocinar",
+      "trabajar",
+      "concentración"
     ],
     "whyItHits": "Es un viaje de diez minutos que no para de acelerar, demostrando una técnica percusiva brutal en las teclas y una sinergia explosiva del trío.",
     "editorialNote": "esta canción es una demostración de cómo el piano puede florecer y no parar nunca, generando un montón de momentum y emociones que erizan la piel",
@@ -1822,11 +1822,11 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "energetic",
-      "intense",
-      "piano-led",
+      "energético",
+      "intenso",
+      "liderado por piano",
       "groovy",
-      "classic"
+      "clásico"
     ]
   },
   {
@@ -1836,7 +1836,7 @@
     "track": "Willow Weep For Me",
     "album": "Scenery",
     "artistId": "4V7Ate3UISn8cy06xnAprh",
-    "tier": "daily_vibe",
+    "tier": "rotacion_diaria",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1844,18 +1844,18 @@
       "pesado",
       "nocturno"
     ],
-    "energy": "medium",
-    "moodIntensity": "high",
-    "accessibility": "easy",
-    "tempoFeel": "mid",
+    "energy": "media",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
     "rhythmicFeel": "blues",
     "trackRole": "standard",
     "compositionType": "standard",
     "bestMoment": "acompañando la caída del sol con luz baja",
     "listeningContext": [
-      "sunset",
-      "whiskey",
-      "vinyl-session"
+      "atardecer",
+      "whisky",
+      "sesión de vinilo"
     ],
     "whyItHits": "Le devuelve la mugre y el peso terrenal a un standard muy tocado, demostrando una profunda comprensión del lenguaje blusero norteamericano.",
     "editorialNote": "es una interpretación fantástica de un standard hermoso blusero que Ryu lo interpreta hermoso sobre el piano",
@@ -1864,11 +1864,11 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "bluesy",
-      "smoky",
-      "piano-led",
-      "moody",
-      "classic"
+      "blusero",
+      "ahumado",
+      "liderado por piano",
+      "climático",
+      "clásico"
     ]
   },
   {
@@ -1878,7 +1878,7 @@
     "track": "Autumn Leaves",
     "album": "Scenery",
     "artistId": "4V7Ate3UISn8cy06xnAprh",
-    "tier": "essential",
+    "tier": "esencial",
     "isInstrumental": true,
     "isStandout": true,
     "vibe": [
@@ -1886,18 +1886,18 @@
       "sofisticado",
       "nostálgico"
     ],
-    "energy": "high",
-    "moodIntensity": "medium",
-    "accessibility": "easy",
-    "tempoFeel": "upbeat",
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
     "rhythmicFeel": "swing",
-    "trackRole": "standout",
+    "trackRole": "destacado",
     "compositionType": "standard",
     "bestMoment": "arrancando el día con todas las energías",
     "listeningContext": [
-      "deep-focus",
-      "working",
-      "city-lights"
+      "concentración profunda",
+      "trabajar",
+      "luces de ciudad"
     ],
     "whyItHits": "Es, sin exagerar, una de las mejores y más rítmicas versiones de este clásico en formato trío, reviviendo un tema hiper-quemado con una vitalidad asombrosa.",
     "editorialNote": "es una de las pocas interpretaciones de Autumn Leaves que me dejó boca abierto, no me esperaba para nada la frescura y expresividad que Ryu le puede aportar a este tema histórico",
@@ -1907,10 +1907,10 @@
     "vocalStyle": "",
     "standoutTags": [
       "swing",
-      "upbeat",
-      "piano-led",
-      "classic",
-      "energetic"
+      "movido",
+      "liderado por piano",
+      "clásico",
+      "energético"
     ]
   },
   {
@@ -1920,7 +1920,7 @@
     "track": "Scenery",
     "album": "Scenery",
     "artistId": "4V7Ate3UISn8cy06xnAprh",
-    "tier": "deep_cut",
+    "tier": "joya_oculta",
     "isInstrumental": true,
     "isStandout": false,
     "vibe": [
@@ -1928,18 +1928,18 @@
       "sereno",
       "crepuscular"
     ],
-    "energy": "low",
-    "moodIntensity": "high",
-    "accessibility": "medium",
-    "tempoFeel": "slow",
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
     "rhythmicFeel": "rubato",
-    "trackRole": "closer",
+    "trackRole": "cierre",
     "compositionType": "original",
     "bestMoment": "noche de estudio/trabajo con background tranquilo de fondo con lindos acordes de piano",
     "listeningContext": [
-      "reflection",
-      "late-night",
-      "alone-at-home"
+      "reflexión",
+      "madrugada",
+      "solo en casa"
     ],
     "whyItHits": "La única composición de Fukui en el disco es una balada introspectiva y solitaria que funciona como un 'fade out' cinematográfico perfecto tras la intensidad de la sesión.",
     "editorialNote": "no tengo palabras para esta canción, es el alma de Ryu puesta con el corazón en el piano cada nota cada frase, con ese sentimiento de pérdida",
@@ -1948,13 +1948,1079 @@
     "instrumentFocus": "piano",
     "vocalStyle": "",
     "standoutTags": [
-      "meditative",
-      "serenity",
-      "piano-led",
-      "late-night",
-      "introspective"
+      "meditativo",
+      "serenidad",
+      "liderado por piano",
+      "madrugada",
+      "introspectivo"
     ]
   },
+  {
+    "spotifyTrackId": "1Cj2au1hYiUVLUx3VLmEKf",
+    "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+    "logNumber": 7,
+    "track": "I've Told Ev'ry Little Star",
+    "album": "Sonny Rollins and the Contemporary Leaders",
+    "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+    "tier": "esencial",
+    "isInstrumental": true,
+    "isStandout": true,
+    "vibe": [
+      "juguetón",
+      "luminoso",
+      "sofisticado"
+    ],
+    "energy": "media",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "swing",
+    "trackRole": "apertura",
+    "compositionType": "standard",
+    "bestMoment": "ideal para estudiar o estar concentrado con buen swing de fondo para mantenerte activo con energia positiva",
+    "listeningContext": [
+      "mañana lenta",
+      "café",
+      "concentración"
+    ],
+    "whyItHits": "Rollins agarra una melodía inocente y casi cursi para deconstruirla con un sentido del humor y un swing asombrosos, marcando el tono relajado del disco.",
+    "editorialNote": "primer tema de sonny rollins que me hace entrar en este mundo hermoso de su musica, es increible con una melodia tan relajada infantil crea una obra maestra que te engancha de principio a fin",
+    "recommendedIf": "Si buscás un swing brillante y optimista que muestre cómo un genio puede hacer jazz increíble con cualquier melodía.",
+    "avoidIf": "Si buscás el sonido oscuro, denso y urbano de Nueva York o baladas desgarradoras.",
+    "instrumentFocus": "sax",
+    "vocalStyle": "",
+    "standoutTags": [
+      "juguetón",
+      "brillante",
+      "swing",
+      "liderado por saxo",
+      "clásico"
+    ]
+  },
+  {
+    "spotifyTrackId": "3mgPsOj0DoYZXcDdtmZcqn",
+    "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+    "logNumber": 7,
+    "track": "Rock-a-Bye Your Baby with a Dixie Melody",
+    "album": "Sonny Rollins and the Contemporary Leaders",
+    "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+    "tier": "salon_de_la_fama",
+    "isInstrumental": true,
+    "isStandout": true,
+    "vibe": [
+      "ágil",
+      "urbano",
+      "elegante"
+    ],
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "swing",
+    "trackRole": "destacado",
+    "compositionType": "standard",
+    "bestMoment": "ideal para escuchar al aire libre con solcito en un momento alegre",
+    "listeningContext": [
+      "caminar",
+      "viaje diario",
+      "fin de semana"
+    ],
+    "whyItHits": "La propulsión rítmica de Shelly Manne en la batería empuja a Sonny a navegar a toda velocidad por los cambios de acordes con una fluidez envidiable.",
+    "editorialNote": "es increible no tengo palabras, es una de las pocas canciones en las que pienso: ese saxo tiene vida propia! es increible es un fraseo tan brillante que parece que estuviese hablando con el piano, hermosa cancion",
+    "recommendedIf": "Si te gusta escuchar a una sección rítmica que funciona como un reloj suizo empujando a un solista que no se guarda nada.",
+    "avoidIf": "Si querés tempos lentos para concentrarte en lectura profunda.",
+    "instrumentFocus": "sax",
+    "vocalStyle": "",
+    "standoutTags": [
+      "swing",
+      "energético",
+      "urbano",
+      "liderado por saxo",
+      "groovy"
+    ]
+  },
+  {
+    "spotifyTrackId": "403JJpV8fKuPTpc8ZC5RZn",
+    "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+    "logNumber": 7,
+    "track": "How High the Moon",
+    "album": "Sonny Rollins and the Contemporary Leaders",
+    "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+    "tier": "esencial",
+    "isInstrumental": true,
+    "isStandout": false,
+    "vibe": [
+      "flotante",
+      "sofisticado",
+      "eufórico"
+    ],
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "swing",
+    "trackRole": "standard",
+    "compositionType": "standard",
+    "bestMoment": "en el momento de mayor flujo de trabajo o en una situacion movida",
+    "listeningContext": [
+      "trabajar",
+      "caminar",
+      "concentración profunda"
+    ],
+    "whyItHits": "Es una clínica de improvisación. Barney Kessel en guitarra y Hampton Hawes en piano brillan, pero Sonny demuestra por qué es el rey del desarrollo temático.",
+    "editorialNote": "hermosa cancion, el bajo brilla en un oido y en el otro el mismisimo saxo de sonny con los acompañamientos del piano generan una energia unica que va para adelante siempre",
+    "recommendedIf": "Si querés escuchar uno de los standards más famosos del jazz tocado con un virtuosismo que nunca pierde la elegancia.",
+    "avoidIf": "Si el frenesí del bebop rápido te resulta abrumador para escuchar de fondo.",
+    "instrumentFocus": "sax",
+    "vocalStyle": "",
+    "standoutTags": [
+      "clásico",
+      "movido",
+      "swing",
+      "energético",
+      "liderado por saxo"
+    ]
+  },
+  {
+  "spotifyTrackId": "2TLWEpQG8am8PiXvsLK9jX",
+  "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+  "logNumber": 7,
+  "track": "You",
+  "album": "Sonny Rollins and the Contemporary Leaders",
+  "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+  "tier": "rotacion_diaria",
+  "isInstrumental": true,
+  "isStandout": false,
+  "vibe": [
+    "ágil",
+    "luminoso",
+    "ardiente"
+  ],
+  "energy": "alta",
+  "moodIntensity": "baja",
+  "accessibility": "exigente",
+  "tempoFeel": "movido",
+  "rhythmicFeel": "swing",
+  "trackRole": "pieza de groove",
+  "compositionType": "standard",
+  "bestMoment": "arrancando el día a pura energía o cocinando a mil por hora",
+  "listeningContext": [
+    "impulso matutino",
+    "cocinar",
+    "caminar"
+  ],
+  "whyItHits": "Tiene un bounce irresistible. La sección rítmica le arma una autopista para que Sonny vaya saltando sobre la melodía con una soltura tremenda.",
+  "editorialNote": "el swing que maneja esta cancion es energetico ardiente y con un power que no descansa nunca, aca sonny nos demuestra que puede todo",
+  "recommendedIf": "Si querés un standard con un swing picante y bien marcado que te obligue a mover el pie.",
+  "avoidIf": "Si venías buscando una balada o algo para bajar las revoluciones.",
+  "instrumentFocus": "tenor sax",
+  "vocalStyle": "",
+  "standoutTags": [
+    "swing",
+    "movido",
+    "juguetón",
+    "brillante",
+    "liderado por saxo"
+  ]
+},
+  {
+    "spotifyTrackId": "1FENOXcF8MAx6yGa9vbH0E",
+    "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+    "logNumber": 7,
+    "track": "I've Found a New Baby",
+    "album": "Sonny Rollins and the Contemporary Leaders",
+    "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+    "tier": "rotacion_diaria",
+    "isInstrumental": true,
+    "isStandout": false,
+    "vibe": [
+      "sensual",
+      "ágil",
+      "desafiante"
+    ],
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "media",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "swing",
+    "trackRole": "jam",
+    "compositionType": "standard",
+    "bestMoment": "",
+    "listeningContext": [
+      "trabajar",
+      "concentración",
+      "fiesta"
+    ],
+    "whyItHits": "Swing desenfrenado a pura tracción. Demuestra que la sección rítmica de la Costa Oeste podía arder y sonar tan agresiva como la de Nueva York cuando Sonny marcaba el paso.",
+    "editorialNote": "me encanta como sonny explora sus limites de la improvisacion y del saxo en un divertido y euforico ambiente acompañado de la mejor forma",
+    "recommendedIf": "Si buscás velocidad, solos punzantes de guitarra y piano, y una energía pura de sesión en vivo.",
+    "avoidIf": "Si preferís la música para ambientes calmos o contemplativos.",
+    "instrumentFocus": "sax",
+    "vocalStyle": "",
+    "standoutTags": [
+      "energético",
+      "swing",
+      "movido",
+      "groovy",
+      "liderado por saxo"
+    ]
+  },
+  {
+  "spotifyTrackId": "1F8Cr7mqnaQVcJ3WryRb9N",
+  "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+  "logNumber": 7,
+  "track": "Alone Together",
+  "album": "Sonny Rollins and the Contemporary Leaders",
+  "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+  "tier": "rotacion_diaria",
+  "isInstrumental": true,
+  "isStandout": false,
+  "vibe": [
+    "decidido",
+    "sofisticado",
+    "urbano"
+  ],
+  "energy": "alta",
+  "moodIntensity": "media",
+  "accessibility": "fácil",
+  "tempoFeel": "movido",
+  "rhythmicFeel": "swing",
+  "trackRole": "pieza central",
+  "compositionType": "standard",
+  "bestMoment": "caminata nocturna a paso firme o manejando/volviendo a casa",
+  "listeningContext": [
+    "caminata nocturna",
+    "trabajar",
+    "luces de ciudad"
+  ],
+  "whyItHits": "Sonny rompe la tradición de tocar este tema como balada y le imprime un swing de medio-tiempo/rápido que lo vuelve mucho más moderno y directo.",
+  "editorialNote": "lo que menos me esperaba de una version de alone together, sonny lo transforma de una manera integral y natural dandole su toque de magia",
+  "recommendedIf": "Si buscás un standard clásico pero con una propulsión rítmica que te mantenga en movimiento constante.",
+  "avoidIf": "Si tenías ganas de escuchar una versión lenta, melancólica y triste para bajar las revoluciones.",
+  "instrumentFocus": "sax",
+  "vocalStyle": "",
+  "standoutTags": [
+    "swing",
+    "movido",
+    "urbano",
+    "liderado por saxo",
+    "clásico"
+  ]
+},
+  {
+  "spotifyTrackId": "1SQiDvto5fJ6XzGlBTu7NE",
+  "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+  "logNumber": 7,
+  "track": "In the Chapel in the Moonlight",
+  "album": "Sonny Rollins and the Contemporary Leaders",
+  "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+  "tier": "rotacion_diaria",
+  "isInstrumental": true,
+  "isStandout": true,
+  "vibe": [
+    "cálido",
+    "sereno",
+    "romántico",
+    "suave"
+  ],
+  "energy": "baja",
+  "moodIntensity": "media",
+  "accessibility": "fácil",
+  "tempoFeel": "lento",
+  "rhythmicFeel": "ballad",
+  "trackRole": "respiro",
+  "compositionType": "standard",
+  "bestMoment": "tarde de domingo tranquila o cerrando el día con luz cálida",
+  "listeningContext": [
+    "descansar",
+    "domingo al atardecer",
+    "después de cenar"
+  ],
+  "whyItHits": "Rollins expone la melodía casi desnuda con un tempo sumamente relajado y mucho aire, demostrando que su sonido gigante también domina la sutileza.",
+  "editorialNote": "el toque mas suave de todo el disco, aca una vez mas sonny nos demuestra que puede todo y toca con una sensibilidad y calidez extraordinaria",
+  "recommendedIf": "Si buscás un momento de calma absoluta y querés escuchar a Sonny en su faceta más cálida, respetuosa y contenida.",
+  "avoidIf": "Si querés escuchar bebop frenético o demostraciones de virtuosismo a toda velocidad.",
+  "instrumentFocus": "tenor sax",
+  "vocalStyle": "",
+  "standoutTags": [
+    "cálido",
+    "tierno",
+    "relajado",
+    "liderado por saxo",
+    "clásico"
+  ]
+},
+  {
+    "spotifyTrackId": "6tEPuShUQfJutgm0TlgUar",
+    "spotifyAlbumId": "6YecFzy40VdPG0vkRDJ6vQ",
+    "logNumber": 8,
+    "track": "The Song Is You",
+    "album": "Sonny Rollins and the Contemporary Leaders",
+    "artistId": "1VEzN9lxvG6KPR3QQGsebR",
+    "tier": "rotacion_diaria",
+    "isInstrumental": true,
+    "isStandout": false,
+    "vibe": [
+      "majestuoso",
+      "eufórico",
+      "expansivo"
+    ],
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "media",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "swing",
+    "trackRole": "cierre",
+    "compositionType": "standard",
+    "bestMoment": "cerrando la jornada con un empuje final de energía",
+    "listeningContext": [
+      "después del trabajo",
+      "manejar",
+      "fin de semana"
+    ],
+    "whyItHits": "Un cierre a toda máquina donde se suma el vibráfono de Victor Feldman, creando una textura rica y colorida sobre un swing que no te da tregua.",
+    "editorialNote": "un cierre de disco con toda la energia que lo caracteriza a sonny, una ultima demostracion del poder del saxo que maneja",
+    "recommendedIf": "Si buscás un ensamble ampliado y vibrante que explota en arreglos complejos y solos ágiles para cerrar el disco bien arriba.",
+    "avoidIf": "Si preferías el sonido más despojado y minimalista de los tracks anteriores sin el brillo percusivo del vibráfono.",
+    "instrumentFocus": "tenor sax",
+    "vocalStyle": "",
+    "standoutTags": [
+      "movido",
+      "eufórico",
+      "swing",
+      "clásico",
+      "liderado por saxo"
+    ]
+  },
+
+
+
+
+
+{
+    "spotifyTrackId": "0dqWEPknT78MzavS5S4dLL",
+    "spotifyAlbumId": "1RmoKOfLnMAafzhWRJCI8q",
+    "logNumber": 8,
+    "track": "No. 1 Green Street",
+    "album": "Green Street",
+    "artistId": "6dAtGAnHCQ1ujMUZ9Ep82k",
+    "tier": "esencial",
+    "isInstrumental": true,
+    "isStandout": true,
+    "vibe": [
+      "blusero",
+      "terrenal",
+      "relajado"
+    ],
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "blues",
+    "trackRole": "apertura",
+    "compositionType": "original",
+    "bestMoment": "tarde de fin de semana probando y ajustando nuevas recetas en la cocina",
+    "listeningContext": [
+      "mañana de fin de semana",
+      "cocinar",
+      "sesión de vinilo"
+    ],
+    "whyItHits": "Un blues de tempo medio impecable donde Grant Green muestra su firma sonora: fraseo cristalino, económico y un sentido del swing que camina sin ningún esfuerzo.",
+    "editorialNote": "el primer tema de un album exotico, sin piano grant saca a relucir lo mejor de su guitarra que brilla en cada acorde, el fraseo es tan natural y organico que te llega en cada segundo",
+    "recommendedIf": "Si querés un groove caminador, muy aireado por la falta de piano, ideal para entrar en clima y marcar el paso relajado del día.",
+    "avoidIf": "Si estás buscando acordes densos, texturas complejas o el acompañamiento armónico tradicional del bop.",
+    "instrumentFocus": "guitar trio",
+    "vocalStyle": "",
+    "standoutTags": [
+      "blusero",
+      "groovy",
+      "liderado por guitarra",
+      "cálido",
+      "clásico"
+    ]
+  },
+  {
+    "spotifyTrackId": "6X6q7Wjn40xaYnIhXzMlOh",
+    "spotifyAlbumId": "1RmoKOfLnMAafzhWRJCI8q",
+    "logNumber": 8,
+    "track": "'Round About Midnight",
+    "album": "Green Street",
+    "artistId": "6dAtGAnHCQ1ujMUZ9Ep82k",
+    "tier": "esencial",
+    "isInstrumental": true,
+    "isStandout": true,
+    "vibe": [
+      "nocturno",
+      "melancólico",
+      "sombrío",
+      "minimalista"
+    ],
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
+    "rhythmicFeel": "ballad",
+    "trackRole": "ballad",
+    "compositionType": "standard",
+    "bestMoment": "dia lluvioso disfrutando la lluvia",
+    "listeningContext": [
+      "madrugada",
+      "whisky",
+      "solo con auriculares",
+      "lluvia"
+    ],
+    "whyItHits": "Al vaciar el tema del peso armónico del piano, el standard de Monk se vuelve espectral y frágil. Cada nota que puntea la guitarra pesa una tonelada.",
+    "editorialNote": "es increible como una guitarra puede expresar tantos sentimientos, el tema es hermoso, el theme es emotivo y bien formulado y green aporta sus maravillas con la guitarra que hacen que destaque mucho mas",
+    "recommendedIf": "Si necesitás una de las interpretaciones más austeras, tristes y despojadas de este clásico absoluto, ideal para aislarte del mundo.",
+    "avoidIf": "Si venías con la energía alta del blues anterior y no querés que el disco frene casi a cero.",
+    "instrumentFocus": "guitar trio",
+    "vocalStyle": "",
+    "standoutTags": [
+      "madrugada",
+      "melancólico",
+      "minimalista",
+      "liderado por guitarra",
+      "íntimo"
+    ]
+  },
+  {
+    "spotifyTrackId": "23T9vmTPAuzLkUQKqZoKJ4",
+    "spotifyAlbumId": "1RmoKOfLnMAafzhWRJCI8q",
+    "logNumber": 8,
+    "track": "Grant's Dimensions",
+    "album": "Green Street",
+    "artistId": "6dAtGAnHCQ1ujMUZ9Ep82k",
+    "tier": "rotacion_diaria",
+    "isInstrumental": true,
+    "isStandout": false,
+    "vibe": [
+      "urbano",
+      "eufórico",
+      "inquieto"
+    ],
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "swing",
+    "trackRole": "jam",
+    "compositionType": "original",
+    "bestMoment": "cuando necesitas un subidon de energia sutil, como para ir a correr o focus",
+    "listeningContext": [
+      "trabajar",
+      "concentración",
+      "manejar"
+    ],
+    "whyItHits": "Acelera drásticamente el pulso del disco. Es un ejercicio de resistencia donde Green despliega ráfagas rapidísimas sobre el swing inquebrantable de Tucker y Bailey.",
+    "editorialNote": "aca green toma el control del swing y genera un sensacion de que lo puede todo, es tan sutil el fraseo que sobresalta cada vez que la escucho",
+    "recommendedIf": "Si buscás inyectar adrenalina y querés escuchar virtuosismo puro de la púa en un tempo rápido y cortante.",
+    "avoidIf": "Si buscabas mantener el aura nocturna y contemplativa del track anterior.",
+    "instrumentFocus": "guitar trio",
+    "vocalStyle": "",
+    "standoutTags": [
+      "inquieto",
+      "animador",
+      "liderado por guitarra",
+      "groovy",
+      "urbano"
+    ]
+  },
+  {
+    "spotifyTrackId": "7fliNdxPqPV2PSyV1EQOf2",
+    "spotifyAlbumId": "1RmoKOfLnMAafzhWRJCI8q",
+    "logNumber": 8,
+    "track": "Green With Envy",
+    "album": "Green Street",
+    "artistId": "6dAtGAnHCQ1ujMUZ9Ep82k",
+    "tier": "joya_oculta",
+    "isInstrumental": true,
+    "isStandout": false,
+    "vibe": [
+      "blusero",
+      "sofisticado",
+      "relajado"
+    ],
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "swing",
+    "trackRole": "pieza de groove",
+    "compositionType": "original",
+    "bestMoment": "atardecer charlando con tu círculo, relajando la guardia",
+    "listeningContext": [
+      "amigos en casa",
+      "descansar",
+      "fin de semana"
+    ],
+    "whyItHits": "Un blues extendido de casi 10 minutos donde el trío entero entra en trance. No hay urgencia, solo una banda cocinando un groove a fuego lento.",
+    "editorialNote": "esta cancion es un mundo aparte, una forma genial de sumergirse en el corazon de green para entender y disfrutar sus matices y formas musicales a la perfeccion",
+    "recommendedIf": "Si disfrutás del formato de zapada extensa donde los músicos se toman todo el tiempo del mundo para desarrollar una idea blusera.",
+    "avoidIf": "Si preferís tracks de tres minutos que vayan directo al grano sin estirar los solos.",
+    "instrumentFocus": "guitar trio",
+    "vocalStyle": "",
+    "standoutTags": [
+      "blusero",
+      "espacioso",
+      "liderado por guitarra",
+      "ahumado",
+      "terrenal"
+    ]
+  },
+  {
+    "spotifyTrackId": "3IVB1oNHzF3Eyhh6L5FbRA",
+    "spotifyAlbumId": "1RmoKOfLnMAafzhWRJCI8q",
+    "logNumber": 8,
+    "track": "Alone Together",
+    "album": "Green Street",
+    "artistId": "6dAtGAnHCQ1ujMUZ9Ep82k",
+    "tier": "esencial",
+    "isInstrumental": true,
+    "isStandout": false,
+    "vibe": [
+      "urbano",
+      "sofisticado",
+      "desafiante"
+    ],
+    "energy": "alta",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "swing",
+    "trackRole": "cierre",
+    "compositionType": "standard",
+    "bestMoment": "caminata nocturna recorriendo la ciudad o saliendo a pasear",
+    "listeningContext": [
+      "caminata nocturna",
+      "luces de ciudad",
+      "viaje diario"
+    ],
+    "whyItHits": "Evita la trampa de tocar este standard como una balada trágica y lo transforma en un tema dinámico, con un swing picante que cierra el disco bien arriba.",
+    "editorialNote": "otra version super original de un standard maravilloso, poniendo toda su identidad en cada nota haciendolo unico",
+    "recommendedIf": "Si te gustan las lecturas ágiles y rítmicas de los clásicos de Broadway, donde el pulso no frena nunca.",
+    "avoidIf": "Si esperabas el tempo arrastrado y dramático tradicional con el que se suele encarar este tema.",
+    "instrumentFocus": "guitar trio",
+    "vocalStyle": "",
+    "standoutTags": [
+      "urbano",
+      "cool",
+      "manejo nocturno",
+      "liderado por guitarra",
+      "clásico"
+    ]
+  },
+
+
+
+{
+    "spotifyTrackId": "7bZZzXU3gbi1KRSzgXkFUi",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 9,
+    "track": "I'm Sticking With You, Baby",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "rotacion_diaria",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "juguetón",
+      "festivo",
+      "blusero"
+    ],
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "shuffle",
+    "trackRole": "apertura",
+    "compositionType": "blues",
+    "bestMoment": "arrancando la mañana con energía o cocinando a buen ritmo",
+    "listeningContext": [
+      "impulso matutino",
+      "cocinar",
+      "manejar"
+    ],
+    "whyItHits": "Entra con un groove de R&B tremendo que te planta una sonrisa al instante. La orquesta empuja pero Joe nunca pierde el control ni la elegancia.",
+    "editorialNote": "arrancando este discazo de joe que con su imponente voz ya desde el primer tema te dan ganas de levantarte de la silla y bailar, es el blues vivo, acompañado perfectamente por el piano y los vientos",
+    "recommendedIf": "Si buscás un blues movedizo, optimista y con una sección de vientos muy picante para levantar el ánimo.",
+    "avoidIf": "Si querías empezar el disco con la atmósfera densa y pesada que sugiere el título del álbum.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "potente",
+    "standoutTags": [
+      "movido",
+      "juguetón",
+      "blusero",
+      "vocal",
+      "groovy"
+    ]
+  },
+  {
+    "spotifyTrackId": "4FU9qp3bYRTFkQVZpAEJ7i",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 9,
+    "track": "Me And The Blues",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "esencial",
+    "isInstrumental": false,
+    "isStandout": true,
+    "vibe": [
+      "sombrío",
+      "melancólico",
+      "nocturno"
+    ],
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
+    "rhythmicFeel": "ballad",
+    "trackRole": "pieza central",
+    "compositionType": "original",
+    "bestMoment": "madrugada de silencio absoluto con un vaso en la mano",
+    "listeningContext": [
+      "madrugada",
+      "whisky",
+      "reflexión"
+    ],
+    "whyItHits": "Es oscuro, teatral y cinematográfico. Joe usa todo el peso de su registro barítono para hacerte sentir el dolor, con una orquesta que suena a película noir.",
+    "editorialNote": "donde joe mas brilla, con una balada intima y bien blusera que te engancha desde el primer momento",
+    "recommendedIf": "Si querés un clima nocturno y denso donde el cantante dialoga directamente con la tristeza.",
+    "avoidIf": "Si querés mantener la energía alta del primer track o evitar temáticas de desolación.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "grave",
+    "standoutTags": [
+      "melancólico",
+      "oscuro",
+      "ahumado",
+      "vocal",
+      "cinemático"
+    ]
+  },
+  {
+    "spotifyTrackId": "3KnewvKwCKspXviLBNcBYZ",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 9,
+    "track": "Every Night",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "rotacion_diaria",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "terrenal",
+      "relajado",
+      "blusero"
+    ],
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "blues",
+    "trackRole": "pieza de groove",
+    "compositionType": "blues",
+    "bestMoment": "tarde de fin de semana bajando un cambio",
+    "listeningContext": [
+      "fin de semana",
+      "descansar",
+      "sesión de vinilo"
+    ],
+    "whyItHits": "Un blues de medio tiempo clásico donde el bajo camina con solidez y la voz se desliza con una fluidez envidiable.",
+    "editorialNote": "",
+    "recommendedIf": "Si buscás ese sonido tradicional de blues arreglado para big band sin estridencias.",
+    "avoidIf": "Si buscás ritmos acelerados o experimentación armónica.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "elegante",
+    "standoutTags": [
+      "blusero",
+      "relajado",
+      "clásico",
+      "vocal",
+      "cálido"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 4,
+    "track": "Rocks In My Bed",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "esencial",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "clásico",
+      "áspero",
+      "sofisticado"
+    ],
+    "energy": "media",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "swing",
+    "trackRole": "standard",
+    "compositionType": "standard",
+    "bestMoment": "acompañando la caída del sol con luces bajas",
+    "listeningContext": [
+      "atardecer",
+      "después del trabajo",
+      "reflexión"
+    ],
+    "whyItHits": "Williams agarra este clásico de Duke Ellington y le imprime una autoridad tremenda. Los arreglos orquestales brillan sin robarle protagonismo al fraseo vocal.",
+    "editorialNote": "",
+    "recommendedIf": "Si querés escuchar cómo un cantante maduro interpreta a Ellington con peso, oficio y mucha calle.",
+    "avoidIf": "Si preferís versiones instrumentales más crudas en formatos de trío o cuarteto.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "potente",
+    "standoutTags": [
+      "clásico",
+      "blusero",
+      "elegante",
+      "vocal",
+      "atemporal"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 5,
+    "track": "Come On Blues",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "joya_oculta",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "urbano",
+      "resolutivo",
+      "blusero"
+    ],
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "blues",
+    "trackRole": "jam",
+    "compositionType": "blues",
+    "bestMoment": "caminata a paso firme por la ciudad",
+    "listeningContext": [
+      "caminar",
+      "viaje diario",
+      "de fondo"
+    ],
+    "whyItHits": "Un tema directo, donde el swing no frena y los vientos puntean la melodía dándole un soporte robusto al cantante.",
+    "editorialNote": "",
+    "recommendedIf": "Si te gusta el blues orquestal que funciona como un metrónomo y no baja nunca el nivel de intensidad rítmica.",
+    "avoidIf": "Si buscabas el dramatismo o el tempo arrastrado de las baladas.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "contenido",
+    "standoutTags": [
+      "blusero",
+      "urbano",
+      "cool",
+      "vocal",
+      "groovy"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 6,
+    "track": "Work Song (Workin')",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "salon_de_la_fama",
+    "isInstrumental": false,
+    "isStandout": true,
+    "vibe": [
+      "desafiante",
+      "ardiente",
+      "urbano"
+    ],
+    "energy": "alta",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "groove",
+    "trackRole": "destacado",
+    "compositionType": "versión",
+    "bestMoment": "sesión intensa de trabajo manual o despacho a toda velocidad",
+    "listeningContext": [
+      "trabajar",
+      "concentración",
+      "manejar"
+    ],
+    "whyItHits": "La versión vocal del clásico de Nat Adderley es una topadora. Tiene un pulso machacante y la orquesta ruge detrás de un Joe Williams que impone respeto en cada sílaba.",
+    "editorialNote": "",
+    "recommendedIf": "Si necesitás una inyección de pura actitud y energía con uno de los grooves más emblemáticos del hard bop hecho canción.",
+    "avoidIf": "Si querés algo calmo para relajar los oídos.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "potente",
+    "standoutTags": [
+      "intenso",
+      "energético",
+      "groovy",
+      "vocal",
+      "clásico"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 7,
+    "track": "Soothe Me",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "rotacion_diaria",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "suave",
+      "romántico",
+      "sedoso"
+    ],
+    "energy": "baja",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
+    "rhythmicFeel": "ballad",
+    "trackRole": "respiro",
+    "compositionType": "standard de balada",
+    "bestMoment": "bajada de revoluciones después de cenar",
+    "listeningContext": [
+      "después de cenar",
+      "descansar",
+      "vino"
+    ],
+    "whyItHits": "Cumple exactamente lo que dice el título. Después del frenesí de Work Song, acá la orquesta se vuelve de terciopelo y la voz te abraza.",
+    "editorialNote": "",
+    "recommendedIf": "Si buscás una balada sedosa y acogedora para bajar el pulso y relajar por completo.",
+    "avoidIf": "Si venías subido a la energía rítmica y no querés que el disco frene el envión.",
+    "instrumentFocus": "voice",
+    "vocalStyle": "sedoso",
+    "standoutTags": [
+      "tierno",
+      "cálido",
+      "íntimo",
+      "vocal",
+      "suave"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 8,
+    "track": "Early In The Morning",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "esencial",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "dolido",
+      "pesado",
+      "arrastrado"
+    ],
+    "energy": "media",
+    "moodIntensity": "alta",
+    "accessibility": "fácil",
+    "tempoFeel": "lento",
+    "rhythmicFeel": "blues",
+    "trackRole": "pieza de clima",
+    "compositionType": "blues",
+    "bestMoment": "madrugada pesada sin poder dormir",
+    "listeningContext": [
+      "insomnio",
+      "madrugada",
+      "solo en casa"
+    ],
+    "whyItHits": "Un blues machacón y espacioso de ritmo lento. Joe arrastra las frases transmitiendo a la perfección ese dolor de despertar solo cuando todavía no salió el sol.",
+    "editorialNote": "",
+    "recommendedIf": "Si te gusta el blues lento de vieja escuela donde la banda toca pesado y atrás del beat.",
+    "avoidIf": "Si preferís temáticas optimistas o ritmos que inviten a moverse rápido.",
+    "instrumentFocus": "voice",
+    "vocalStyle": "dolido",
+    "standoutTags": [
+      "blusero",
+      "pesado",
+      "ahumado",
+      "vocal",
+      "madrugada"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 9,
+    "track": "Good Morning Heartache",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "salon_de_la_fama",
+    "isInstrumental": false,
+    "isStandout": true,
+    "vibe": [
+      "melancólico",
+      "íntimo",
+      "sofisticado"
+    ],
+    "energy": "baja",
+    "moodIntensity": "alta",
+    "accessibility": "media",
+    "tempoFeel": "lento",
+    "rhythmicFeel": "ballad",
+    "trackRole": "ballad",
+    "compositionType": "standard",
+    "bestMoment": "caminata al amanecer o momentos de pura introspección",
+    "listeningContext": [
+      "corazón roto",
+      "amanecer",
+      "reflexión"
+    ],
+    "whyItHits": "Hacer un cover del standard definitivo de Billie Holiday es arriesgado, pero Williams lo lleva a su registro y lo dota de una dignidad y un dolor inmensos.",
+    "editorialNote": "",
+    "recommendedIf": "Si querés una masterclass de cómo cantar una balada tristísima con una contención elegante que te pone la piel de gallina.",
+    "avoidIf": "Si venís buscando evadir la melancolía y el duelo romántico.",
+    "instrumentFocus": "voice",
+    "vocalStyle": "vulnerable",
+    "standoutTags": [
+      "melancólico",
+      "corazón roto",
+      "clásico",
+      "vocal",
+      "elegante"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 10,
+    "track": "Kansas City",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "esencial",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "eufórico",
+      "clásico",
+      "movedizo"
+    ],
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "fácil",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "shuffle",
+    "trackRole": "jam",
+    "compositionType": "versión",
+    "bestMoment": "preparando todo para recibir amigos",
+    "listeningContext": [
+      "fiesta",
+      "cocinar",
+      "amigos en casa"
+    ],
+    "whyItHits": "Rompe el clima dramático previo con un shuffle irresistible. La sección de vientos es afilada y la interpretación te transporta directo a un club nocturno abarrotado.",
+    "editorialNote": "",
+    "recommendedIf": "Si buscás inyectar puro ritmo de R&B con sonido de big band que te obligue a marcar el tempo con el pie.",
+    "avoidIf": "Si estabas inmerso en la profundidad de las baladas y querías quedarte ahí.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "juguetón",
+    "standoutTags": [
+      "groovy",
+      "movido",
+      "clásico",
+      "vocal",
+      "energético"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 11,
+    "track": "A Woman",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "joya_oculta",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "nocturno",
+      "elegante",
+      "cálido"
+    ],
+    "energy": "media",
+    "moodIntensity": "media",
+    "accessibility": "fácil",
+    "tempoFeel": "medio",
+    "rhythmicFeel": "blues",
+    "trackRole": "pieza de clima",
+    "compositionType": "blues",
+    "bestMoment": "ambientación pulcra de noche mientras trabajás en detalles visuales",
+    "listeningContext": [
+      "madrugada",
+      "de fondo",
+      "vino"
+    ],
+    "whyItHits": "Mantiene el sonido constante de la orquesta, funcionando como un puente sólido de medio tempo que prepara el terreno para el gran final.",
+    "editorialNote": "",
+    "recommendedIf": "Si disfrutás de esos tracks de mitad de tabla que sostienen la atmósfera del disco sin buscar picos de intensidad desmesurados.",
+    "avoidIf": "Si querés solos instrumentales larguísimos o una temática rompedora.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "elegante",
+    "standoutTags": [
+      "cálido",
+      "blusero",
+      "vocal",
+      "cool",
+      "madrugada"
+    ]
+  },
+  {
+    "spotifyTrackId": "",
+    "spotifyAlbumId": "22PeBKyONufmhZLcfmgA4x",
+    "logNumber": 12,
+    "track": "Hobo Flats",
+    "album": "Me and the Blues",
+    "artistId": "7FMGtucexJvUxVz7scydEL",
+    "tier": "rotacion_diaria",
+    "isInstrumental": false,
+    "isStandout": false,
+    "vibe": [
+      "urbano",
+      "blusero",
+      "ágil"
+    ],
+    "energy": "alta",
+    "moodIntensity": "baja",
+    "accessibility": "media",
+    "tempoFeel": "movido",
+    "rhythmicFeel": "groove",
+    "trackRole": "cierre",
+    "compositionType": "versión",
+    "bestMoment": "cerrando la semana a paso rápido",
+    "listeningContext": [
+      "después del trabajo",
+      "viaje diario",
+      "manejar"
+    ],
+    "whyItHits": "Es un tema que originalmente es un éxito instrumental de Oliver Nelson. Joe Williams se sube acá aportando líneas vocales para darle un cierre fantástico, grandilocuente y lleno de groove al álbum.",
+    "editorialNote": "",
+    "recommendedIf": "Si buscás un cierre que condense toda la potencia de la sección de vientos con un empuje inquebrantable.",
+    "avoidIf": "Si preferías un final con un 'fade out' romántico y lento.",
+    "instrumentFocus": "voice and brass",
+    "vocalStyle": "potente",
+    "standoutTags": [
+      "groovy",
+      "urbano",
+      "blusero",
+      "vocal",
+      "energético"
+    ]
+  },
+
+
+
+
+
   {
     "spotifyTrackId": "",
     "spotifyAlbumId": "",

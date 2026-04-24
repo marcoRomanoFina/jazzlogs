@@ -287,8 +287,20 @@ http://localhost:8080/v3/api-docs
 Run the regular test suite with:
 
 ```bash
-mvn -q test
+./mvnw -q test
 ```
+
+For day-to-day verification of the Spotify integration, a manual smoke test is currently more reliable than the dedicated Spotify unit tests in this environment.
+
+Recommended Spotify smoke-test flow:
+
+1. Start the app
+2. Call `POST /admin/spotify/authorization-url`
+3. Complete the OAuth flow in the browser
+4. Call `POST /admin/spotify/playlist-items/sync`
+5. Verify that the local Spotify catalog tables were updated
+
+The current Spotify test classes compile, but Mockito inline mocking is not stable in this local setup because Byte Buddy cannot attach its agent cleanly. The product flow itself should be validated through the admin endpoints until that test infrastructure is cleaned up.
 
 ## Current product status
 
