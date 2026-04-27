@@ -20,8 +20,11 @@ import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfileReposito
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteData;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteRepository;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -70,9 +73,9 @@ class SemanticDocumentIndexingServiceTest {
                 .map(Document::getId)
                 .toList())
                 .containsExactly(
-                        "ALBUM_LOG:album-log-1",
-                        "TRACK_NOTE:spotify-track-1",
-                        "ARTIST_PROFILE:spotify-artist-1"
+                        "90a457f2-0399-3805-bb2f-f2fcf3eeb4b4",
+                        "48259ed7-6c7c-389d-8f30-997a8680e6d0",
+                        "d09185b2-bb97-3b3d-a76f-3f4c524f7b99"
                 );
     }
 
@@ -85,11 +88,11 @@ class SemanticDocumentIndexingServiceTest {
                 "spotify-track-1"
         ));
 
-        verify(vectorStore).delete(List.of("TRACK_NOTE:spotify-track-1"));
+        verify(vectorStore).delete(List.of("48259ed7-6c7c-389d-8f30-997a8680e6d0"));
         verify(vectorStore).add(addedDocumentsCaptor.capture());
         assertThat(addedDocumentsCaptor.getValue()).singleElement()
                 .extracting(Document::getId)
-                .isEqualTo("TRACK_NOTE:spotify-track-1");
+                .isEqualTo("48259ed7-6c7c-389d-8f30-997a8680e6d0");
     }
 
     private SemanticDocumentIndexingService service() {
@@ -100,12 +103,12 @@ class SemanticDocumentIndexingServiceTest {
                         new ArtistProfileSemanticDocumentIndexer(artistProfileRepository, artistProfileTransformer)
                 ),
                 new SemanticDocumentVectorStoreMapper(),
-                vectorStore
+                Optional.of(vectorStore)
         );
     }
 
     private AlbumLog albumLog() {
-        return AlbumLog.create(new AlbumLogData(
+        var albumLog = AlbumLog.create(new AlbumLogData(
                 1,
                 "Spunky",
                 "Monty Alexander",
@@ -131,10 +134,12 @@ class SemanticDocumentIndexingServiceTest {
                 List.of(),
                 "spotify-album-1"
         ));
+        setId(albumLog, UUID.fromString("39fda110-d4ce-4d99-b559-206259679a55"));
+        return albumLog;
     }
 
     private TrackNote trackNote() {
-        return TrackNote.create(new TrackNoteData(
+        var trackNote = TrackNote.create(new TrackNoteData(
                 "spotify-track-1",
                 "spotify-album-1",
                 1,
@@ -162,10 +167,12 @@ class SemanticDocumentIndexingServiceTest {
                 "",
                 new String[]{"groove"}
         ));
+        setId(trackNote, UUID.fromString("d5883e06-93fc-44cc-95d6-0b957f95bc11"));
+        return trackNote;
     }
 
     private ArtistProfile artistProfile() {
-        return ArtistProfile.create(new ArtistProfileData(
+        var artistProfile = ArtistProfile.create(new ArtistProfileData(
                 "spotify-artist-1",
                 "Monty Alexander",
                 "piano",
@@ -180,5 +187,17 @@ class SemanticDocumentIndexingServiceTest {
                 "Important pianist.",
                 new Integer[]{1}
         ));
+        setId(artistProfile, UUID.fromString("6b5d2ff4-c7df-4639-bf38-4060f3504ba5"));
+        return artistProfile;
+    }
+
+    private void setId(Object target, UUID id) {
+        try {
+            Field field = target.getClass().getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(target, id);
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

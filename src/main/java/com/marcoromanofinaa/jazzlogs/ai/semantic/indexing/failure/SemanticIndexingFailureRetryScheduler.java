@@ -3,7 +3,6 @@ package com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.failure;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticIndexingRequestProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
         havingValue = "true",
         matchIfMissing = true
 )
-@ConditionalOnBean(SemanticIndexingRequestProcessor.class)
 public class SemanticIndexingFailureRetryScheduler {
 
     private final SemanticIndexingRequestProcessor requestProcessor;
@@ -28,6 +26,11 @@ public class SemanticIndexingFailureRetryScheduler {
             zone = "${jazzlogs.ai.semantic.indexing.recovery.zone:America/Argentina/Buenos_Aires}"
     )
     public void retryFailures() {
+        if (!requestProcessor.isConfigured()) {
+            log.debug("Skipping scheduled semantic failure retry because vector store is not configured");
+            return;
+        }
+
         try {
             requestProcessor.retryPersistedFailures();
         } catch (Exception exception) {

@@ -4,24 +4,24 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocument;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.event.SemanticIndexingRequest;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.indexer.SemanticDocumentIndexer;
 import com.marcoromanofinaa.jazzlogs.core.exception.FeatureUnavailableException;
+import com.marcoromanofinaa.jazzlogs.core.exception.VectorStoreNotConfiguredException;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@ConditionalOnBean(VectorStore.class)
 public class SemanticDocumentIndexingService {
 
     public static final String TRANSFORMER_VERSION = "semantic-template-v1";
 
     private final List<SemanticDocumentIndexer> indexers;
     private final SemanticDocumentVectorStoreMapper vectorStoreMapper;
-    private final VectorStore vectorStore;
+    private final Optional<VectorStore> vectorStore;
 
     public SemanticDocumentIndexingResult indexAll() {
         log.info("Starting full semantic document rebuild");
@@ -34,6 +34,10 @@ public class SemanticDocumentIndexingService {
 
     public void indexOne(SemanticIndexingRequest request) {
         upsertDocumentInVectorStore(indexerFor(request).indexOne(request.sourceIdentifier()));
+    }
+
+    public boolean isConfigured() {
+        return vectorStore.isPresent();
     }
 
     private List<SemanticDocument> allDocuments() {
@@ -52,7 +56,11 @@ public class SemanticDocumentIndexingService {
     private void upsertDocumentInVectorStore(SemanticDocument semanticDocument) {
         var document = vectorStoreMapper.toSpringAiDocument(semanticDocument, TRANSFORMER_VERSION);
         // TODO: revisar si el vector store concreto soporta upsert real para evitar la ventana delete+add.
-        vectorStore.delete(List.of(document.getId()));
-        vectorStore.add(List.of(document));
+        requiredVectorStore().delete(List.of(document.getId()));
+        requiredVectorStore().add(List.of(document));
+    }
+
+    private VectorStore requiredVectorStore() {
+        return vectorStore.orElseThrow(VectorStoreNotConfiguredException::new);
     }
 }

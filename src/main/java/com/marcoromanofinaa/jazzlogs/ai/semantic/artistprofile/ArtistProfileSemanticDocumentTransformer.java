@@ -4,6 +4,7 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentTransforme
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticTextBuilder;
 import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfile;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
@@ -27,9 +28,7 @@ public class ArtistProfileSemanticDocumentTransformer
     }
 
     private String sourceId(ArtistProfile source) {
-        return source.getId() != null
-                ? source.getId().toString()
-                : source.getSpotifyArtistId();
+        return Objects.requireNonNull(source.getId(), "ArtistProfile id must be present before semantic indexing").toString();
     }
 
     private String embeddingText(ArtistProfile source) {
