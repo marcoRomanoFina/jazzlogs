@@ -26,7 +26,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -34,9 +33,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class SpotifyPlaylistSyncServiceTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
-
-    @Mock
-    private SpotifyProperties spotifyProperties;
 
     @Mock
     private SpotifyConnectionService spotifyConnectionService;
@@ -56,11 +52,9 @@ class SpotifyPlaylistSyncServiceTest {
     @Mock
     private SpotifyAlbumLogBindingService spotifyAlbumLogBindingService;
 
-    @InjectMocks
-    private SpotifyPlaylistSyncService service;
-
     @Test
     void syncConfiguredPlaylistReconcilesSnapshotsAndDeletesRemovedRows() throws Exception {
+        var service = service();
         var connection = SpotifyConnection.create(
                 "access-token",
                 "refresh-token",
@@ -112,8 +106,6 @@ class SpotifyPlaylistSyncServiceTest {
                 .durationMs(1000)
                 .build();
 
-        when(spotifyProperties.playlistId()).thenReturn("playlist-1");
-        when(spotifyProperties.market()).thenReturn("AR");
         when(spotifyConnectionService.getValidConnection()).thenReturn(connection);
         when(spotifyApiClient.fetchPlaylistItems(eq("access-token"), eq("playlist-1"), eq("AR"), eq(50), eq(0)))
                 .thenReturn(new SpotifyApiClient.PlaylistItemsPage(
@@ -249,6 +241,18 @@ class SpotifyPlaylistSyncServiceTest {
         verify(spotifyArtistRepository).deleteAll(argThat(artists ->
                 toArtistList(artists).stream().map(SpotifyArtist::getSpotifyArtistId).toList().equals(List.of("artist-removed"))));
         verify(spotifyAlbumLogBindingService).bindConfiguredPlaylistAlbumsToLogs();
+    }
+
+    private SpotifyPlaylistSyncService service() {
+        return new SpotifyPlaylistSyncService(
+                new SpotifyProperties(null, null, null, "playlist-1", "AR", true, null, null, false),
+                spotifyConnectionService,
+                spotifyApiClient,
+                spotifyAlbumRepository,
+                spotifyArtistRepository,
+                spotifyTrackRepository,
+                spotifyAlbumLogBindingService
+        );
     }
 
     @SuppressWarnings("unchecked")

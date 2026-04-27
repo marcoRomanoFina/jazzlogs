@@ -1,10 +1,10 @@
-package com.marcoromanofinaa.jazzlogs.ai.ask;
+package com.marcoromanofinaa.jazzlogs.ai.recommend;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 
-public record AiAskRequest(
+public record AiRecommendRequest(
         @NotBlank
         String question,
         @Min(1)

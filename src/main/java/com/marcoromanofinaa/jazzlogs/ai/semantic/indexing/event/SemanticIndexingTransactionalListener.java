@@ -1,7 +1,6 @@
 package com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.event;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticIndexingRequestProcessor;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class SemanticIndexingTransactionalListener {
 
-    private final Optional<SemanticIndexingRequestProcessor> requestProcessor;
+    private final SemanticIndexingRequestProcessor requestProcessor;
 
     /*
      * El vector store es una proyección externa. Por eso la escritura en la DB primero commitea
@@ -21,7 +20,7 @@ public class SemanticIndexingTransactionalListener {
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onSemanticIndexingRequested(SemanticIndexingRequest request) {
-        if (requestProcessor.isEmpty()) {
+        if (!requestProcessor.isConfigured()) {
             log.info(
                     "Skipping semantic reindex for type={} sourceIdentifier={} because vector store is not configured",
                     request.type(),
@@ -35,6 +34,6 @@ public class SemanticIndexingTransactionalListener {
                 request.type(),
                 request.sourceIdentifier()
         );
-        requestProcessor.get().process(request);
+        requestProcessor.process(request);
     }
 }

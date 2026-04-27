@@ -4,6 +4,7 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentTransforme
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticTextBuilder;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +31,7 @@ public class TrackNoteSemanticDocumentTransformer
     }
 
     private String sourceId(TrackNote source) {
-        return source.getId() != null
-                ? source.getId().toString()
-                : source.getSpotifyTrackId();
+        return Objects.requireNonNull(source.getId(), "TrackNote id must be present before semantic indexing").toString();
     }
 
     private String embeddingText(TrackNote source) {

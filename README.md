@@ -119,7 +119,7 @@ The next product step is to turn this semantic layer into a proper recommendatio
 - `GET /admin/ai/semantic-documents/track-notes/{spotifyTrackId}/preview`
 - `GET /admin/ai/semantic-documents/artist-profiles/{spotifyArtistId}/preview`
 - `POST /admin/ai/semantic-documents/index`
-- `POST /admin/ai/ask` for the current internal recommendation prototype
+- `POST /admin/ai/recommend` for the current internal recommendation prototype
 
 ## Example data
 

@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,14 +28,9 @@ class SpotifyAlbumLogBindingServiceTest {
     @Mock
     private SpotifyAlbumRepository spotifyAlbumRepository;
 
-    @Mock
-    private SpotifyProperties spotifyProperties;
-
-    @InjectMocks
-    private SpotifyAlbumLogBindingService service;
-
     @Test
     void bindsUnlinkedLogsUsingSpotifyAlbumSeedId() {
+        var service = service();
         var album = SpotifyAlbum.builder()
                 .spotifyAlbumId("album-1")
                 .sourcePlaylistId("playlist-1")
@@ -69,7 +63,6 @@ class SpotifyAlbumLogBindingServiceTest {
                 "album-1"
         ));
 
-        when(spotifyProperties.playlistId()).thenReturn("playlist-1");
         when(spotifyAlbumRepository.findAllBySourcePlaylistIdOrderByNameAsc("playlist-1"))
                 .thenReturn(List.of(album));
         when(albumLogRepository.findAllBySpotifyAlbumIsNullOrderByLogNumberAsc())
@@ -84,6 +77,7 @@ class SpotifyAlbumLogBindingServiceTest {
 
     @Test
     void leavesLogsUntouchedWhenSeedIdDoesNotResolve() {
+        var service = service();
         var log = AlbumLog.create(new AlbumLogData(
                 1,
                 "Unbound Album",
@@ -111,7 +105,6 @@ class SpotifyAlbumLogBindingServiceTest {
                 "missing-album"
         ));
 
-        when(spotifyProperties.playlistId()).thenReturn("playlist-1");
         when(spotifyAlbumRepository.findAllBySourcePlaylistIdOrderByNameAsc("playlist-1"))
                 .thenReturn(List.of());
         when(albumLogRepository.findAllBySpotifyAlbumIsNullOrderByLogNumberAsc())
@@ -122,5 +115,13 @@ class SpotifyAlbumLogBindingServiceTest {
         assertThat(boundCount).isZero();
         assertThat(log.getSpotifyAlbum()).isNull();
         verify(albumLogRepository, never()).saveAll(any());
+    }
+
+    private SpotifyAlbumLogBindingService service() {
+        return new SpotifyAlbumLogBindingService(
+                new SpotifyProperties(null, null, null, "playlist-1", "AR", true, null, null, false),
+                albumLogRepository,
+                spotifyAlbumRepository
+        );
     }
 }

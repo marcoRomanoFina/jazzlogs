@@ -6,19 +6,21 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.failure.SemanticIndexi
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@ConditionalOnBean(SemanticDocumentIndexingService.class)
 public class SemanticIndexingRequestProcessor {
 
     private final SemanticDocumentIndexingService indexingService;
     private final SemanticIndexingFailureRepository failureRepository;
     private final SemanticIndexingRetryProperties retryProperties;
+
+    public boolean isConfigured() {
+        return indexingService.isConfigured();
+    }
 
     /*
      * TODO: exponer un endpoint admin para inspeccionar failures abiertos y disparar retry manual
@@ -41,6 +43,11 @@ public class SemanticIndexingRequestProcessor {
     }
 
     public void retryPersistedFailures() {
+        if (!isConfigured()) {
+            log.debug("Skipping persisted semantic failure retry because vector store is not configured");
+            return;
+        }
+
         var failures = failureRepository.findAllByOrderByLastFailedAtAsc(PageRequest.of(
                 0,
                 Math.max(1, retryProperties.getRecoveryBatchSize())

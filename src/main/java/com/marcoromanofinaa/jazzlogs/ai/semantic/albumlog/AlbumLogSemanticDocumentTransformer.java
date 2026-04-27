@@ -6,6 +6,7 @@ import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogPersonnel;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +31,7 @@ public class AlbumLogSemanticDocumentTransformer
     }
 
     private String sourceId(AlbumLog source) {
-        return source.getId() != null
-                ? source.getId().toString()
-                : "album-log-%s".formatted(source.getLogNumber());
+        return Objects.requireNonNull(source.getId(), "AlbumLog id must be present before semantic indexing").toString();
     }
 
     private String embeddingText(AlbumLog source) {

@@ -1,16 +1,14 @@
 package com.marcoromanofinaa.jazzlogs.ai.semantic.admin;
 
-import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskRequest;
-import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskResponse;
-import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskService;
-import com.marcoromanofinaa.jazzlogs.core.exception.AdminApiKeyNotConfiguredException;
-import com.marcoromanofinaa.jazzlogs.core.exception.InvalidAdminApiKeyException;
-import com.marcoromanofinaa.jazzlogs.core.exception.VectorStoreNotConfiguredException;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendRequest;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendResponse;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendService;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingResult;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingService;
+import com.marcoromanofinaa.jazzlogs.core.exception.AdminApiKeyNotConfiguredException;
+import com.marcoromanofinaa.jazzlogs.core.exception.InvalidAdminApiKeyException;
 import com.marcoromanofinaa.jazzlogs.curation.admin.AdminApiProperties;
 import jakarta.validation.Valid;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,8 +31,8 @@ public class AiAdminController {
 
     private final AdminApiProperties adminProperties;
     private final SemanticDocumentPreviewService previewService;
-    private final AiAskService aiAskService;
-    private final Optional<SemanticDocumentIndexingService> indexingService;
+    private final AiRecommendService recommendService;
+    private final SemanticDocumentIndexingService indexingService;
 
     @GetMapping("/semantic-documents/album-logs/{logNumber}/preview")
     public SemanticDocumentPreview previewAlbumLog(
@@ -70,19 +68,17 @@ public class AiAdminController {
     public SemanticDocumentIndexingResult indexSemanticDocuments(@RequestHeader(ADMIN_HEADER) String adminKey) {
         authorize(adminKey);
         log.info("Admin requested semantic document indexing");
-        return indexingService
-                .map(SemanticDocumentIndexingService::indexAll)
-                .orElseThrow(VectorStoreNotConfiguredException::new);
+        return indexingService.indexAll();
     }
 
-    @PostMapping("/ask")
-    public AiAskResponse ask(
+    @PostMapping("/recommend")
+    public AiRecommendResponse recommend(
             @RequestHeader(ADMIN_HEADER) String adminKey,
-            @Valid @RequestBody AiAskRequest request
+            @Valid @RequestBody AiRecommendRequest request
     ) {
         authorize(adminKey);
-        log.info("Admin requested AI ask query='{}'", request.question());
-        return aiAskService.ask(request);
+        log.info("Admin requested AI recommend query='{}'", request.question());
+        return recommendService.recommend(request);
     }
 
     private void authorize(String adminKey) {
