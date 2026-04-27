@@ -1,8 +1,8 @@
 package com.marcoromanofinaa.jazzlogs.ai.semantic.admin;
 
-import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskRequest;
-import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskResponse;
-import com.marcoromanofinaa.jazzlogs.ai.ask.AiAskService;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendRequest;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendResponse;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendService;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingResult;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingService;
 import com.marcoromanofinaa.jazzlogs.core.exception.AdminApiKeyNotConfiguredException;
@@ -31,7 +31,7 @@ public class AiAdminController {
 
     private final AdminApiProperties adminProperties;
     private final SemanticDocumentPreviewService previewService;
-    private final AiAskService aiAskService;
+    private final AiRecommendService recommendService;
     private final SemanticDocumentIndexingService indexingService;
 
     @GetMapping("/semantic-documents/album-logs/{logNumber}/preview")
@@ -71,14 +71,14 @@ public class AiAdminController {
         return indexingService.indexAll();
     }
 
-    @PostMapping("/ask")
-    public AiAskResponse ask(
+    @PostMapping("/recommend")
+    public AiRecommendResponse recommend(
             @RequestHeader(ADMIN_HEADER) String adminKey,
-            @Valid @RequestBody AiAskRequest request
+            @Valid @RequestBody AiRecommendRequest request
     ) {
         authorize(adminKey);
-        log.info("Admin requested AI ask query='{}'", request.question());
-        return aiAskService.ask(request);
+        log.info("Admin requested AI recommend query='{}'", request.question());
+        return recommendService.recommend(request);
     }
 
     private void authorize(String adminKey) {
