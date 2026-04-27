@@ -6,8 +6,10 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogData;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogPersonnel;
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class AlbumLogSemanticDocumentTransformerTest {
@@ -42,11 +44,12 @@ class AlbumLogSemanticDocumentTransformerTest {
                 List.of(new AlbumLogPersonnel("Lee Morgan", "trumpet")),
                 "spotify-album-1"
         ));
+        setId(albumLog, UUID.fromString("11111111-1111-1111-1111-111111111111"));
 
         var document = transformer.transform(albumLog);
 
         assertThat(document.type()).isEqualTo(SemanticDocumentType.ALBUM_LOG);
-        assertThat(document.getSourceId()).isEqualTo("album-log-1");
+        assertThat(document.getSourceId()).isEqualTo("11111111-1111-1111-1111-111111111111");
         assertThat(document.getTitle()).isEqualTo("Moanin' by Art Blakey & The Jazz Messengers");
         assertThat(document.getEmbeddingText())
                 .contains("Moanin' de Art Blakey & The Jazz Messengers es un álbum 1958, Hard Bop y essential")
@@ -54,5 +57,15 @@ class AlbumLogSemanticDocumentTransformerTest {
                 .contains("Crea una atmósfera late-night y warm, con moods como soulful y groovy.")
                 .contains("Recomendado si: You want bluesy, driving jazz.")
                 .contains("Lee Morgan en trumpet");
+    }
+
+    private void setId(AlbumLog albumLog, UUID id) {
+        try {
+            Field field = AlbumLog.class.getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(albumLog, id);
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

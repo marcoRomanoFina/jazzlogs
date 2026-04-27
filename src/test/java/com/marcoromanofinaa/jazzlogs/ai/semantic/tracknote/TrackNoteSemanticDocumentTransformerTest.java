@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteData;
+import java.lang.reflect.Field;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
 class TrackNoteSemanticDocumentTransformerTest {
@@ -41,11 +43,12 @@ class TrackNoteSemanticDocumentTransformerTest {
                 "",
                 new String[]{"groove", "classic"}
         ));
+        setId(trackNote, UUID.fromString("22222222-2222-2222-2222-222222222222"));
 
         var document = transformer.transform(trackNote);
 
         assertThat(document.type()).isEqualTo(SemanticDocumentType.TRACK_NOTE);
-        assertThat(document.getSourceId()).isEqualTo("spotify-track-1");
+        assertThat(document.getSourceId()).isEqualTo("22222222-2222-2222-2222-222222222222");
         assertThat(document.getTitle()).isEqualTo("Moanin' from Moanin'");
         assertThat(document.getEmbeddingText())
                 .contains("Moanin' es un track instrumental del álbum Moanin', conectado al log #1 de JazzLogs.")
@@ -53,5 +56,15 @@ class TrackNoteSemanticDocumentTransformerTest {
                 .contains("Se siente soulful y churchy, con deep de intensidad emocional y un nivel de accesibilidad easy.")
                 .contains("Por qué pega: It hits like a sermon with a backbeat.")
                 .contains("Es un track destacado asociado con groove y classic.");
+    }
+
+    private void setId(TrackNote trackNote, UUID id) {
+        try {
+            Field field = TrackNote.class.getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(trackNote, id);
+        } catch (ReflectiveOperationException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 }

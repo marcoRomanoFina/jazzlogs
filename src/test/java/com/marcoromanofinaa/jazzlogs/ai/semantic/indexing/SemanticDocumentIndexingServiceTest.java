@@ -73,9 +73,9 @@ class SemanticDocumentIndexingServiceTest {
                 .map(Document::getId)
                 .toList())
                 .containsExactly(
-                        "90a457f2-0399-3805-bb2f-f2fcf3eeb4b4",
-                        "48259ed7-6c7c-389d-8f30-997a8680e6d0",
-                        "d09185b2-bb97-3b3d-a76f-3f4c524f7b99"
+                        "bd81badd-efa5-3d82-bdf6-c61b54ab34d7",
+                        "9a0ba48e-a38b-305a-8b31-89a27b13c239",
+                        "e05c6a06-c334-3511-8b76-86abc4548a2d"
                 );
     }
 
@@ -88,11 +88,11 @@ class SemanticDocumentIndexingServiceTest {
                 "spotify-track-1"
         ));
 
-        verify(vectorStore).delete(List.of("48259ed7-6c7c-389d-8f30-997a8680e6d0"));
+        verify(vectorStore).delete(List.of("9a0ba48e-a38b-305a-8b31-89a27b13c239"));
         verify(vectorStore).add(addedDocumentsCaptor.capture());
         assertThat(addedDocumentsCaptor.getValue()).singleElement()
                 .extracting(Document::getId)
-                .isEqualTo("48259ed7-6c7c-389d-8f30-997a8680e6d0");
+                .isEqualTo("9a0ba48e-a38b-305a-8b31-89a27b13c239");
     }
 
     private SemanticDocumentIndexingService service() {
