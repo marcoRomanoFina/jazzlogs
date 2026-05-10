@@ -2,9 +2,11 @@ package com.marcoromanofinaa.jazzlogs.curation.tracknote;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.event.SemanticIndexingRequestPublisher;
 import com.marcoromanofinaa.jazzlogs.curation.admin.UpsertTrackNoteRequest;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteData;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteRepository;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,18 +17,28 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TrackNoteCurationService {
 
+    private final AlbumLogRepository albumLogRepository;
     private final TrackNoteRepository trackNoteRepository;
     private final SemanticIndexingRequestPublisher indexingRequestPublisher;
 
     @Transactional
     public boolean upsert(UpsertTrackNoteRequest request) {
+        var artistId = albumLogRepository.findByLogNumber(request.logNumber())
+                .flatMap(albumLog -> albumLog.getMainArtists().stream().findFirst())
+                .map(mainArtist -> mainArtist.spotifyArtistId())
+                .filter(Objects::nonNull)
+                .filter(artistIdValue -> !artistIdValue.isBlank())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Album log %s must define at least one main artist before track note upserts"
+                                .formatted(request.logNumber())
+                ));
         var data = new TrackNoteData(
                 request.spotifyTrackId(),
                 request.spotifyAlbumId(),
                 request.logNumber(),
                 request.track(),
                 request.album(),
-                request.artistId(),
+                artistId,
                 request.tier(),
                 request.isInstrumental(),
                 request.isStandout(),

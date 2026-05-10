@@ -4,7 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogBestMoment;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogBestMomentItem;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogData;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogMainArtist;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogPersonnel;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -21,11 +24,12 @@ class AlbumLogSemanticDocumentTransformerTest {
         var albumLog = AlbumLog.create(new AlbumLogData(
                 1,
                 "Moanin'",
-                "Art Blakey & The Jazz Messengers",
+                List.of(new AlbumLogMainArtist("artist-1", "Art Blakey & The Jazz Messengers")),
                 "Original caption",
                 LocalDate.of(2026, 4, 15),
                 "https://www.instagram.com/p/TEST123/",
                 "Hard Bop",
+                "instrumental",
                 "1958",
                 new String[]{"soulful", "groovy"},
                 "essential",
@@ -33,7 +37,11 @@ class AlbumLogSemanticDocumentTransformerTest {
                 "medium-high",
                 "deep",
                 "accessible",
-                "The title track locks into a churchy groove.",
+                new AlbumLogBestMoment(
+                        "The title track locks into a churchy groove.",
+                        List.of(new AlbumLogBestMomentItem("El empuje central", "The band sounds locked in and direct.")),
+                        "It feels ideal for a soulful late-night listen."
+                ),
                 new String[]{"rainy-night", "jazz-discovery"},
                 "Personal log note.",
                 "It defines the hard bop sound.",
@@ -41,7 +49,7 @@ class AlbumLogSemanticDocumentTransformerTest {
                 "You want bluesy, driving jazz.",
                 "You need background-only music.",
                 "Recorded at a peak moment for the Jazz Messengers.",
-                List.of(new AlbumLogPersonnel("Lee Morgan", "trumpet")),
+                List.of(new AlbumLogPersonnel(null, "Lee Morgan", "trumpet")),
                 "spotify-album-1"
         ));
         setId(albumLog, UUID.fromString("11111111-1111-1111-1111-111111111111"));
@@ -52,9 +60,10 @@ class AlbumLogSemanticDocumentTransformerTest {
         assertThat(document.getSourceId()).isEqualTo("11111111-1111-1111-1111-111111111111");
         assertThat(document.getTitle()).isEqualTo("Moanin' by Art Blakey & The Jazz Messengers");
         assertThat(document.getEmbeddingText())
-                .contains("Moanin' de Art Blakey & The Jazz Messengers es un álbum 1958, Hard Bop y essential")
+                .contains("Moanin' de Art Blakey & The Jazz Messengers es un álbum 1958, Hard Bop, perfil vocal instrumental y essential")
                 .contains("Su carácter musical tiene medium-high de energía, deep de intensidad emocional y un nivel de accesibilidad accessible.")
                 .contains("Crea una atmósfera late-night y warm, con moods como soulful y groovy.")
+                .contains("The title track locks into a churchy groove.")
                 .contains("Recomendado si: You want bluesy, driving jazz.")
                 .contains("Lee Morgan en trumpet");
     }

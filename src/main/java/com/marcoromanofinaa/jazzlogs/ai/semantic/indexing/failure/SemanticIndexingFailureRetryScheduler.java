@@ -20,7 +20,7 @@ public class SemanticIndexingFailureRetryScheduler {
 
     private final SemanticIndexingRequestProcessor requestProcessor;
 
-    // TODO: si el volumen crece, mover esta recuperación a un worker dedicado en vez de scheduler in-process.
+    
     @Scheduled(
             cron = "${jazzlogs.ai.semantic.indexing.recovery.cron:0 */10 * * * *}",
             zone = "${jazzlogs.ai.semantic.indexing.recovery.zone:America/Argentina/Buenos_Aires}"

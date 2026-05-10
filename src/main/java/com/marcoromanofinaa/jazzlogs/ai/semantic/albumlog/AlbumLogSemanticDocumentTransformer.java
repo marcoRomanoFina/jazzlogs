@@ -43,7 +43,7 @@ public class AlbumLogSemanticDocumentTransformer
                 .addSection("Contexto de escucha", listeningFit(source))
                 .addSection("Importancia", source.getWhyItMatters())
                 .addSection("Mirada JazzLogs", jazzLogsTake(source))
-                .addSection("Mejor momento", source.getBestMoment())
+                .addSection("Mejor momento", bestMoment(source))
                 .addSection("Recomendado si", source.getRecommendedIf())
                 .addSection("Evitar si", source.getAvoidIf())
                 .addSection("Personal", personnel(source.getPersonnel()))
@@ -54,6 +54,7 @@ public class AlbumLogSemanticDocumentTransformer
         var details = SemanticTextBuilder.clean(Arrays.asList(
                 source.getReleaseYear(),
                 source.getStyle(),
+                SemanticTextBuilder.phrase(source.getVocalProfile(), "perfil vocal %s"),
                 source.getTier()
         ));
 
@@ -117,6 +118,12 @@ public class AlbumLogSemanticDocumentTransformer
     private String jazzLogsTake(AlbumLog source) {
         // Preferimos la editorial note curada, pero mantenemos notes como fallback para data legacy.
         return SemanticTextBuilder.firstText(source.getEditorialNote(), source.getNotes());
+    }
+
+    private Optional<String> bestMoment(AlbumLog source) {
+        return Optional.ofNullable(source.getBestMoment())
+                .map(bestMoment -> bestMoment.flattened())
+                .filter(SemanticTextBuilder::hasText);
     }
 
     private Optional<String> personnel(List<AlbumLogPersonnel> personnel) {

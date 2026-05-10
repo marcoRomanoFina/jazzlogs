@@ -12,7 +12,9 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -39,8 +41,15 @@ public class AlbumLog {
     @Column(nullable = false)
     private String album;
 
-    @Column(nullable = false)
-    private String artist;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "main_artists", columnDefinition = "jsonb")
+    private List<AlbumLogMainArtist> mainArtists;
+
+    @Column(name = "artist_id", length = 64)
+    private String artistId;
+
+    @Column(name = "artist", nullable = false)
+    private String artistName;
 
     @Column(nullable = false, columnDefinition = "text")
     private String caption;
@@ -53,6 +62,9 @@ public class AlbumLog {
 
     @Column
     private String style;
+
+    @Column(name = "vocal_profile", length = 32)
+    private String vocalProfile;
 
     @Column(name = "release_year", length = 16)
     private String releaseYear;
@@ -77,8 +89,9 @@ public class AlbumLog {
     @Column(length = 32)
     private String accessibility;
 
-    @Column(name = "best_moment", columnDefinition = "text")
-    private String bestMoment;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "best_moment", columnDefinition = "jsonb")
+    private AlbumLogBestMoment bestMoment;
 
     @JdbcTypeCode(SqlTypes.ARRAY)
     @Column(name = "listening_context", nullable = false, columnDefinition = "text[]")
@@ -106,9 +119,6 @@ public class AlbumLog {
     @Column(nullable = false, columnDefinition = "jsonb")
     private List<AlbumLogPersonnel> personnel;
 
-    @Column(name = "spotify_album_seed_id", length = 64)
-    private String spotifyAlbumSeedId;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spotify_album_id", unique = true)
     private SpotifyAlbum spotifyAlbum;
@@ -131,11 +141,12 @@ public class AlbumLog {
         update(new AlbumLogData(
                 source.getLogNumber(),
                 source.getAlbum(),
-                source.getArtist(),
+                source.getMainArtists(),
                 source.getCaption(),
                 source.getPostedAt(),
                 source.getInstagramPermalink(),
                 source.getStyle(),
+                source.getVocalProfile(),
                 source.getReleaseYear(),
                 source.getMoods(),
                 source.getTier(),
@@ -152,18 +163,25 @@ public class AlbumLog {
                 source.getAvoidIf(),
                 source.getAlbumContext(),
                 source.getPersonnel(),
-                source.getSpotifyAlbumSeedId()
+                source.getSpotifyAlbum() != null ? source.getSpotifyAlbum().getSpotifyAlbumId() : null
         ));
     }
 
     public void update(AlbumLogData data) {
         this.logNumber = data.logNumber();
         this.album = data.album();
-        this.artist = data.artist();
+        this.mainArtists = data.mainArtists();
+        this.artistId = data.mainArtists() == null || data.mainArtists().isEmpty()
+                ? null
+                : data.mainArtists().getFirst().spotifyArtistId();
+        this.artistName = data.mainArtists() == null || data.mainArtists().isEmpty()
+                ? null
+                : data.mainArtists().getFirst().artistName();
         this.caption = data.caption();
         this.postedAt = data.postedAt();
         this.instagramPermalink = data.instagramPermalink();
         this.style = data.style();
+        this.vocalProfile = data.vocalProfile();
         this.releaseYear = data.releaseYear();
         this.moods = data.moods();
         this.tier = data.tier();
@@ -180,10 +198,18 @@ public class AlbumLog {
         this.avoidIf = data.avoidIf();
         this.albumContext = data.albumContext();
         this.personnel = data.personnel();
-        this.spotifyAlbumSeedId = data.spotifyAlbumSeedId();
     }
 
     public void linkSpotifyAlbum(SpotifyAlbum spotifyAlbum) {
         this.spotifyAlbum = spotifyAlbum;
+    }
+
+    public String getArtist() {
+        return Optional.ofNullable(mainArtists)
+                .filter(artists -> !artists.isEmpty())
+                .map(artists -> artists.stream()
+                        .map(AlbumLogMainArtist::artistName)
+                        .collect(Collectors.joining(" & ")))
+                .orElse(artistName);
     }
 }

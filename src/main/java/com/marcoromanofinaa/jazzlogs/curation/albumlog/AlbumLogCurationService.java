@@ -5,6 +5,8 @@ import com.marcoromanofinaa.jazzlogs.curation.admin.UpsertAlbumLogRequest;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogData;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;
+import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbumRepository;
+import com.marcoromanofinaa.jazzlogs.spotify.core.SpotifyException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlbumLogCurationService {
 
     private final AlbumLogRepository albumLogRepository;
+    private final SpotifyAlbumRepository spotifyAlbumRepository;
     private final SemanticIndexingRequestPublisher indexingRequestPublisher;
 
     @Transactional
@@ -23,11 +26,12 @@ public class AlbumLogCurationService {
         var data = new AlbumLogData(
                 request.logNumber(),
                 request.album(),
-                request.artist(),
+                request.mainArtists(),
                 request.caption(),
                 request.postedAt(),
                 request.instagramPermalink(),
                 request.style(),
+                request.vocalProfile(),
                 request.releaseYear(),
                 request.moods().toArray(String[]::new),
                 request.tier(),
@@ -46,12 +50,15 @@ public class AlbumLogCurationService {
                 request.personnel(),
                 request.spotifyAlbumId()
         );
+        var spotifyAlbum = resolveSpotifyAlbum(request.spotifyAlbumId());
         var albumLog = AlbumLog.create(data);
+        albumLog.linkSpotifyAlbum(spotifyAlbum);
 
         albumLogRepository.findByLogNumber(request.logNumber())
                 .ifPresentOrElse(existingAlbumLog -> {
                     log.info("Updating album log curation for logNumber={}", request.logNumber());
                     existingAlbumLog.update(data);
+                    existingAlbumLog.linkSpotifyAlbum(spotifyAlbum);
                     albumLogRepository.save(existingAlbumLog);
                 }, () -> {
                     log.info("Creating album log curation for logNumber={}", request.logNumber());
@@ -59,5 +66,14 @@ public class AlbumLogCurationService {
                 });
         indexingRequestPublisher.requestAlbumLogReindex(request.logNumber());
         return true;
+    }
+
+    private com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbum resolveSpotifyAlbum(String spotifyAlbumId) {
+        if (spotifyAlbumId == null || spotifyAlbumId.isBlank()) {
+            return null;
+        }
+
+        return spotifyAlbumRepository.findById(spotifyAlbumId)
+                .orElseThrow(() -> new SpotifyException(400, "Spotify album not found for id " + spotifyAlbumId));
     }
 }

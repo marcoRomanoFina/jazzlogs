@@ -3,14 +3,12 @@ package com.marcoromanofinaa.jazzlogs.logbook.albumlog;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record AlbumLogPersonnel(
-        @Size(max = 64)
-        String spotifyArtistId,
+public record AlbumLogBestMomentItem(
         @NotBlank
         @Size(max = 255)
-        String name,
+        String momento,
         @NotBlank
-        @Size(max = 100)
-        String role
+        @Size(max = 2000)
+        String descripcion
 ) {
 }

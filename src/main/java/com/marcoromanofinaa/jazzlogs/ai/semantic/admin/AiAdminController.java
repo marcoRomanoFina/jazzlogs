@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AiAdminController {
 
-    // TODO: sumar endpoints para listar failures de indexado y reintentar uno puntual desde admin.
+    
     private static final String ADMIN_HEADER = "X-Admin-Key";
 
     private final AdminApiProperties adminProperties;

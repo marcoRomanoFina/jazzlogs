@@ -20,9 +20,6 @@ public record UpsertTrackNoteRequest(
         @NotBlank
         @Size(max = 512)
         String album,
-        @NotBlank
-        @Size(max = 64)
-        String artistId,
         @Size(max = 64)
         String tier,
         boolean isInstrumental,

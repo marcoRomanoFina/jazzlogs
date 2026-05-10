@@ -10,7 +10,6 @@ import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcoromanofinaa.jazzlogs.spotify.auth.SpotifyConnectionService;
-import com.marcoromanofinaa.jazzlogs.spotify.binding.SpotifyAlbumLogBindingService;
 import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbum;
 import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbumRepository;
 import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyArtist;
@@ -48,9 +47,6 @@ class SpotifyPlaylistSyncServiceTest {
 
     @Mock
     private SpotifyTrackRepository spotifyTrackRepository;
-
-    @Mock
-    private SpotifyAlbumLogBindingService spotifyAlbumLogBindingService;
 
     @Test
     void syncConfiguredPlaylistReconcilesSnapshotsAndDeletesRemovedRows() throws Exception {
@@ -240,7 +236,6 @@ class SpotifyPlaylistSyncServiceTest {
                 toAlbumList(albums).stream().map(SpotifyAlbum::getSpotifyAlbumId).toList().equals(List.of("album-removed"))));
         verify(spotifyArtistRepository).deleteAll(argThat(artists ->
                 toArtistList(artists).stream().map(SpotifyArtist::getSpotifyArtistId).toList().equals(List.of("artist-removed"))));
-        verify(spotifyAlbumLogBindingService).bindConfiguredPlaylistAlbumsToLogs();
     }
 
     private SpotifyPlaylistSyncService service() {
@@ -250,8 +245,7 @@ class SpotifyPlaylistSyncServiceTest {
                 spotifyApiClient,
                 spotifyAlbumRepository,
                 spotifyArtistRepository,
-                spotifyTrackRepository,
-                spotifyAlbumLogBindingService
+                spotifyTrackRepository
         );
     }
 

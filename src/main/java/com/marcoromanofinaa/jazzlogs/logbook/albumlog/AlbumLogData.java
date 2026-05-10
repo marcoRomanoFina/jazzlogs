@@ -6,11 +6,12 @@ import java.util.List;
 public record AlbumLogData(
         Integer logNumber,
         String album,
-        String artist,
+        List<AlbumLogMainArtist> mainArtists,
         String caption,
         LocalDate postedAt,
         String instagramPermalink,
         String style,
+        String vocalProfile,
         String releaseYear,
         String[] moods,
         String tier,
@@ -18,7 +19,7 @@ public record AlbumLogData(
         String energy,
         String moodIntensity,
         String accessibility,
-        String bestMoment,
+        AlbumLogBestMoment bestMoment,
         String[] listeningContext,
         String notes,
         String whyItMatters,
@@ -27,6 +28,6 @@ public record AlbumLogData(
         String avoidIf,
         String albumContext,
         List<AlbumLogPersonnel> personnel,
-        String spotifyAlbumSeedId
+        String spotifyAlbumId
 ) {
 }

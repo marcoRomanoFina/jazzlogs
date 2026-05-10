@@ -2,15 +2,25 @@ package com.marcoromanofinaa.jazzlogs.ai.semantic.tracknote;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentTransformer;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticTextBuilder;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogMainArtist;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogPersonnel;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class TrackNoteSemanticDocumentTransformer
         implements SemanticDocumentTransformer<TrackNote, TrackNoteSemanticDocument> {
+
+    private final AlbumLogRepository albumLogRepository;
 
     /*
      * Las track notes capturan semántica a nivel canción: rol, groove, energía, contexto y mirada personal.
@@ -35,9 +45,13 @@ public class TrackNoteSemanticDocumentTransformer
     }
 
     private String embeddingText(TrackNote source) {
+        var albumLog = albumLogRepository.findByLogNumber(source.getLogNumber()).orElse(null);
+
         // Mantener el mismo orden entre tracks ayuda a que el modelo compare estructuras de prosa parecidas.
         return new SemanticTextBuilder()
-                .addSection("Identidad", identity(source))
+                .addSection("Identidad", identity(source, albumLog))
+                .addSection("Artistas principales", mainArtistSignal(albumLog))
+                .addSection("Marco del álbum", albumContext(albumLog))
                 .addSection("Carácter musical", musicalCharacter(source))
                 .addSection("Perfil emocional", moodProfile(source))
                 .addSection("Contexto de escucha", listeningFit(source))
@@ -50,14 +64,47 @@ public class TrackNoteSemanticDocumentTransformer
                 .build();
     }
 
-    private String identity(TrackNote source) {
-        return "%s es %s del álbum %s, conectado al log #%s de JazzLogs."
+    private String identity(TrackNote source, AlbumLog albumLog) {
+        var mainArtistNames = mainArtistNames(albumLog);
+        var artistClause = mainArtistNames.isEmpty()
+                ? ""
+                : " Sus artistas principales son %s.".formatted(SemanticTextBuilder.naturalJoin(mainArtistNames));
+
+        return "%s es %s del álbum %s, conectado al log #%s de JazzLogs.%s"
                 .formatted(
                         source.getTrack(),
                         source.isInstrumental() ? "un track instrumental" : "un track vocal",
                         source.getAlbum(),
-                        source.getLogNumber()
+                        source.getLogNumber(),
+                        artistClause
                 );
+    }
+
+    private Optional<String> mainArtistSignal(AlbumLog albumLog) {
+        var mainArtistNames = mainArtistNames(albumLog);
+        if (mainArtistNames.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of("Los artistas principales de este track son %s."
+                .formatted(SemanticTextBuilder.naturalJoin(mainArtistNames)));
+    }
+
+    private Optional<String> albumContext(AlbumLog albumLog) {
+        if (albumLog == null) {
+            return Optional.empty();
+        }
+
+        var details = SemanticTextBuilder.clean(Arrays.asList(
+                formatMainArtists(albumLog.getMainArtists()),
+                formatPersonnel(albumLog.getPersonnel())
+        ));
+
+        if (details.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of("%s.".formatted(SemanticTextBuilder.naturalJoin(details)));
     }
 
     private Optional<String> musicalCharacter(TrackNote source) {
@@ -128,5 +175,47 @@ public class TrackNoteSemanticDocumentTransformer
                 ? "Es un track destacado asociado con %s.".formatted(tags)
                 : "El track está asociado con %s.".formatted(tags);
         return Optional.of(sentence);
+    }
+
+    private String formatMainArtists(List<AlbumLogMainArtist> mainArtists) {
+        var artists = mainArtistNames(mainArtists);
+
+        if (artists.isEmpty()) {
+            return null;
+        }
+
+        return "los artistas principales del track son %s".formatted(SemanticTextBuilder.naturalJoin(artists));
+    }
+
+    private List<String> mainArtistNames(AlbumLog albumLog) {
+        if (albumLog == null) {
+            return List.of();
+        }
+
+        return mainArtistNames(albumLog.getMainArtists());
+    }
+
+    private List<String> mainArtistNames(List<AlbumLogMainArtist> mainArtists) {
+        return Optional.ofNullable(mainArtists)
+                .orElseGet(List::of)
+                .stream()
+                .map(AlbumLogMainArtist::artistName)
+                .filter(SemanticTextBuilder::hasText)
+                .toList();
+    }
+
+    private String formatPersonnel(List<AlbumLogPersonnel> personnel) {
+        var people = Optional.ofNullable(personnel)
+                .orElseGet(List::of)
+                .stream()
+                .map(person -> "%s en %s".formatted(person.name(), person.role()))
+                .filter(SemanticTextBuilder::hasText)
+                .collect(Collectors.toList());
+
+        if (people.isEmpty()) {
+            return null;
+        }
+
+        return "el personnel incluye %s".formatted(SemanticTextBuilder.naturalJoin(people));
     }
 }

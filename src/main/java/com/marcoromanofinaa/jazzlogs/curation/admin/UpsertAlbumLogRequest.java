@@ -1,5 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.curation.admin;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogPersonnel;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogBestMoment;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogMainArtist;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -14,9 +16,10 @@ public record UpsertAlbumLogRequest(
         @NotBlank
         @Size(max = 255)
         String album,
-        @NotBlank
-        @Size(max = 255)
-        String artist,
+        @NotNull
+        @NotEmpty
+        @Size(max = 5)
+        List<@Valid AlbumLogMainArtist> mainArtists,
         @NotBlank
         @Size(max = 20000)
         String caption,
@@ -30,6 +33,12 @@ public record UpsertAlbumLogRequest(
         String instagramPermalink,
         @Size(max = 255)
         String style,
+        @Size(max = 32)
+        @Pattern(
+                regexp = "^(instrumental|mixed|vocal)?$",
+                message = "vocalProfile must be instrumental, mixed, or vocal"
+        )
+        String vocalProfile,
         @Size(max = 16)
         String releaseYear,
         @NotNull
@@ -50,8 +59,9 @@ public record UpsertAlbumLogRequest(
         String moodIntensity,
         @Size(max = 32)
         String accessibility,
-        @Size(max = 1000)
-        String bestMoment,
+        @NotNull
+        @Valid
+        AlbumLogBestMoment bestMoment,
         @NotNull
         @Size(max = 20)
         List<@NotBlank @Size(max = 50) String> listeningContext,
@@ -74,6 +84,7 @@ public record UpsertAlbumLogRequest(
         String spotifyAlbumId
 ) {
     public UpsertAlbumLogRequest {
+        mainArtists = mainArtists == null ? List.of() : mainArtists;
         moods = moods == null ? List.of() : moods;
         vibe = vibe == null ? List.of() : vibe;
         listeningContext = listeningContext == null ? List.of() : listeningContext;

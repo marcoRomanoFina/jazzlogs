@@ -22,10 +22,7 @@ public class SemanticIndexingRequestProcessor {
         return indexingService.isConfigured();
     }
 
-    /*
-     * TODO: exponer un endpoint admin para inspeccionar failures abiertos y disparar retry manual
-     * de un documento puntual cuando haga falta debugging operativo.
-     */
+    
     public void process(SemanticIndexingRequest request) {
         try {
             indexingService.indexOne(request);
