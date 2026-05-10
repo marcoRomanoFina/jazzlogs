@@ -1,5 +1,8 @@
-package com.marcoromanofinaa.jazzlogs.ai.recommend;
+package com.marcoromanofinaa.jazzlogs.ai.recommend.api;
 
+import com.marcoromanofinaa.jazzlogs.ai.recommend.core.AiRecommendService;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.core.model.AiRecommendRequest;
+import com.marcoromanofinaa.jazzlogs.ai.recommend.core.model.AiRecommendResponse;
 import com.marcoromanofinaa.jazzlogs.curation.admin.AdminRequestAuthorizer;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

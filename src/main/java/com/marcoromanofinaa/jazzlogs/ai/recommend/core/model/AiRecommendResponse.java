@@ -1,4 +1,4 @@
-package com.marcoromanofinaa.jazzlogs.ai.recommend;
+package com.marcoromanofinaa.jazzlogs.ai.recommend.core.model;
 
 import java.util.List;
 
