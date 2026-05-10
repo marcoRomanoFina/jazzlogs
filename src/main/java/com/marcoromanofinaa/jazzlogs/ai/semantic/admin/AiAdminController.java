@@ -1,20 +1,15 @@
 package com.marcoromanofinaa.jazzlogs.ai.semantic.admin;
 
-import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendRequest;
-import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendResponse;
-import com.marcoromanofinaa.jazzlogs.ai.recommend.AiRecommendService;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingResult;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.SemanticDocumentIndexingService;
 import com.marcoromanofinaa.jazzlogs.core.exception.AdminApiKeyNotConfiguredException;
 import com.marcoromanofinaa.jazzlogs.core.exception.InvalidAdminApiKeyException;
 import com.marcoromanofinaa.jazzlogs.curation.admin.AdminApiProperties;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,13 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AiAdminController {
 
-    // Los endpoints de IA son solo para admin mientras el pipeline RAG se diseña y valida.
-    // TODO: sumar endpoints para listar failures de indexado y reintentar uno puntual desde admin.
+    
     private static final String ADMIN_HEADER = "X-Admin-Key";
 
     private final AdminApiProperties adminProperties;
     private final SemanticDocumentPreviewService previewService;
-    private final AiRecommendService recommendService;
     private final SemanticDocumentIndexingService indexingService;
 
     @GetMapping("/semantic-documents/album-logs/{logNumber}/preview")
@@ -69,16 +62,6 @@ public class AiAdminController {
         authorize(adminKey);
         log.info("Admin requested semantic document indexing");
         return indexingService.indexAll();
-    }
-
-    @PostMapping("/recommend")
-    public AiRecommendResponse recommend(
-            @RequestHeader(ADMIN_HEADER) String adminKey,
-            @Valid @RequestBody AiRecommendRequest request
-    ) {
-        authorize(adminKey);
-        log.info("Admin requested AI recommend query='{}'", request.question());
-        return recommendService.recommend(request);
     }
 
     private void authorize(String adminKey) {

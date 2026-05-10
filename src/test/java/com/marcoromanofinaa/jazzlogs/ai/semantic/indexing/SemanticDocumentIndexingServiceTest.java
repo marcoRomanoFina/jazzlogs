@@ -12,6 +12,7 @@ import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.indexer.ArtistProfileS
 import com.marcoromanofinaa.jazzlogs.ai.semantic.indexing.indexer.TrackNoteSemanticDocumentIndexer;
 import com.marcoromanofinaa.jazzlogs.ai.semantic.tracknote.TrackNoteSemanticDocumentTransformer;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLog;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogBestMoment;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogData;
 import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;
 import com.marcoromanofinaa.jazzlogs.logbook.artistprofile.ArtistProfile;
@@ -53,12 +54,14 @@ class SemanticDocumentIndexingServiceTest {
     private ArgumentCaptor<List<Document>> addedDocumentsCaptor;
 
     private final AlbumLogSemanticDocumentTransformer albumLogTransformer = new AlbumLogSemanticDocumentTransformer();
-    private final TrackNoteSemanticDocumentTransformer trackNoteTransformer = new TrackNoteSemanticDocumentTransformer();
     private final ArtistProfileSemanticDocumentTransformer artistProfileTransformer = new ArtistProfileSemanticDocumentTransformer();
 
     @Test
     void rebuildsAllSemanticDocumentsIntoVectorStore() {
-        when(albumLogRepository.findAllByOrderByLogNumberAsc()).thenReturn(List.of(albumLog()));
+        var albumLog = albumLog();
+
+        when(albumLogRepository.findAllByOrderByLogNumberAsc()).thenReturn(List.of(albumLog));
+        when(albumLogRepository.findByLogNumber(1)).thenReturn(Optional.of(albumLog));
         when(trackNoteRepository.findAll()).thenReturn(List.of(trackNote()));
         when(artistProfileRepository.findAll()).thenReturn(List.of(artistProfile()));
 
@@ -81,6 +84,9 @@ class SemanticDocumentIndexingServiceTest {
 
     @Test
     void indexesSingleTrackNoteFromRequest() {
+        var albumLog = albumLog();
+
+        when(albumLogRepository.findByLogNumber(1)).thenReturn(Optional.of(albumLog));
         when(trackNoteRepository.findBySpotifyTrackId("spotify-track-1")).thenReturn(java.util.Optional.of(trackNote()));
 
         service().indexOne(new SemanticIndexingRequest(
@@ -96,6 +102,7 @@ class SemanticDocumentIndexingServiceTest {
     }
 
     private SemanticDocumentIndexingService service() {
+        var trackNoteTransformer = new TrackNoteSemanticDocumentTransformer(albumLogRepository);
         return new SemanticDocumentIndexingService(
                 List.of(
                         new AlbumLogSemanticDocumentIndexer(albumLogRepository, albumLogTransformer),
@@ -111,11 +118,12 @@ class SemanticDocumentIndexingServiceTest {
         var albumLog = AlbumLog.create(new AlbumLogData(
                 1,
                 "Spunky",
-                "Monty Alexander",
+                List.of(new com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogMainArtist("spotify-artist-1", "Monty Alexander")),
                 "Caption",
                 LocalDate.of(2026, 2, 2),
                 "https://www.instagram.com/p/TEST123/",
                 "Hard Bop / Soul Jazz",
+                null,
                 null,
                 new String[]{"energetic", "groovy"},
                 null,
@@ -123,7 +131,7 @@ class SemanticDocumentIndexingServiceTest {
                 null,
                 null,
                 null,
-                null,
+                new AlbumLogBestMoment(null, List.of(), null),
                 new String[]{},
                 "Opening log.",
                 null,

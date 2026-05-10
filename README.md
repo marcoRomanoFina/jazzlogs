@@ -94,6 +94,46 @@ The next product step is to turn this semantic layer into a proper recommendatio
 - personalized recommendations shaped by mood, context, and listening intent
 - lightweight plan limits for `free`, `plus`, and `pro` style experiences
 
+### 5. Recommendation product direction for free v1
+
+The current recommendation prototype is intentionally opinionated and cost-aware.
+
+For the first free version, the operating assumptions are:
+
+- single-turn recommendations only
+- no conversation memory
+- no web search or external sources
+- recommendations must be grounded only in JazzLogs curated data plus Spotify catalog metadata already synced locally
+- the assistant only handles jazz album or track recommendations and should politely refuse unrelated topics
+- the free plan should stay heavily rate-limited, with a likely starting point of `1 request per week`
+
+The current LLM setup is optimized for a low-cost first release:
+
+- model: `gpt-5.4-mini`
+- temperature: `0.5`
+- reasoning effort: `low`
+- verbosity: `low`
+- max completion tokens: `350`
+
+This recommendation flow currently uses:
+
+- semantic retrieval from local `pgvector` documents
+- candidate assembly from `AlbumLog`, `TrackNote`, and synced Spotify metadata
+- a final LLM selection step with a strict editorial prompt
+
+Important product guardrails:
+
+- JazzLogs should never recommend albums or tracks outside the retrieved candidate set
+- JazzLogs should not use outside knowledge when answering
+- JazzLogs should not hallucinate facts, credits, history, or musical traits not present in the stored data
+- album and track recommendations should always tie back to the JazzLogs post itself, especially `captionEssence`
+- responses should always mention the JazzLogs `logNumber`
+
+Prompt caching is also enabled for the recommendation prompts to help keep repeated prompt prefixes cheaper over time:
+
+- album cache key: `recommend-album-v1`
+- track cache key: `recommend-track-v1`
+
 ## API surface
 
 ### Public read endpoints
@@ -128,7 +168,12 @@ The next product step is to turn this semantic layer into a proper recommendatio
 ```json
 {
   "album": "Spunky",
-  "artist": "Monty Alexander",
+  "mainArtists": [
+    {
+      "spotifyArtistId": "30V1rKijENF5MFcGidInfh",
+      "artistName": "Monty Alexander"
+    }
+  ],
   "caption": "Warm, groovy hard bop with a playful pulse and a late-night club feel.",
   "postedAt": "2026-02-02",
   "instagramPermalink": "https://www.instagram.com/p/DUReEzNEfyX/",
@@ -141,7 +186,20 @@ The next product step is to turn this semantic layer into a proper recommendatio
   "energy": "medium-high",
   "moodIntensity": "medium",
   "accessibility": "high",
-  "bestMoment": "A lively evening walk or a small gathering with good speakers.",
+  "bestMoment": {
+    "introduccion": "This album lands best when you want something warm, direct, and full of groove.",
+    "momentos": [
+      {
+        "momento": "The lively evening walk",
+        "descripcion": "Perfect when you want momentum, movement, and something that feels upbeat without sounding rushed."
+      },
+      {
+        "momento": "A small gathering with good speakers",
+        "descripcion": "It fills the room with personality and swing without becoming background wallpaper."
+      }
+    ],
+    "conclusion": "Overall, it works best in social or active moments where you still want real musical character."
+  },
   "listeningContext": ["night", "walking", "small-group"],
   "notes": "Standout track: Rattlesnake.",
   "whyItMatters": "A great entry point into soulful piano-led hard bop.",
@@ -163,7 +221,6 @@ The next product step is to turn this semantic layer into a proper recommendatio
   "logNumber": 1,
   "track": "Rattlesnake",
   "album": "Spunky",
-  "artistId": "spotify-artist-id",
   "tier": "free",
   "isInstrumental": true,
   "isStandout": true,

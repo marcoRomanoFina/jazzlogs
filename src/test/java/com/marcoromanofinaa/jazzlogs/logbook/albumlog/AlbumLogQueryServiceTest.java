@@ -35,7 +35,6 @@ class AlbumLogQueryServiceTest {
 
         assertThat(response.logNumber()).isEqualTo(7);
         assertThat(response.album()).isEqualTo("Sonny Rollins and the Contemporary Leaders");
-        assertThat(response.spotifyAlbumSeedId()).isNull();
         assertThat(response.spotifyAlbumId()).isNull();
     }
 
@@ -69,11 +68,12 @@ class AlbumLogQueryServiceTest {
         return AlbumLog.create(new AlbumLogData(
                 logNumber,
                 album,
-                "Test Artist",
+                List.of(new AlbumLogMainArtist("artist-1", "Test Artist")),
                 "Test caption",
                 LocalDate.of(2026, 4, 15),
                 "https://www.instagram.com/p/TEST123/",
                 "Hard Bop",
+                "instrumental",
                 null,
                 new String[]{"warm", "groovy"},
                 null,
@@ -81,7 +81,7 @@ class AlbumLogQueryServiceTest {
                 null,
                 null,
                 null,
-                null,
+                new AlbumLogBestMoment(null, List.of(), null),
                 new String[]{},
                 "Test notes",
                 null,

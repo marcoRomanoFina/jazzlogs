@@ -1,0 +1,47 @@
+alter table album_logs
+    add column if not exists vocal_profile varchar(32);
+
+update album_logs
+set vocal_profile = case log_number
+    when 1 then 'instrumental'
+    when 2 then 'instrumental'
+    when 3 then 'vocal'
+    when 4 then 'instrumental'
+    when 5 then 'instrumental'
+    when 6 then 'instrumental'
+    when 7 then 'instrumental'
+    when 8 then 'instrumental'
+    when 9 then 'vocal'
+    when 10 then 'instrumental'
+    when 11 then 'instrumental'
+    when 12 then 'vocal'
+    when 13 then 'instrumental'
+    when 14 then 'instrumental'
+    when 15 then 'vocal'
+    when 16 then 'instrumental'
+    when 17 then 'instrumental'
+    when 18 then 'instrumental'
+    when 19 then 'instrumental'
+    when 20 then 'instrumental'
+    when 21 then 'vocal'
+    when 22 then 'instrumental'
+    when 23 then 'instrumental'
+    when 24 then 'instrumental'
+    when 25 then 'instrumental'
+    when 26 then 'instrumental'
+    when 27 then 'vocal'
+    when 28 then 'instrumental'
+    when 29 then 'instrumental'
+    when 30 then 'mixed'
+    when 31 then 'instrumental'
+    when 32 then 'instrumental'
+    when 33 then 'vocal'
+    when 34 then 'instrumental'
+    when 35 then 'instrumental'
+    when 36 then 'instrumental'
+    when 37 then 'instrumental'
+    when 38 then 'instrumental'
+    when 39 then 'vocal'
+    else vocal_profile
+end
+where log_number between 1 and 39;

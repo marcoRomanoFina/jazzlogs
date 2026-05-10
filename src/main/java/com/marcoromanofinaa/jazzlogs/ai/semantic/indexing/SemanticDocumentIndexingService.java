@@ -55,7 +55,7 @@ public class SemanticDocumentIndexingService {
 
     private void upsertDocumentInVectorStore(SemanticDocument semanticDocument) {
         var document = vectorStoreMapper.toSpringAiDocument(semanticDocument, TRANSFORMER_VERSION);
-        // TODO: revisar si el vector store concreto soporta upsert real para evitar la ventana delete+add.
+        
         requiredVectorStore().delete(List.of(document.getId()));
         requiredVectorStore().add(List.of(document));
     }

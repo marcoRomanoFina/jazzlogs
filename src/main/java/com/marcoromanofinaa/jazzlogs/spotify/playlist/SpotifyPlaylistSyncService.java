@@ -2,7 +2,6 @@ package com.marcoromanofinaa.jazzlogs.spotify.playlist;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marcoromanofinaa.jazzlogs.spotify.auth.SpotifyConnectionService;
-import com.marcoromanofinaa.jazzlogs.spotify.binding.SpotifyAlbumLogBindingService;
 import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbum;
 import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbumRepository;
 import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbumSyncData;
@@ -44,13 +43,11 @@ public class SpotifyPlaylistSyncService {
     private final SpotifyAlbumRepository spotifyAlbumRepository;
     private final SpotifyArtistRepository spotifyArtistRepository;
     private final SpotifyTrackRepository spotifyTrackRepository;
-    private final SpotifyAlbumLogBindingService spotifyAlbumLogBindingService;
 
     @Transactional
     // Punto de entrada principal del sync: pagina la playlist, junta álbumes,
     // artistas y tracks en memoria, los reconcilia contra filas existentes,
-    // persiste el delta y luego vincula logs editoriales no enlazados con los
-    // álbumes sincronizados de Spotify.
+    // persiste el delta contra las tablas locales de Spotify.
     public int syncConfiguredPlaylist() {
         var playlistId = requireConfiguredPlaylistId();
         log.info("Starting Spotify playlist sync for playlistId={}", playlistId);
@@ -107,12 +104,10 @@ public class SpotifyPlaylistSyncService {
         deleteRemovedTracks(existingTracksById, syncedTracksById);
         deleteRemovedAlbums(existingAlbumsById, syncedAlbumsById);
         deleteRemovedArtists(existingArtistsById, syncedArtistsById);
-        var boundLogs = spotifyAlbumLogBindingService.bindConfiguredPlaylistAlbumsToLogs();
         log.info(
-                "Completed Spotify playlist sync for playlistId={} with {} tracks persisted and {} album logs bound",
+                "Completed Spotify playlist sync for playlistId={} with {} tracks persisted",
                 playlistId,
-                tracksById.size(),
-                boundLogs
+                tracksById.size()
         );
         return tracksById.size();
     }

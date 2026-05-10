@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record AlbumLogPersonnel(
+        @Size(max = 64)
+        String spotifyArtistId,
         @NotBlank
         @Size(max = 255)
         String name,

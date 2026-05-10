@@ -1,20 +1,31 @@
 package com.marcoromanofinaa.jazzlogs.ai.semantic.tracknote;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import com.marcoromanofinaa.jazzlogs.ai.semantic.core.SemanticDocumentType;
+import com.marcoromanofinaa.jazzlogs.logbook.albumlog.AlbumLogRepository;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNote;
 import com.marcoromanofinaa.jazzlogs.logbook.tracknote.TrackNoteData;
 import java.lang.reflect.Field;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 class TrackNoteSemanticDocumentTransformerTest {
 
-    private final TrackNoteSemanticDocumentTransformer transformer = new TrackNoteSemanticDocumentTransformer();
+    @Mock
+    private AlbumLogRepository albumLogRepository;
 
     @Test
     void transformsTrackNoteIntoSemanticDocument() {
+        when(albumLogRepository.findByLogNumber(1)).thenReturn(Optional.empty());
+
+        var transformer = new TrackNoteSemanticDocumentTransformer(albumLogRepository);
         var trackNote = TrackNote.create(new TrackNoteData(
                 "spotify-track-1",
                 "spotify-album-1",
