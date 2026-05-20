@@ -1,5 +1,7 @@
-package com.marcoromanofinaa.jazzlogs.user.jazzpreferences;
+package com.marcoromanofinaa.jazzlogs.user.jazzpreferences.mapper;
 
+import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.dto.UserJazzPreferencesDto;
+import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.UserJazzPreferences;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 

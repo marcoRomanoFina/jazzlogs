@@ -1,4 +1,4 @@
-package com.marcoromanofinaa.jazzlogs.user.jazzpreferences;
+package com.marcoromanofinaa.jazzlogs.user.jazzpreferences.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

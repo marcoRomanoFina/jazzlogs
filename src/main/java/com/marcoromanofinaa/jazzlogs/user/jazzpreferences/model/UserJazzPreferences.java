@@ -1,4 +1,4 @@
-package com.marcoromanofinaa.jazzlogs.user.jazzpreferences;
+package com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

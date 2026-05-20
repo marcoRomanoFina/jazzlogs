@@ -1,4 +1,4 @@
-package com.marcoromanofinaa.jazzlogs.user.jazzpreferences;
+package com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model;
 
 public enum Artist {
     BILL_EVANS,
