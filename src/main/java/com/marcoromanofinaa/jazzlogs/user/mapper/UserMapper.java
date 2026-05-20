@@ -10,8 +10,6 @@ public class UserMapper {
     public UserDto toDTO(User user, boolean hasPreferences) {
         return new UserDto(
                 user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
                 user.getDisplayName(),
                 user.getEmail(),
                 user.getPlan(),

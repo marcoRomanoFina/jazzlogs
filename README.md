@@ -1,5 +1,13 @@
 # JazzLogs 🎵🎷
 
+## Software Design In Transition
+
+I recently redesigned the system architecture and domain model from scratch, and the codebase is currently transitioning toward that new design.
+
+The new software design can be viewed here:
+
+[Open the JazzLogs architecture diagram in Excalidraw](https://excalidraw.com/#json=fj2i-dBtDaUj46NVWsfjc,ab8twxLBDVg9MjkgozUhHw)
+
 JazzLogs is a Spring Boot backend for a curated jazz knowledge base. It combines editorial music writing with Spotify catalog sync and a semantic indexing layer designed for retrieval-augmented recommendations.
 
 The project is currently optimized around three backend flows:
