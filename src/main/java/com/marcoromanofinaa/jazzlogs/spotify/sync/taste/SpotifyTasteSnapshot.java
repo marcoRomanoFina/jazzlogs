@@ -9,7 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,11 +35,11 @@ public class SpotifyTasteSnapshot {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "top_artists", nullable = false, columnDefinition = "jsonb")
-    private Map<SpotifyTimeRange, java.util.List<SpotifyTopUserArtistDTO>> topArtists;
+    private List<SpotifyTopUserArtistDTO> topArtists;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "top_tracks", nullable = false, columnDefinition = "jsonb")
-    private Map<SpotifyTimeRange, java.util.List<SpotifyUserTopTrackDTO>> topTracks;
+    private List<SpotifyUserTopTrackDTO> topTracks;
 
     @Column(name = "generated_at", nullable = false)
     private Instant generatedAt;
@@ -47,8 +47,8 @@ public class SpotifyTasteSnapshot {
     private SpotifyTasteSnapshot(
             UUID userId,
             UUID spotifyConnectionId,
-            Map<SpotifyTimeRange, java.util.List<SpotifyTopUserArtistDTO>> topArtists,
-            Map<SpotifyTimeRange, java.util.List<SpotifyUserTopTrackDTO>> topTracks,
+            List<SpotifyTopUserArtistDTO> topArtists,
+            List<SpotifyUserTopTrackDTO> topTracks,
             Instant generatedAt
     ) {
         this.userId = userId;
@@ -61,8 +61,8 @@ public class SpotifyTasteSnapshot {
     public static SpotifyTasteSnapshot create(
             UUID userId,
             UUID spotifyConnectionId,
-            Map<SpotifyTimeRange, java.util.List<SpotifyTopUserArtistDTO>> topArtists,
-            Map<SpotifyTimeRange, java.util.List<SpotifyUserTopTrackDTO>> topTracks,
+            List<SpotifyTopUserArtistDTO> topArtists,
+            List<SpotifyUserTopTrackDTO> topTracks,
             Instant generatedAt
     ) {
         return new SpotifyTasteSnapshot(userId, spotifyConnectionId, topArtists, topTracks, generatedAt);
@@ -70,8 +70,8 @@ public class SpotifyTasteSnapshot {
 
     public void replaceSnapshot(
             UUID spotifyConnectionId,
-            Map<SpotifyTimeRange, java.util.List<SpotifyTopUserArtistDTO>> topArtists,
-            Map<SpotifyTimeRange, java.util.List<SpotifyUserTopTrackDTO>> topTracks,
+            List<SpotifyTopUserArtistDTO> topArtists,
+            List<SpotifyUserTopTrackDTO> topTracks,
             Instant generatedAt
     ) {
         this.spotifyConnectionId = spotifyConnectionId;

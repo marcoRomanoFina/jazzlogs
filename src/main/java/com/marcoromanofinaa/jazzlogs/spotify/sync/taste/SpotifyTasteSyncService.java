@@ -14,9 +14,7 @@ import com.marcoromanofinaa.jazzlogs.spotify.sync.taste.dto.SpotifyUserTopTrackD
 import com.marcoromanofinaa.jazzlogs.spotify.connection.oauth.SpotifyScope;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,8 +47,9 @@ public class SpotifyTasteSyncService {
         try {
             var accessToken = spotifyTokenService.getValidAccessToken(userId, connection.getId());
             var generatedAt = Instant.now(clock);
-            var topArtists = buildTopArtists(accessToken);
-            var topTracks = buildTopTracks(accessToken);
+            var timeRange = resolveConfiguredTimeRange();
+            var topArtists = fetchTopArtists(accessToken, timeRange);
+            var topTracks = fetchTopTracks(accessToken, timeRange);
 
             var existingSnapshot = spotifyTasteSnapshotRepository.findTopByUserIdOrderByGeneratedAtDesc(userId);
             if (existingSnapshot.isPresent()) {
@@ -81,25 +80,24 @@ public class SpotifyTasteSyncService {
         }
     }
 
-    private Map<SpotifyTimeRange, List<SpotifyTopUserArtistDTO>> buildTopArtists(String accessToken) {
-        var topArtists = new EnumMap<SpotifyTimeRange, List<SpotifyTopUserArtistDTO>>(SpotifyTimeRange.class);
-        for (var timeRange : SpotifyTimeRange.values()) {
-            topArtists.put(
-                    timeRange,
-                    spotifyClient.getTopArtists(accessToken, timeRange, spotifyProperties.taste().topArtistsLimit())
-            );
-        }
-        return topArtists;
+    private List<SpotifyTopUserArtistDTO> fetchTopArtists(
+            String accessToken,
+            SpotifyTimeRange timeRange
+    ) {
+        return spotifyClient.getTopArtists(accessToken, timeRange, spotifyProperties.taste().topArtistsLimit());
     }
 
-    private Map<SpotifyTimeRange, List<SpotifyUserTopTrackDTO>> buildTopTracks(String accessToken) {
-        var topTracks = new EnumMap<SpotifyTimeRange, List<SpotifyUserTopTrackDTO>>(SpotifyTimeRange.class);
-        for (var timeRange : SpotifyTimeRange.values()) {
-            topTracks.put(
-                    timeRange,
-                    spotifyClient.getTopTracks(accessToken, timeRange, spotifyProperties.taste().topTracksLimit())
-            );
+    private List<SpotifyUserTopTrackDTO> fetchTopTracks(
+            String accessToken,
+            SpotifyTimeRange timeRange
+    ) {
+        return spotifyClient.getTopTracks(accessToken, timeRange, spotifyProperties.taste().topTracksLimit());
+    }
+
+    private SpotifyTimeRange resolveConfiguredTimeRange() {
+        if (spotifyProperties.taste().timeRange() == null) {
+            throw new IllegalStateException("Spotify taste time range is not configured");
         }
-        return topTracks;
+        return spotifyProperties.taste().timeRange();
     }
 }

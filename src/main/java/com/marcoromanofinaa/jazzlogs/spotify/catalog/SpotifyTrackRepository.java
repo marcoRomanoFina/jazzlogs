@@ -1,5 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.spotify.catalog;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,4 +12,5 @@ public interface SpotifyTrackRepository extends JpaRepository<SpotifyTrack, UUID
 
     Optional<SpotifyTrack> findBySpotifyTrackId(String spotifyTrackId);
 
+    List<SpotifyTrack> findAllBySpotifyTrackIdIn(Collection<String> spotifyTrackIds);
 }
