@@ -1,7 +1,6 @@
 package com.marcoromanofinaa.jazzlogs.spotify.sync.taste;
 
 import com.marcoromanofinaa.jazzlogs.spotify.config.SpotifyProperties;
-import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnection;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnectionRepository;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyTokenService;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyConnectionNotConnectedException;
