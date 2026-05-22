@@ -1,118 +1,122 @@
 package com.marcoromanofinaa.jazzlogs.spotify.catalog;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import lombok.Builder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-@Getter
-@NoArgsConstructor
 @Entity
-@Table(name = "spotify_tracks")
+@Table(
+        name = "spotify_tracks",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_spotify_tracks_spotify_track_id",
+                        columnNames = "spotify_track_id"
+                )
+        }
+)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Access(AccessType.FIELD)
 public class SpotifyTrack {
 
     @Id
-    @Column(name = "spotify_track_id", nullable = false, length = 64, updatable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "spotify_track_id", nullable = false, unique = true)
     private String spotifyTrackId;
 
-    @Column(name = "source_playlist_id", nullable = false, length = 64)
-    private String sourcePlaylistId;
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "spotify_album_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "album_id", nullable = false)
     private SpotifyAlbum album;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "main_artist_id")
-    private SpotifyArtist mainArtist;
 
     @ManyToMany
     @JoinTable(
-            name = "spotify_track_secondary_artists",
-            joinColumns = @JoinColumn(name = "spotify_track_id"),
-            inverseJoinColumns = @JoinColumn(name = "spotify_artist_id")
+            name = "spotify_track_artists",
+            joinColumns = @JoinColumn(name = "track_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
     )
-    private Set<SpotifyArtist> secondaryArtists = new LinkedHashSet<>();
-
-    @Column(name = "name", nullable = false, length = 512)
-    private String name;
-
-    @Column(name = "spotify_url", length = 512)
-    private String spotifyUrl;
+    @OrderColumn(name = "position")
+    private List<SpotifyArtist> artists = new ArrayList<>();
 
     @Column(name = "duration_ms")
     private Integer durationMs;
 
-    @Column(name = "disc_number")
-    private Integer discNumber;
-
     @Column(name = "track_number")
     private Integer trackNumber;
 
-    @Column(name = "added_to_playlist_at")
-    private Instant addedToPlaylistAt;
+    @Column(name = "spotify_url")
+    private String spotifyUrl;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Builder
-    private SpotifyTrack(
+    public static SpotifyTrack create(
             String spotifyTrackId,
-            String sourcePlaylistId,
-            SpotifyAlbum album,
-            SpotifyArtist mainArtist,
-            Set<SpotifyArtist> secondaryArtists,
             String name,
-            String spotifyUrl,
+            SpotifyAlbum album,
             Integer durationMs,
-            Integer discNumber,
             Integer trackNumber,
-            Instant addedToPlaylistAt
+            String spotifyUrl,
+            Instant now
     ) {
-        this.spotifyTrackId = spotifyTrackId;
-        this.sourcePlaylistId = sourcePlaylistId;
-        this.album = album;
-        this.mainArtist = mainArtist;
-        this.secondaryArtists = secondaryArtists == null ? new LinkedHashSet<>() : new LinkedHashSet<>(secondaryArtists);
-        this.name = name;
-        this.spotifyUrl = spotifyUrl;
-        this.durationMs = durationMs;
-        this.discNumber = discNumber;
-        this.trackNumber = trackNumber;
-        this.addedToPlaylistAt = addedToPlaylistAt;
+        SpotifyTrack track = new SpotifyTrack();
+        track.spotifyTrackId = spotifyTrackId;
+        track.name = name;
+        track.album = album;
+        track.durationMs = durationMs;
+        track.trackNumber = trackNumber;
+        track.spotifyUrl = spotifyUrl;
+        track.createdAt = now;
+        track.updatedAt = now;
+        return track;
     }
 
-    public void updateSyncData(SpotifyTrackSyncData syncData) {
-        this.sourcePlaylistId = syncData.sourcePlaylistId();
-        this.album = syncData.album();
-        this.mainArtist = syncData.mainArtist();
-        this.secondaryArtists.clear();
-        if (syncData.secondaryArtists() != null) {
-            this.secondaryArtists.addAll(syncData.secondaryArtists());
+    public void updateMetadata(
+            String name,
+            SpotifyAlbum album,
+            Integer durationMs,
+            Integer trackNumber,
+            String spotifyUrl,
+            Instant now
+    ) {
+        this.name = name;
+        this.album = album;
+        this.durationMs = durationMs;
+        this.trackNumber = trackNumber;
+        this.spotifyUrl = spotifyUrl;
+        this.updatedAt = now;
+    }
+
+    public void replaceArtistsInSpotifyOrder(List<SpotifyArtist> orderedArtists) {
+        this.artists.clear();
+        if (orderedArtists != null) {
+            this.artists.addAll(orderedArtists);
         }
-        this.name = syncData.name();
-        this.spotifyUrl = syncData.spotifyUrl();
-        this.durationMs = syncData.durationMs();
-        this.discNumber = syncData.discNumber();
-        this.trackNumber = syncData.trackNumber();
-        this.addedToPlaylistAt = syncData.addedToPlaylistAt();
     }
 }

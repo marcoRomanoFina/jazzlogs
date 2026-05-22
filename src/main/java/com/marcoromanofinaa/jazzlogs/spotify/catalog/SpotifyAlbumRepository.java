@@ -1,11 +1,12 @@
 package com.marcoromanofinaa.jazzlogs.spotify.catalog;
 
-import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface SpotifyAlbumRepository extends JpaRepository<SpotifyAlbum, String> {
+@Repository
+public interface SpotifyAlbumRepository extends JpaRepository<SpotifyAlbum, UUID> {
 
-    long deleteBySourcePlaylistId(String sourcePlaylistId);
-
-    List<SpotifyAlbum> findAllBySourcePlaylistIdOrderByNameAsc(String sourcePlaylistId);
+    Optional<SpotifyAlbum> findBySpotifyAlbumId(String spotifyAlbumId);
 }

@@ -1,6 +1,12 @@
 package com.marcoromanofinaa.jazzlogs.spotify.catalog;
 
+import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface SpotifyArtistRepository extends JpaRepository<SpotifyArtist, String> {
+@Repository
+public interface SpotifyArtistRepository extends JpaRepository<SpotifyArtist, UUID> {
+
+    Optional<SpotifyArtist> findBySpotifyArtistId(String spotifyArtistId);
 }
