@@ -1,12 +1,14 @@
-package com.marcoromanofinaa.jazzlogs.admin.editorial;
+package com.marcoromanofinaa.jazzlogs.admin.editorial.web;
 
+import com.marcoromanofinaa.jazzlogs.admin.editorial.album.dto.UpsertAlbumLogRequestDTO;
+import com.marcoromanofinaa.jazzlogs.admin.editorial.artist.dto.UpsertArtistLogRequestDTO;
+import com.marcoromanofinaa.jazzlogs.admin.editorial.service.AdminEditorialLogService;
+import com.marcoromanofinaa.jazzlogs.admin.editorial.track.dto.UpsertTrackLogRequestDTO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import com.marcoromanofinaa.jazzlogs.admin.editorial.album.dto.UpsertAlbumLogRequestDTO;
 import com.marcoromanofinaa.jazzlogs.auth.security.AuthenticatedUser;
 
 @RestController
@@ -47,7 +49,7 @@ public class AdminEditorialLogController {
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
             @Valid @RequestBody UpsertArtistLogRequestDTO request
     ) {
-        editorialLogService.upsertAlbumLog(
+        editorialLogService.upsertArtistLog(
                 authenticatedUser.id(),
                 request
         );
