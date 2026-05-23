@@ -64,13 +64,13 @@ class SpotifyPlaylistImportServiceTest {
 
         when(spotifyArtistRepository.findAllBySpotifyArtistIdIn(anyCollection())).thenReturn(List.of());
         when(spotifyArtistRepository.saveAll(org.mockito.ArgumentMatchers.<Iterable<SpotifyArtist>>any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> toList(invocation.getArgument(0)));
         when(spotifyAlbumRepository.findAllBySpotifyAlbumIdIn(anyCollection())).thenReturn(List.of());
         when(spotifyAlbumRepository.saveAll(org.mockito.ArgumentMatchers.<Iterable<SpotifyAlbum>>any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> toList(invocation.getArgument(0)));
         when(spotifyTrackRepository.findAllBySpotifyTrackIdIn(anyCollection())).thenReturn(List.of());
         when(spotifyTrackRepository.saveAll(org.mockito.ArgumentMatchers.<Iterable<SpotifyTrack>>any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> toList(invocation.getArgument(0)));
 
         service.importPlaylistTracks(List.of(track));
 
@@ -97,5 +97,9 @@ class SpotifyPlaylistImportServiceTest {
             assertThat(savedTrack.getAlbum().getSpotifyAlbumId()).isEqualTo("album-1");
             return true;
         }));
+    }
+
+    private <T> List<T> toList(Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false).toList();
     }
 }
