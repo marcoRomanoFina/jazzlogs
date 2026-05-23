@@ -35,9 +35,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/register").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/spotify/callback").permitAll()
                         .requestMatchers("/api/v1/users/me").authenticated()
                         .requestMatchers("/api/v1/users/me/profile").authenticated()
                         .requestMatchers("/api/v1/users/me/preferences").authenticated()
+                        .requestMatchers("/api/v1/spotify/authorization-url").authenticated()
+                        .requestMatchers("/api/v1/spotify/taste-snapshot/**").authenticated()
                         .requestMatchers("/logs/**").permitAll()
                         .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()

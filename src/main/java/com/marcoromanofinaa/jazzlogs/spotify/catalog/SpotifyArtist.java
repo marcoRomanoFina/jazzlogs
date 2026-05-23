@@ -1,71 +1,76 @@
 package com.marcoromanofinaa.jazzlogs.spotify.catalog;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
-import lombok.Builder;
+import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-@Getter
-@NoArgsConstructor
 @Entity
-@Table(name = "spotify_artists")
+@Table(
+        name = "spotify_artists",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_spotify_artists_spotify_artist_id",
+                        columnNames = "spotify_artist_id"
+                )
+        }
+)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Access(AccessType.FIELD)
 public class SpotifyArtist {
 
     @Id
-    @Column(name = "spotify_artist_id", nullable = false, length = 64, updatable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "spotify_artist_id", nullable = false, unique = true)
     private String spotifyArtistId;
 
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "spotify_url", length = 512)
+    @Column(name = "spotify_url")
     private String spotifyUrl;
 
-    @Column(name = "href", length = 512)
-    private String href;
-
-    @Column(name = "uri", length = 128)
-    private String uri;
-
-    @Column(name = "type", length = 32)
-    private String type;
-
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Builder
-    private SpotifyArtist(
+    public static SpotifyArtist create(
             String spotifyArtistId,
             String name,
             String spotifyUrl,
-            String href,
-            String uri,
-            String type
+            Instant now
     ) {
-        this.spotifyArtistId = spotifyArtistId;
-        this.name = name;
-        this.spotifyUrl = spotifyUrl;
-        this.href = href;
-        this.uri = uri;
-        this.type = type;
+        SpotifyArtist artist = new SpotifyArtist();
+        artist.spotifyArtistId = spotifyArtistId;
+        artist.name = name;
+        artist.spotifyUrl = spotifyUrl;
+        artist.createdAt = now;
+        artist.updatedAt = now;
+        return artist;
     }
 
-    public void updateSyncData(SpotifyArtistSyncData syncData) {
-        this.name = syncData.name();
-        this.spotifyUrl = syncData.spotifyUrl();
-        this.href = syncData.href();
-        this.uri = syncData.uri();
-        this.type = syncData.type();
+    public void updateMetadata(
+            String name,
+            String spotifyUrl,
+            Instant now
+    ) {
+        this.name = name;
+        this.spotifyUrl = spotifyUrl;
+        this.updatedAt = now;
     }
 }

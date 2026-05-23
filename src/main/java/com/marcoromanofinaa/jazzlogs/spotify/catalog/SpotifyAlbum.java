@@ -1,89 +1,119 @@
 package com.marcoromanofinaa.jazzlogs.spotify.catalog;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
-import lombok.Builder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-@Getter
-@NoArgsConstructor
 @Entity
-@Table(name = "spotify_albums")
+@Table(
+        name = "spotify_albums",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_spotify_albums_spotify_album_id",
+                        columnNames = "spotify_album_id"
+                )
+        }
+)
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Access(AccessType.FIELD)
 public class SpotifyAlbum {
 
     @Id
-    @Column(name = "spotify_album_id", nullable = false, length = 64, updatable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(name = "spotify_album_id", nullable = false, unique = true)
     private String spotifyAlbumId;
 
-    @Column(name = "source_playlist_id", nullable = false, length = 64)
-    private String sourcePlaylistId;
-
-    @Column(name = "name", nullable = false, length = 512)
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "spotify_url", length = 512)
-    private String spotifyUrl;
-
-    @Column(name = "cover_image_url", length = 1024)
-    private String coverImageUrl;
-
-    @Column(name = "album_type", length = 32)
-    private String albumType;
+    @Column(name = "release_date")
+    private String releaseDate;
 
     @Column(name = "total_tracks")
     private Integer totalTracks;
 
-    @Column(name = "release_date", length = 32)
-    private String releaseDate;
+    @Column(name = "image_url")
+    private String imageUrl;
 
-    @Column(name = "release_date_precision", length = 16)
-    private String releaseDatePrecision;
+    @Column(name = "spotify_url")
+    private String spotifyUrl;
 
-    @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @ManyToMany
+    @JoinTable(
+            name = "spotify_album_artists",
+            joinColumns = @JoinColumn(name = "album_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    @OrderColumn(name = "position")
+    private List<SpotifyArtist> artists = new ArrayList<>();
+
+    @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    @Builder
-    private SpotifyAlbum(
+    public static SpotifyAlbum create(
             String spotifyAlbumId,
-            String sourcePlaylistId,
             String name,
-            String spotifyUrl,
-            String coverImageUrl,
-            String albumType,
-            Integer totalTracks,
             String releaseDate,
-            String releaseDatePrecision
+            Integer totalTracks,
+            String imageUrl,
+            String spotifyUrl,
+            Instant now
     ) {
-        this.spotifyAlbumId = spotifyAlbumId;
-        this.sourcePlaylistId = sourcePlaylistId;
-        this.name = name;
-        this.spotifyUrl = spotifyUrl;
-        this.coverImageUrl = coverImageUrl;
-        this.albumType = albumType;
-        this.totalTracks = totalTracks;
-        this.releaseDate = releaseDate;
-        this.releaseDatePrecision = releaseDatePrecision;
+        SpotifyAlbum album = new SpotifyAlbum();
+        album.spotifyAlbumId = spotifyAlbumId;
+        album.name = name;
+        album.releaseDate = releaseDate;
+        album.totalTracks = totalTracks;
+        album.imageUrl = imageUrl;
+        album.spotifyUrl = spotifyUrl;
+        album.createdAt = now;
+        album.updatedAt = now;
+        return album;
     }
 
-    public void updateSyncData(SpotifyAlbumSyncData syncData) {
-        this.sourcePlaylistId = syncData.sourcePlaylistId();
-        this.name = syncData.name();
-        this.spotifyUrl = syncData.spotifyUrl();
-        this.coverImageUrl = syncData.coverImageUrl();
-        this.albumType = syncData.albumType();
-        this.totalTracks = syncData.totalTracks();
-        this.releaseDate = syncData.releaseDate();
-        this.releaseDatePrecision = syncData.releaseDatePrecision();
+    public void updateMetadata(
+            String name,
+            String releaseDate,
+            Integer totalTracks,
+            String imageUrl,
+            String spotifyUrl,
+            Instant now
+    ) {
+        this.name = name;
+        this.releaseDate = releaseDate;
+        this.totalTracks = totalTracks;
+        this.imageUrl = imageUrl;
+        this.spotifyUrl = spotifyUrl;
+        this.updatedAt = now;
+    }
+
+    public void replaceArtistsInSpotifyOrder(List<SpotifyArtist> orderedArtists) {
+        this.artists.clear();
+        if (orderedArtists != null) {
+            this.artists.addAll(orderedArtists);
+        }
     }
 }
