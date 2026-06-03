@@ -7,6 +7,7 @@ import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.UserJazzPreferen
 import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.repository.UserJazzPreferencesRepository;
 import com.marcoromanofinaa.jazzlogs.user.mapper.UserMapper;
 import com.marcoromanofinaa.jazzlogs.user.repository.UserRepository;
+import com.marcoromanofinaa.jazzlogs.user.subscription.service.UserSubscriptionService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ public class UserJazzPreferencesService {
     private final UserRepository userRepository;
     private final UserJazzPreferencesRepository userJazzPreferencesRepository;
     private final UserMapper userMapper;
+    private final UserSubscriptionService userSubscriptionService;
 
     @Transactional
     public UserDto upsertPreferences(UUID userId, UserJazzPreferencesDto userPreferences) {
@@ -31,7 +33,8 @@ public class UserJazzPreferencesService {
         applyPreferences(preferences, userPreferences);
         userJazzPreferencesRepository.save(preferences);
 
-        return userMapper.toDTO(user, true);
+        var subscription = userSubscriptionService.getCurrentSubscription(userId);
+        return userMapper.toDTO(user, subscription, true);
     }
 
     private void applyPreferences(UserJazzPreferences preferences, UserJazzPreferencesDto dto) {

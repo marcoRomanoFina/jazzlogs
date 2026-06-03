@@ -14,6 +14,7 @@ import com.marcoromanofinaa.jazzlogs.admin.editorial.track.TrackLogRepository;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.track.dto.UpsertTrackLogRequestDTO;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.track.model.TrackLog;
 import com.marcoromanofinaa.jazzlogs.core.outbox.editorial.EditorialLogIndexingOutboxPublisher;
+import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyTrackRepository;
 import jakarta.transaction.Transactional;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +29,7 @@ public class AdminEditorialLogService {
     private final AlbumLogRepository albumLogRepository;
     private final ArtistLogRepository artistLogRepository;
     private final TrackLogRepository trackLogRepository;
+    private final SpotifyTrackRepository spotifyTrackRepository;
     private final EditorialLogIndexingOutboxPublisher outboxPublisher;
 
     @Transactional
@@ -80,6 +82,17 @@ public class AdminEditorialLogService {
     @Transactional
     public void upsertTrackLog(UUID authenticatedUserId, UpsertTrackLogRequestDTO request) {
         var trackData = request.trackData();
+        
+        var primaryArtist = trackData.primaryArtist();
+        if (primaryArtist == null || primaryArtist.isBlank()) {
+            primaryArtist = spotifyTrackRepository.findBySpotifyTrackId(trackData.spotifyTrackId())
+                    .map(spotifyTrack -> spotifyTrack.getArtists().isEmpty() ? null : spotifyTrack.getArtists().getFirst().getName())
+                    .or(() -> albumLogRepository.findBySpotifyAlbumId(trackData.spotifyAlbumId())
+                            .map(album -> album.getMainArtists().isEmpty() ? null : album.getMainArtists().getFirst().name()))
+                    .orElse(null);
+        }
+
+        var finalPrimaryArtist = primaryArtist;
         var existingTrackLog = trackLogRepository.findBySpotifyTrackId(trackData.spotifyTrackId());
         var trackLog = existingTrackLog
                 .orElseGet(() -> TrackLog.create(
@@ -88,6 +101,7 @@ public class AdminEditorialLogService {
                         trackData.logNumber(),
                         trackData.trackName(),
                         trackData.albumName(),
+                        finalPrimaryArtist,
                         trackData.mainArtistSpotifyId(),
                         trackData.tier(),
                         trackData.vocalProfile(),
@@ -118,6 +132,7 @@ public class AdminEditorialLogService {
                 trackData.logNumber(),
                 trackData.trackName(),
                 trackData.albumName(),
+                finalPrimaryArtist,
                 trackData.mainArtistSpotifyId(),
                 trackData.tier(),
                 trackData.vocalProfile(),

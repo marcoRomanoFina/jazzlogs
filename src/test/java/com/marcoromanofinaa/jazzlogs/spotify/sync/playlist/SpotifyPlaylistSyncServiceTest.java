@@ -1,6 +1,5 @@
 package com.marcoromanofinaa.jazzlogs.spotify.sync.playlist;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -10,7 +9,6 @@ import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnectionReposit
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnectionStatus;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyTokenService;
 import com.marcoromanofinaa.jazzlogs.spotify.integration.SpotifyClient;
-import com.marcoromanofinaa.jazzlogs.spotify.exception.InvalidOfficialSpotifyOwnerException;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyAlbumDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyArtistDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyPlaylistTrackDTO;
@@ -86,7 +84,7 @@ class SpotifyPlaylistSyncServiceTest {
     }
 
     @Test
-    void syncOfficialPlaylistRejectsConnectionForUnexpectedSpotifyOwner() {
+    void syncOfficialPlaylistAllowsConnectionForUnexpectedSpotifyOwner() {
         var service = new SpotifyPlaylistSyncService(
                 spotifyConnectionRepository,
                 spotifyTokenService,
@@ -107,12 +105,27 @@ class SpotifyPlaylistSyncServiceTest {
                 "playlist-read-private",
                 Instant.now().plusSeconds(3600)
         );
+        ReflectionTestUtils.setField(connection, "id", UUID.randomUUID());
+        var tracks = List.of(
+                new SpotifyPlaylistTrackDTO(
+                        "track-1",
+                        "Blue in Green",
+                        List.of(new SpotifyArtistDTO("artist-1", "Miles Davis", "https://spotify/artist-1")),
+                        new SpotifyAlbumDTO("album-1", "Kind of Blue", List.of(), "1959-08-17", 5, "https://img/1", "https://spotify/album-1"),
+                        327000,
+                        3,
+                        "https://spotify/track-1"
+                )
+        );
 
         when(spotifyConnectionRepository.findByUserIdAndStatus(adminUserId, SpotifyConnectionStatus.CONNECTED))
                 .thenReturn(Optional.of(connection));
+        when(spotifyTokenService.getValidAccessToken(adminUserId, connection.getId())).thenReturn("access-token");
+        when(spotifyClient.getPlaylistTracks("access-token", "playlist-id")).thenReturn(tracks);
 
-        assertThatThrownBy(() -> service.syncOfficialPlaylist(adminUserId))
-                .isInstanceOf(InvalidOfficialSpotifyOwnerException.class);
+        service.syncOfficialPlaylist(adminUserId);
+
+        verify(spotifyPlaylistImportService).importPlaylistTracks(tracks);
     }
 
     private SpotifyProperties spotifyProperties() {

@@ -4,6 +4,7 @@ import com.marcoromanofinaa.jazzlogs.spotify.exception.ConsumedSpotifyOAuthState
 import com.marcoromanofinaa.jazzlogs.spotify.exception.ExpiredSpotifyOAuthStateException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.InvalidOfficialSpotifyOwnerException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.InvalidSpotifyOAuthStateException;
+import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyAccountAlreadyLinkedException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyApiException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyCatalogImportException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyConnectionNotConnectedException;
@@ -55,6 +56,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({
+            SpotifyAccountAlreadyLinkedException.class,
             SpotifyConnectionNotConnectedException.class,
             SpotifyMissingScopesException.class,
             InvalidOfficialSpotifyOwnerException.class

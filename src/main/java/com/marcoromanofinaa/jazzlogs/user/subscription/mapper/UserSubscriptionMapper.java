@@ -1,0 +1,20 @@
+package com.marcoromanofinaa.jazzlogs.user.subscription.mapper;
+
+import com.marcoromanofinaa.jazzlogs.chat.api.dto.UsageSummaryDTO;
+import com.marcoromanofinaa.jazzlogs.user.subscription.model.UserSubscription;
+import org.springframework.stereotype.Component;
+
+@Component
+public class UserSubscriptionMapper {
+
+    public UsageSummaryDTO toUsageSummary(UserSubscription subscription) {
+        return new UsageSummaryDTO(
+                subscription.getTokenLimit(),
+                subscription.getTokensUsed(),
+                subscription.getTokensRemaining(),
+                subscription.remainingPercentage(),
+                subscription.getPeriodStart(),
+                subscription.getPeriodEnd()
+        );
+    }
+}

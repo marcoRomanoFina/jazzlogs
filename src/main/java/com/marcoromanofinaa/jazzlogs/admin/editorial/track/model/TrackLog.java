@@ -51,6 +51,9 @@ public class TrackLog {
     @Column(name = "album_name", nullable = false)
     private String albumName;
 
+    @Column(name = "primary_artist")
+    private String primaryArtist;
+
     @Column(name = "main_artist_spotify_id")
     private String mainArtistSpotifyId;
 
@@ -138,6 +141,7 @@ public class TrackLog {
             Integer logNumber,
             String trackName,
             String albumName,
+            String primaryArtist,
             String mainArtistSpotifyId,
             String tier,
             String vocalProfile,
@@ -167,6 +171,7 @@ public class TrackLog {
                 logNumber,
                 trackName,
                 albumName,
+                primaryArtist,
                 mainArtistSpotifyId,
                 tier,
                 vocalProfile,
@@ -198,6 +203,7 @@ public class TrackLog {
             Integer logNumber,
             String trackName,
             String albumName,
+            String primaryArtist,
             String mainArtistSpotifyId,
             String tier,
             String vocalProfile,
@@ -225,6 +231,7 @@ public class TrackLog {
         this.logNumber = logNumber;
         this.trackName = trackName;
         this.albumName = albumName;
+        this.primaryArtist = primaryArtist;
         this.mainArtistSpotifyId = mainArtistSpotifyId;
         this.tier = tier;
         this.vocalProfile = vocalProfile;

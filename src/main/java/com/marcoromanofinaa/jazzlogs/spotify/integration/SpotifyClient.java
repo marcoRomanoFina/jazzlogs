@@ -1,7 +1,8 @@
 package com.marcoromanofinaa.jazzlogs.spotify.integration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.marcoromanofinaa.jazzlogs.spotify.config.SpotifyProperties;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.client.SpotifyUserProfileDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyApiException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyRateLimitException;
@@ -12,6 +13,7 @@ import com.marcoromanofinaa.jazzlogs.spotify.sync.taste.SpotifyTimeRange;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.taste.dto.SpotifyTopUserArtistDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.taste.dto.SpotifyUserTopTrackDTO;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +28,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class SpotifyClient {
 
-    private static final int DEFAULT_PLAYLIST_PAGE_SIZE = 50;
-    private static final int MAX_PLAYLIST_PAGE_COUNT = 1_000;
+    private static final int PLAYLIST_PAGE_SIZE = 100;
 
     private final @Qualifier("spotifyRestClient") RestClient spotifyRestClient;
-    private final SpotifyProperties spotifyProperties;
+    private final ObjectMapper objectMapper;
+    
 
     public SpotifyUserProfileDTO getCurrentUserProfile(String accessToken) {
         requireText(accessToken, "Spotify access token is required");
@@ -87,7 +89,7 @@ public class SpotifyClient {
 
             return response.items().stream()
                     .filter(artist -> artist != null && !isBlank(artist.spotifyArtistId()))
-                    .map(artist -> new SpotifyTopUserArtistDTO(artist.spotifyArtistId(), defaultText(artist.name())))
+                    .map(artist -> new SpotifyTopUserArtistDTO(defaultText(artist.name())))
                     .toList();
         }
         catch (RestClientResponseException exception) {
@@ -126,7 +128,6 @@ public class SpotifyClient {
             return response.items().stream()
                     .filter(track -> track != null && !isBlank(track.spotifyTrackId()))
                     .map(track -> new SpotifyUserTopTrackDTO(
-                            track.spotifyTrackId(),
                             defaultText(track.name()),
                             toArtistNames(track.artists()),
                             track.album() != null ? track.album().name() : null
@@ -145,114 +146,229 @@ public class SpotifyClient {
         requireText(accessToken, "Spotify access token is required");
         requireText(spotifyPlaylistId, "Spotify playlist ID is required");
 
-        var importedTracks = new ArrayList<SpotifyPlaylistTrackDTO>();
-        var limit = resolvePlaylistPageSize();
+        try {
+            var tracks = new ArrayList<SpotifyPlaylistTrackDTO>();
+            var visitedPageUris = new HashSet<String>();
+            JsonNode response = getPlaylistFirstPage(accessToken, spotifyPlaylistId);
 
-        for (int offset = 0, page = 0; ; offset += limit, page++) {
-            if (page >= MAX_PLAYLIST_PAGE_COUNT) {
-                throw new SpotifyApiException(
-                        "Spotify playlist pagination exceeded the maximum number of pages for playlist " + spotifyPlaylistId
-                );
-            }
-
-            var uriBuilder = UriComponentsBuilder.fromPath("/playlists/{spotifyPlaylistId}/tracks")
-                    .queryParam("limit", limit)
-                    .queryParam("offset", offset);
-
-            if (spotifyProperties.sync().market() != null && !spotifyProperties.sync().market().isBlank()) {
-                uriBuilder.queryParam("market", spotifyProperties.sync().market());
-            }
-
-            try {
-                var response = spotifyRestClient.get()
-                        .uri(uriBuilder.buildAndExpand(spotifyPlaylistId).toUriString())
-                        .header(HttpHeaders.AUTHORIZATION, bearerToken(accessToken))
-                        .retrieve()
-                        .body(SpotifyPlaylistTracksResponse.class);
-
-                if (response == null || response.items() == null) {
-                    throw new SpotifyApiException("Spotify playlist tracks response was empty");
+            while (true) {
+                var items = extractPlaylistItems(response);
+                if (!items.isArray()) {
+                    throw new SpotifyApiException(
+                            "Spotify playlist response did not include embedded track items. "
+                                    + describePlaylistResponseShape(response)
+                    );
                 }
 
-                var pageItems = response.items();
-
-                pageItems.stream()
-                        .filter(this::isImportableTrackItem)
-                        .map(SpotifyPlaylistItemResponse::track)
-                        .map(this::toPlaylistTrack)
-                        .forEach(importedTracks::add);
-
-                if (pageItems.isEmpty() || response.next() == null || response.next().isBlank()) {
-                    break;
+                for (JsonNode itemNode : items) {
+                    if (isImportableTrackItem(itemNode)) {
+                        tracks.add(toPlaylistTrack(extractTrackNode(itemNode)));
+                    }
                 }
-            }
-            catch (RestClientResponseException exception) {
-                throw mapSpotifyException("fetch Spotify playlist tracks", exception);
+
+                var nextPageUri = extractPlaylistNext(response);
+                if (nextPageUri == null || nextPageUri.isBlank()) {
+                    return tracks;
+                }
+
+                if (!visitedPageUris.add(nextPageUri)) {
+                    throw new SpotifyApiException("Spotify playlist pagination loop detected for next page " + nextPageUri);
+                }
+
+                response = getPlaylistPage(accessToken, nextPageUri);
             }
         }
-
-        return importedTracks;
+        catch (RestClientResponseException exception) {
+            throw mapSpotifyException("fetch Spotify playlist tracks", exception);
+        }
     }
 
-    private SpotifyPlaylistTrackDTO toPlaylistTrack(SpotifyPlaylistTrackResponse track) {
+    public SpotifyPlaylistSummary getPlaylistSummary(
+            String accessToken,
+            String spotifyPlaylistId
+    ) {
+        requireText(accessToken, "Spotify access token is required");
+        requireText(spotifyPlaylistId, "Spotify playlist ID is required");
+
+        try {
+            var response = getPlaylistFirstPage(accessToken, spotifyPlaylistId);
+
+            if (response == null || response.isMissingNode()) {
+                throw new SpotifyApiException("Spotify playlist summary response was empty");
+            }
+
+            return new SpotifyPlaylistSummary(
+                    textOrNull(response, "id"),
+                    defaultText(textOrNull(response, "name")),
+                    textOrNull(response.path("owner"), "id"),
+                    extractPlaylistTotal(response)
+            );
+        }
+        catch (RestClientResponseException exception) {
+            throw mapSpotifyException("fetch Spotify playlist summary", exception);
+        }
+    }
+
+    private SpotifyPlaylistTrackDTO toPlaylistTrack(JsonNode track) {
         return new SpotifyPlaylistTrackDTO(
-                track.spotifyTrackId(),
-                defaultText(track.name()),
-                toArtistDtos(track.artists()),
-                toAlbum(track.album()),
-                track.durationMs(),
-                track.trackNumber(),
-                track.externalUrls() != null ? track.externalUrls().spotify() : null
+                textOrNull(track, "id"),
+                defaultText(textOrNull(track, "name")),
+                toArtistDtos(track.path("artists")),
+                toAlbum(track.path("album")),
+                intOrNull(track, "duration_ms"),
+                intOrNull(track, "track_number"),
+                textOrNull(track.path("external_urls"), "spotify")
         );
     }
 
-    private SpotifyAlbumDTO toAlbum(SpotifyAlbumResponse album) {
-        if (album == null) {
+    private SpotifyAlbumDTO toAlbum(JsonNode album) {
+        if (album == null || album.isMissingNode() || album.isNull()) {
             return null;
         }
 
         return new SpotifyAlbumDTO(
-                album.spotifyAlbumId(),
-                defaultText(album.name()),
-                toArtistDtos(album.artists()),
-                album.releaseDate(),
-                album.totalTracks(),
-                firstImageUrl(album.images()).orElse(null),
-                album.externalUrls() != null ? album.externalUrls().spotify() : null
+                textOrNull(album, "id"),
+                defaultText(textOrNull(album, "name")),
+                toArtistDtos(album.path("artists")),
+                textOrNull(album, "release_date"),
+                intOrNull(album, "total_tracks"),
+                firstImageUrl(album.path("images")).orElse(null),
+                textOrNull(album.path("external_urls"), "spotify")
         );
     }
 
-    private boolean isImportableTrackItem(SpotifyPlaylistItemResponse item) {
-        if (item == null || item.isLocal()) {
+    private boolean isImportableTrackItem(JsonNode item) {
+        if (item == null || item.isNull() || item.path("is_local").asBoolean(false)) {
             return false;
         }
 
-        var track = item.track();
+        var track = extractTrackNode(item);
+        var trackId = textOrNull(track, "id");
         return track != null
-                && "track".equals(track.type())
-                && track.spotifyTrackId() != null
-                && !track.spotifyTrackId().isBlank();
+                && !track.isMissingNode()
+                && "track".equals(textOrNull(track, "type"))
+                && trackId != null
+                && !trackId.isBlank();
     }
 
-    private Optional<String> firstImageUrl(List<SpotifyImageResponse> images) {
-        if (images == null) {
+    private JsonNode getPlaylistFirstPage(String accessToken, String spotifyPlaylistId) {
+        var uri = UriComponentsBuilder.fromPath("/playlists/{spotifyPlaylistId}")
+                .queryParam("limit", PLAYLIST_PAGE_SIZE)
+                .queryParam("offset", 0)
+                .buildAndExpand(spotifyPlaylistId)
+                .toUriString();
+
+        return getPlaylistPage(accessToken, uri);
+    }
+
+    private JsonNode getPlaylistPage(String accessToken, String uri) {
+        var response = spotifyRestClient.get()
+                .uri(uri)
+                .header(HttpHeaders.AUTHORIZATION, bearerToken(accessToken))
+                .retrieve()
+                .body(String.class);
+
+        if (response == null || response.isBlank()) {
+            throw new SpotifyApiException("Spotify playlist response was empty");
+        }
+
+        try {
+            return objectMapper.readTree(response);
+        }
+        catch (Exception exception) {
+            throw new SpotifyApiException("Failed to parse Spotify playlist response", exception);
+        }
+    }
+
+    private JsonNode extractPlaylistItems(JsonNode response) {
+        var topLevelItems = response.path("items");
+        if (topLevelItems.isArray()) {
+            return topLevelItems;
+        }
+
+        var nestedTopLevelItems = topLevelItems.path("items");
+        if (nestedTopLevelItems.isArray()) {
+            return nestedTopLevelItems;
+        }
+
+        return response.path("tracks").path("items");
+    }
+
+    private Integer extractPlaylistTotal(JsonNode response) {
+        var topLevelTotal = intOrNull(response, "total");
+        if (topLevelTotal != null) {
+            return topLevelTotal;
+        }
+
+        var topLevelItemsTotal = intOrNull(response.path("items"), "total");
+        if (topLevelItemsTotal != null) {
+            return topLevelItemsTotal;
+        }
+
+        return intOrNull(response.path("tracks"), "total");
+    }
+
+    private String extractPlaylistNext(JsonNode response) {
+        var topLevelNext = textOrNull(response, "next");
+        if (topLevelNext != null) {
+            return topLevelNext;
+        }
+
+        var topLevelItemsNext = textOrNull(response.path("items"), "next");
+        if (topLevelItemsNext != null) {
+            return topLevelItemsNext;
+        }
+
+        return textOrNull(response.path("tracks"), "next");
+    }
+
+    private JsonNode extractTrackNode(JsonNode itemNode) {
+        var trackNode = itemNode.path("item");
+        if (!trackNode.isMissingNode() && !trackNode.isNull()) {
+            return trackNode;
+        }
+
+        return itemNode.path("track");
+    }
+
+    private String describePlaylistResponseShape(JsonNode response) {
+        if (response == null || response.isMissingNode() || response.isNull()) {
+            return "Response body was empty after parsing.";
+        }
+
+        return "Top-level keys=" + fieldNamesOf(response)
+                + ", tracks keys=" + fieldNamesOf(response.path("tracks"))
+                + ", items node type=" + response.path("items").getNodeType()
+                + ", tracks.items node type=" + response.path("tracks").path("items").getNodeType();
+    }
+
+    private List<String> fieldNamesOf(JsonNode node) {
+        if (node == null || !node.isObject()) {
+            return List.of();
+        }
+
+        var fieldNames = new ArrayList<String>();
+        node.fieldNames().forEachRemaining(fieldNames::add);
+        return fieldNames;
+    }
+
+    private Optional<String> firstImageUrl(JsonNode images) {
+        if (images == null || !images.isArray()) {
             return Optional.empty();
         }
 
-        return images.stream()
-                .map(SpotifyImageResponse::url)
-                .filter(url -> url != null && !url.isBlank())
-                .findFirst();
+        for (JsonNode image : images) {
+            var url = textOrNull(image, "url");
+            if (url != null && !url.isBlank()) {
+                return Optional.of(url);
+            }
+        }
+
+        return Optional.empty();
     }
 
     private String bearerToken(String accessToken) {
         return "Bearer " + accessToken;
-    }
-
-    private int resolvePlaylistPageSize() {
-        return spotifyProperties.sync().pageSize() > 0
-                ? spotifyProperties.sync().pageSize()
-                : DEFAULT_PLAYLIST_PAGE_SIZE;
     }
 
     private RuntimeException mapSpotifyException(String operation, RestClientResponseException exception) {
@@ -269,9 +385,14 @@ public class SpotifyClient {
             return new SpotifyRateLimitException(message, retryAfterSeconds);
         }
 
+        var responseBody = exception.getResponseBodyAsString();
+        var responseBodySuffix = (responseBody == null || responseBody.isBlank())
+                ? ""
+                : ". Response body: " + responseBody;
+
         return new SpotifyApiException(
-                "Failed to %s. Spotify API responded with status %d"
-                        .formatted(operation, exception.getStatusCode().value()),
+                "Failed to %s. Spotify API responded with status %d%s"
+                        .formatted(operation, exception.getStatusCode().value(), responseBodySuffix),
                 exception
         );
     }
@@ -287,19 +408,46 @@ public class SpotifyClient {
                 .toList();
     }
 
-    private List<SpotifyArtistDTO> toArtistDtos(List<SpotifyArtistSummary> artists) {
-        if (artists == null || artists.isEmpty()) {
+    private List<SpotifyArtistDTO> toArtistDtos(JsonNode artists) {
+        if (artists == null || !artists.isArray() || artists.isEmpty()) {
             return List.of();
         }
 
-        return artists.stream()
-                .filter(artist -> artist != null && !isBlank(artist.spotifyArtistId()))
-                .map(artist -> new SpotifyArtistDTO(
-                        artist.spotifyArtistId(),
-                        defaultText(artist.name()),
-                        artist.externalUrls() != null ? artist.externalUrls().spotify() : null
-                ))
-                .toList();
+        var artistDtos = new ArrayList<SpotifyArtistDTO>();
+        for (JsonNode artist : artists) {
+            var artistId = textOrNull(artist, "id");
+            if (!isBlank(artistId)) {
+                artistDtos.add(new SpotifyArtistDTO(
+                        artistId,
+                        defaultText(textOrNull(artist, "name")),
+                        textOrNull(artist.path("external_urls"), "spotify")
+                ));
+            }
+        }
+        return artistDtos;
+    }
+
+    private String textOrNull(JsonNode node, String fieldName) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return null;
+        }
+
+        var valueNode = node.path(fieldName);
+        if (valueNode.isMissingNode() || valueNode.isNull()) {
+            return null;
+        }
+
+        var value = valueNode.asText();
+        return value == null || value.isBlank() ? null : value;
+    }
+
+    private Integer intOrNull(JsonNode node, String fieldName) {
+        if (node == null || node.isMissingNode() || node.isNull()) {
+            return null;
+        }
+
+        var valueNode = node.path(fieldName);
+        return valueNode.isIntegralNumber() ? valueNode.intValue() : null;
     }
 
     private void requireText(String value, String message) {
@@ -341,27 +489,11 @@ public class SpotifyClient {
     private record SpotifyTopTracksResponse(List<SpotifyTopTrackResponse> items) {
     }
 
-    private record SpotifyPlaylistTracksResponse(
-            List<SpotifyPlaylistItemResponse> items,
-            String next
-    ) {
-    }
-
-    private record SpotifyPlaylistItemResponse(
-            @JsonProperty("is_local") boolean isLocal,
-            @JsonProperty("track") SpotifyPlaylistTrackResponse track
-    ) {
-    }
-
-    private record SpotifyPlaylistTrackResponse(
-            @JsonProperty("id") String spotifyTrackId,
-            String type,
+    public record SpotifyPlaylistSummary(
+            String spotifyPlaylistId,
             String name,
-            @JsonProperty("artists") List<SpotifyArtistSummary> artists,
-            SpotifyAlbumResponse album,
-            @JsonProperty("duration_ms") Integer durationMs,
-            @JsonProperty("track_number") Integer trackNumber,
-            @JsonProperty("external_urls") SpotifyExternalUrlsResponse externalUrls
+            String ownerSpotifyUserId,
+            Integer totalTracks
     ) {
     }
 

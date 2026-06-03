@@ -72,11 +72,23 @@ class SpotifyTasteSyncServiceTest {
         when(spotifyConnectionRepository.findByUserId(userId)).thenReturn(Optional.of(connection));
         when(spotifyTokenService.getValidAccessToken(userId, connection.getId())).thenReturn("access-token");
         when(spotifyClient.getTopArtists("access-token", configuredTimeRange, 7))
-                .thenReturn(List.of(new SpotifyTopUserArtistDTO("artist-" + configuredTimeRange.name(), "Artist " + configuredTimeRange.name())));
+                .thenReturn(List.of(
+                        new SpotifyTopUserArtistDTO("Artist 1"),
+                        new SpotifyTopUserArtistDTO("Artist 2"),
+                        new SpotifyTopUserArtistDTO("Artist 3"),
+                        new SpotifyTopUserArtistDTO("Artist 4"),
+                        new SpotifyTopUserArtistDTO("Artist 5"),
+                        new SpotifyTopUserArtistDTO("Artist 6")
+                ));
         when(spotifyClient.getTopTracks("access-token", configuredTimeRange, 9))
-                .thenReturn(List.of(new SpotifyUserTopTrackDTO("track-" + configuredTimeRange.name(), "Track " + configuredTimeRange.name(), List.of("Artist"), "Album")));
-        when(spotifyTasteSnapshotRepository.findTopByUserIdOrderByGeneratedAtDesc(userId)).thenReturn(Optional.empty());
-
+                .thenReturn(List.of(
+                        new SpotifyUserTopTrackDTO("Track 1", List.of("Artist 1"), "Album 1"),
+                        new SpotifyUserTopTrackDTO("Track 2", List.of("Artist 2"), "Album 2"),
+                        new SpotifyUserTopTrackDTO("Track 3", List.of("Artist 3"), "Album 3"),
+                        new SpotifyUserTopTrackDTO("Track 4", List.of("Artist 4"), "Album 4"),
+                        new SpotifyUserTopTrackDTO("Track 5", List.of("Artist 5"), "Album 5"),
+                        new SpotifyUserTopTrackDTO("Track 6", List.of("Artist 6"), "Album 6")
+                ));
         service.syncTasteProfile(userId);
 
         var snapshotCaptor = ArgumentCaptor.forClass(SpotifyTasteSnapshot.class);
@@ -85,11 +97,15 @@ class SpotifyTasteSyncServiceTest {
         assertThat(snapshotCaptor.getValue().getSpotifyConnectionId()).isEqualTo(connection.getId());
         assertThat(snapshotCaptor.getValue().getGeneratedAt()).isEqualTo(now);
         assertThat(snapshotCaptor.getValue().getTopArtists())
-                .extracting(SpotifyTopUserArtistDTO::spotifyArtistId)
-                .containsExactly("artist-" + configuredTimeRange.name());
+                .extracting(SpotifyTopUserArtistDTO::name)
+                .containsExactly("Artist 1", "Artist 2", "Artist 3", "Artist 4", "Artist 5");
         assertThat(snapshotCaptor.getValue().getTopTracks())
-                .extracting(SpotifyUserTopTrackDTO::spotifyTrackId)
-                .containsExactly("track-" + configuredTimeRange.name());
+                .extracting(SpotifyUserTopTrackDTO::name)
+                .containsExactly("Track 1", "Track 2", "Track 3", "Track 4", "Track 5");
+        assertThat(snapshotCaptor.getValue().getTopTracks().getFirst().artistNames())
+                .containsExactly("Artist 1");
+        assertThat(snapshotCaptor.getValue().getTopTracks().getFirst().albumName())
+                .isEqualTo("Album 1");
     }
 
     @Test

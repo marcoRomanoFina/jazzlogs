@@ -16,12 +16,16 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SpotifyTasteSyncService {
+
+    private static final int SNAPSHOT_TOP_ITEMS_LIMIT = 5;
 
     private final SpotifyConnectionRepository spotifyConnectionRepository;
     private final SpotifyTokenService spotifyTokenService;
@@ -47,15 +51,13 @@ public class SpotifyTasteSyncService {
             var accessToken = spotifyTokenService.getValidAccessToken(userId, connection.getId());
             var generatedAt = Instant.now(clock);
             var timeRange = resolveConfiguredTimeRange();
-            var topArtists = fetchTopArtists(accessToken, timeRange);
-            var topTracks = fetchTopTracks(accessToken, timeRange);
-
-            var existingSnapshot = spotifyTasteSnapshotRepository.findTopByUserIdOrderByGeneratedAtDesc(userId);
-            if (existingSnapshot.isPresent()) {
-                existingSnapshot.get().replaceSnapshot(connection.getId(), topArtists, topTracks, generatedAt);
-                return;
-            }
-
+            var topArtists = fetchTopArtists(accessToken, timeRange).stream()
+                    .limit(SNAPSHOT_TOP_ITEMS_LIMIT)
+                    .toList();
+            var topTracks = fetchTopTracks(accessToken, timeRange).stream()
+                    .limit(SNAPSHOT_TOP_ITEMS_LIMIT)
+                    .toList();
+            spotifyTasteSnapshotRepository.deleteAllByUserId(userId);
             spotifyTasteSnapshotRepository.save(
                     SpotifyTasteSnapshot.create(
                             userId,
@@ -72,6 +74,7 @@ public class SpotifyTasteSyncService {
             throw exception;
         }
         catch (RuntimeException exception) {
+            log.error("Spotify taste snapshot sync failed for userId={}", userId, exception);
             throw new SpotifyTasteSnapshotSyncException(
                     "Failed to sync Spotify taste snapshot for user " + userId,
                     exception

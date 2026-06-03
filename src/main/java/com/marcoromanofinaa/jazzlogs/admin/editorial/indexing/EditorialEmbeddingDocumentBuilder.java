@@ -6,9 +6,11 @@ import com.marcoromanofinaa.jazzlogs.admin.editorial.album.model.AlbumLogMainArt
 import com.marcoromanofinaa.jazzlogs.admin.editorial.album.model.AlbumLogPersonnel;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.artist.model.ArtistLog;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.track.model.TrackLog;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -22,36 +24,19 @@ public class EditorialEmbeddingDocumentBuilder {
     public List<Document> buildAlbumLogDocuments(AlbumLog albumLog) {
         var metadata = albumMetadata(albumLog);
 
+        var fullText = buildParagraph(
+                buildAlbumOverviewText(albumLog),
+                buildAlbumMoodGuideText(albumLog),
+                buildAlbumBestMomentsText(albumLog),
+                buildAlbumRecommendationGuideText(albumLog),
+                buildAlbumPersonnelText(albumLog)
+        );
+
         return List.of(
                 buildDocument(
-                        documentId("ALBUM_LOG", albumLog.getId(), "ALBUM_OVERVIEW"),
-                        buildAlbumOverviewText(albumLog),
-                        metadata,
-                        "ALBUM_OVERVIEW"
-                ),
-                buildDocument(
-                        documentId("ALBUM_LOG", albumLog.getId(), "ALBUM_MOOD_GUIDE"),
-                        buildAlbumMoodGuideText(albumLog),
-                        metadata,
-                        "ALBUM_MOOD_GUIDE"
-                ),
-                buildDocument(
-                        documentId("ALBUM_LOG", albumLog.getId(), "ALBUM_BEST_MOMENTS"),
-                        buildAlbumBestMomentsText(albumLog),
-                        metadata,
-                        "ALBUM_BEST_MOMENTS"
-                ),
-                buildDocument(
-                        documentId("ALBUM_LOG", albumLog.getId(), "ALBUM_RECOMMENDATION_GUIDE"),
-                        buildAlbumRecommendationGuideText(albumLog),
-                        metadata,
-                        "ALBUM_RECOMMENDATION_GUIDE"
-                ),
-                buildDocument(
-                        documentId("ALBUM_LOG", albumLog.getId(), "ALBUM_PERSONNEL"),
-                        buildAlbumPersonnelText(albumLog),
-                        metadata,
-                        "ALBUM_PERSONNEL"
+                        documentId("ALBUM_LOG", albumLog.getId(), "FULL_LOG"),
+                        fullText,
+                        metadata
                 )
         );
     }
@@ -59,24 +44,17 @@ public class EditorialEmbeddingDocumentBuilder {
     public List<Document> buildTrackLogDocuments(TrackLog trackLog) {
         var metadata = trackMetadata(trackLog);
 
+        var fullText = buildParagraph(
+                buildTrackOverviewText(trackLog),
+                buildTrackFeelText(trackLog),
+                buildTrackRecommendationGuideText(trackLog)
+        );
+
         return List.of(
                 buildDocument(
-                        documentId("TRACK_LOG", trackLog.getId(), "TRACK_OVERVIEW"),
-                        buildTrackOverviewText(trackLog),
-                        metadata,
-                        "TRACK_OVERVIEW"
-                ),
-                buildDocument(
-                        documentId("TRACK_LOG", trackLog.getId(), "TRACK_FEEL"),
-                        buildTrackFeelText(trackLog),
-                        metadata,
-                        "TRACK_FEEL"
-                ),
-                buildDocument(
-                        documentId("TRACK_LOG", trackLog.getId(), "TRACK_RECOMMENDATION_GUIDE"),
-                        buildTrackRecommendationGuideText(trackLog),
-                        metadata,
-                        "TRACK_RECOMMENDATION_GUIDE"
+                        documentId("TRACK_LOG", trackLog.getId(), "FULL_LOG"),
+                        fullText,
+                        metadata
                 )
         );
     }
@@ -84,24 +62,17 @@ public class EditorialEmbeddingDocumentBuilder {
     public List<Document> buildArtistLogDocuments(ArtistLog artistLog) {
         var metadata = artistMetadata(artistLog);
 
+        var fullText = buildParagraph(
+                buildArtistOverviewText(artistLog),
+                buildArtistSoundProfileText(artistLog),
+                buildArtistRecommendationGuideText(artistLog)
+        );
+
         return List.of(
                 buildDocument(
-                        documentId("ARTIST_LOG", artistLog.getId(), "ARTIST_OVERVIEW"),
-                        buildArtistOverviewText(artistLog),
-                        metadata,
-                        "ARTIST_OVERVIEW"
-                ),
-                buildDocument(
-                        documentId("ARTIST_LOG", artistLog.getId(), "ARTIST_SOUND_PROFILE"),
-                        buildArtistSoundProfileText(artistLog),
-                        metadata,
-                        "ARTIST_SOUND_PROFILE"
-                ),
-                buildDocument(
-                        documentId("ARTIST_LOG", artistLog.getId(), "ARTIST_RECOMMENDATION_GUIDE"),
-                        buildArtistRecommendationGuideText(artistLog),
-                        metadata,
-                        "ARTIST_RECOMMENDATION_GUIDE"
+                        documentId("ARTIST_LOG", artistLog.getId(), "FULL_LOG"),
+                        fullText,
+                        metadata
                 )
         );
     }
@@ -109,11 +80,9 @@ public class EditorialEmbeddingDocumentBuilder {
     private Document buildDocument(
             String id,
             String text,
-            Map<String, Object> baseMetadata,
-            String section
+            Map<String, Object> baseMetadata
     ) {
         var metadata = new LinkedHashMap<>(baseMetadata);
-        metadata.put("section", section);
 
         return Document.builder()
                 .id(id)
@@ -129,8 +98,23 @@ public class EditorialEmbeddingDocumentBuilder {
         putIfPresent(metadata, "spotifyAlbumId", albumLog.getSpotifyAlbumId());
         putIfPresent(metadata, "logNumber", albumLog.getLogNumber());
         putIfPresent(metadata, "album", albumLog.getAlbumName());
-        putIfPresent(metadata, "mainArtists", joinMainArtists(albumLog.getMainArtists()));
+        putIfPresent(metadata, "primaryArtist", primaryArtist(albumLog.getMainArtists()));
+        putIfPresent(metadata, "secondaryArtists", secondaryArtists(albumLog.getMainArtists()));
         putIfPresent(metadata, "tier", albumLog.getTier());
+        putIfPresent(metadata, "captionEssence", albumLog.getCaptionEssence());
+        putIfPresent(metadata, "editorialNote", albumLog.getEditorialNote());
+        
+        // New filtering metadata
+        putIfPresent(metadata, "style", albumLog.getStyle());
+        putIfPresent(metadata, "vocalProfile", albumLog.getVocalProfile());
+        putIfPresent(metadata, "releaseYear", albumLog.getReleaseYear());
+        putIfPresent(metadata, "moods", albumLog.getMoods());
+        putIfPresent(metadata, "vibe", albumLog.getVibe());
+        putIfPresent(metadata, "energy", normalize(albumLog.getEnergy()));
+        putIfPresent(metadata, "moodIntensity", normalize(albumLog.getMoodIntensity()));
+        putIfPresent(metadata, "accessibility", normalize(albumLog.getAccessibility()));
+        putIfPresent(metadata, "listeningContext", albumLog.getListeningContext());
+        
         return metadata;
     }
 
@@ -142,8 +126,27 @@ public class EditorialEmbeddingDocumentBuilder {
         putIfPresent(metadata, "spotifyAlbumId", trackLog.getSpotifyAlbumId());
         putIfPresent(metadata, "track", trackLog.getTrackName());
         putIfPresent(metadata, "album", trackLog.getAlbumName());
+        putIfPresent(metadata, "primaryArtist", trackLog.getPrimaryArtist());
         putIfPresent(metadata, "logNumber", trackLog.getLogNumber());
         putIfPresent(metadata, "tier", trackLog.getTier());
+        putIfPresent(metadata, "editorialNote", trackLog.getEditorialNote());
+
+        // New filtering metadata
+        putIfPresent(metadata, "vocalProfile", trackLog.getVocalProfile());
+        putIfPresent(metadata, "standout", trackLog.getStandout());
+        putIfPresent(metadata, "vibe", trackLog.getVibe());
+        putIfPresent(metadata, "energy", normalize(trackLog.getEnergy()));
+        putIfPresent(metadata, "moodIntensity", normalize(trackLog.getMoodIntensity()));
+        putIfPresent(metadata, "accessibility", normalize(trackLog.getAccessibility()));
+        putIfPresent(metadata, "tempoFeel", normalize(trackLog.getTempoFeel()));
+        putIfPresent(metadata, "rhythmFeel", trackLog.getRhythmFeel());
+        putIfPresent(metadata, "albumRole", trackLog.getAlbumRole());
+        putIfPresent(metadata, "compositionType", trackLog.getCompositionType());
+        putIfPresent(metadata, "listeningContext", trackLog.getListeningContext());
+        putIfPresent(metadata, "instrumentFocus", trackLog.getInstrumentFocus());
+        putIfPresent(metadata, "vocalStyle", trackLog.getVocalStyle());
+        putIfPresent(metadata, "standoutTags", trackLog.getStandoutTags());
+
         return metadata;
     }
 
@@ -155,6 +158,11 @@ public class EditorialEmbeddingDocumentBuilder {
         putIfPresent(metadata, "name", artistLog.getArtistName());
         putIfPresent(metadata, "primaryInstrument", artistLog.getPrimaryInstrument());
         putIfPresent(metadata, "importance", artistLog.getWhyItMatters());
+
+        // New filtering metadata
+        putIfPresent(metadata, "mainStyles", artistLog.getMainStyles());
+        putIfPresent(metadata, "relatedArtists", artistLog.getRelatedArtists());
+
         return metadata;
     }
 
@@ -283,8 +291,28 @@ public class EditorialEmbeddingDocumentBuilder {
         );
     }
 
+    private String normalize(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+
+        var normalized = value.trim().toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "baja", "bajo" -> "low";
+            case "lento" -> "slow";
+            case "media", "medio" -> "medium";
+            case "alta", "alto" -> "high";
+            case "movido", "rápido" -> "fast";
+            case "fácil" -> "easy";
+            case "exigente" -> "hard";
+            default -> normalized;
+        };
+    }
+
     private String documentId(String sourceType, UUID sourceId, String section) {
-        return sourceType + ":" + sourceId + ":" + section;
+        return UUID.nameUUIDFromBytes(
+                (sourceType + ":" + sourceId + ":" + section).getBytes(StandardCharsets.UTF_8)
+        ).toString();
     }
 
     private void putIfPresent(Map<String, Object> metadata, String key, Object value) {
@@ -339,6 +367,32 @@ public class EditorialEmbeddingDocumentBuilder {
                 .filter(Objects::nonNull)
                 .filter(name -> !name.isBlank())
                 .collect(Collectors.joining(", "));
+    }
+
+    private String primaryArtist(List<AlbumLogMainArtist> artists) {
+        if (artists == null || artists.isEmpty()) {
+            return null;
+        }
+        return artists.stream()
+                .map(AlbumLogMainArtist::name)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(name -> !name.isBlank())
+                .findFirst()
+                .orElse(null);
+    }
+
+    private List<String> secondaryArtists(List<AlbumLogMainArtist> artists) {
+        if (artists == null || artists.size() <= 1) {
+            return List.of();
+        }
+        return artists.stream()
+                .skip(1)
+                .map(AlbumLogMainArtist::name)
+                .filter(Objects::nonNull)
+                .map(String::trim)
+                .filter(name -> !name.isBlank())
+                .toList();
     }
 
     private String formatBestMoments(AlbumLogBestMoment bestMoment) {
