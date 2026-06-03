@@ -26,6 +26,7 @@ public class SpotifyAuthorizationUrlBuilder {
                 .queryParam("redirect_uri", spotifyProperties.oauth().redirectUri())
                 .queryParam("state", state)
                 .build()
+                .encode()
                 .toUriString();
     }
 

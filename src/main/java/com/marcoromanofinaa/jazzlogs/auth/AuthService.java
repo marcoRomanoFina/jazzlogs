@@ -9,9 +9,11 @@ import com.marcoromanofinaa.jazzlogs.auth.exception.UserDisabledException;
 import com.marcoromanofinaa.jazzlogs.auth.security.JwtService;
 import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.repository.UserJazzPreferencesRepository;
 import com.marcoromanofinaa.jazzlogs.user.mapper.UserMapper;
+import com.marcoromanofinaa.jazzlogs.user.model.Plan;
 import com.marcoromanofinaa.jazzlogs.user.model.User;
 import com.marcoromanofinaa.jazzlogs.user.model.UserStatus;
 import com.marcoromanofinaa.jazzlogs.user.repository.UserRepository;
+import com.marcoromanofinaa.jazzlogs.user.subscription.service.UserSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final UserJazzPreferencesRepository userJazzPreferencesRepository;
     private final UserMapper userMapper;
+    private final UserSubscriptionService userSubscriptionService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
@@ -42,8 +45,10 @@ public class AuthService {
         );
 
         var savedUser = userRepository.save(user);
+        userSubscriptionService.renewSubscription(savedUser.getId(), Plan.FREE);
         var token = jwtService.generateAccessToken(savedUser);
-        return new AuthResponse(token, userMapper.toDTO(savedUser, false));
+        var subscription = userSubscriptionService.getCurrentSubscription(savedUser.getId());
+        return new AuthResponse(token, userMapper.toDTO(savedUser, subscription, false));
     }
 
     @Transactional
@@ -59,8 +64,10 @@ public class AuthService {
             throw new InvalidCredentialsException();
         }
 
+        user.markLoggedIn();
         var token = jwtService.generateAccessToken(user);
         var hasPreferences = userJazzPreferencesRepository.findByUserId(user.getId()).isPresent();
-        return new AuthResponse(token, userMapper.toDTO(user, hasPreferences));
+        var subscription = userSubscriptionService.getCurrentSubscription(user.getId());
+        return new AuthResponse(token, userMapper.toDTO(user, subscription, hasPreferences));
     }
 }

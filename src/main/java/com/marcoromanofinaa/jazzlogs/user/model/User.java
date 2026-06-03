@@ -5,6 +5,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.Locale;
@@ -14,6 +15,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
+import com.marcoromanofinaa.jazzlogs.user.subscription.model.UserSubscription;
+import jakarta.persistence.FetchType;
 
 @Getter
 @NoArgsConstructor
@@ -48,11 +51,10 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private Plan plan;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 30)
     private UserStatus status;
+
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    private UserSubscription subscription;
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -72,7 +74,6 @@ public class User {
         this.email = normalizeEmail(email);
         this.passwordHash = normalizeBlankToNull(passwordHash);
         this.role = UserRole.USER;
-        this.plan = Plan.FREE;
         this.status = UserStatus.ACTIVE;
     }
 

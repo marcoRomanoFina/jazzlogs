@@ -1,7 +1,6 @@
 package com.marcoromanofinaa.jazzlogs.core.outbox;
 
 import com.marcoromanofinaa.jazzlogs.core.outbox.exception.OutboxEventProcessingException;
-import jakarta.transaction.Transactional;
 import java.time.Clock;
 import java.time.Instant;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class OutboxEventProcessorJob {
 
-    private final OutboxEventRepository outboxEventRepository;
+    private final OutboxEventProcessingCoordinator outboxEventProcessingCoordinator;
     private final OutboxEventHandlerResolver outboxEventHandlerResolver;
     private final OutboxProperties outboxProperties;
     private final Clock clock;
@@ -23,11 +22,10 @@ public class OutboxEventProcessorJob {
             cron = "${jazzlogs.outbox.processing.cron:0 */1 * * * *}",
             zone = "${jazzlogs.outbox.processing.zone:America/Argentina/Buenos_Aires}"
     )
-    @Transactional
     public void processPendingEvents() {
         var now = Instant.now(clock);
         var processing = outboxProperties.processing();
-        var events = outboxEventRepository.findPendingEventsForProcessing(now, processing.batchSize());
+        var events = outboxEventProcessingCoordinator.claimPendingEvents(now, processing.batchSize());
 
         for (var event : events) {
             processSingleEvent(event, now, processing);
@@ -39,22 +37,20 @@ public class OutboxEventProcessorJob {
             Instant now,
             OutboxProperties.Processing processing
     ) {
-        event.markProcessing(now);
-
         try {
             var handler = outboxEventHandlerResolver.resolve(event.getType());
             handler.handle(event);
-            event.markProcessed(Instant.now(clock));
+            outboxEventProcessingCoordinator.markProcessed(event.getId(), Instant.now(clock));
         } catch (Exception exception) {
             var processingException = new OutboxEventProcessingException(event.getId(), event.getType(), exception);
             if (event.getRetryCount() + 1 >= processing.maxRetries()) {
-                event.markFailed(Instant.now(clock));
+                outboxEventProcessingCoordinator.markFailed(event.getId(), Instant.now(clock));
                 log.error("Outbox event {} failed permanently after {} attempts", event.getId(), event.getRetryCount() + 1, processingException);
                 return;
             }
 
             var nextRetryAt = calculateNextRetryAt(event, Instant.now(clock), processing);
-            event.markFailedForRetry(nextRetryAt, Instant.now(clock));
+            outboxEventProcessingCoordinator.markFailedForRetry(event.getId(), nextRetryAt, Instant.now(clock));
             log.warn("Outbox event {} failed, scheduled retry {} at {}", event.getId(), event.getRetryCount(), nextRetryAt, processingException);
         }
     }

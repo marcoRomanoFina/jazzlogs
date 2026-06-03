@@ -5,6 +5,7 @@ import com.marcoromanofinaa.jazzlogs.spotify.integration.SpotifyClient;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.client.SpotifyTokenClient;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.client.SpotifyTokenResponseDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.oauth.OAuthStateGenerator;
+import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyAccountAlreadyLinkedException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.ConsumedSpotifyOAuthStateException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.ExpiredSpotifyOAuthStateException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.InvalidSpotifyOAuthStateException;
@@ -92,6 +93,7 @@ public class SpotifyConnectionService {
             Instant now
     ) {
         var spotifyUserProfile = spotifyClient.getCurrentUserProfile(tokenResponse.accessToken());
+        assertSpotifyAccountAvailableToUser(stateRecord.getUserId(), spotifyUserProfile.spotifyUserId());
         var encryptedAccessToken = tokenEncryptionService.encrypt(tokenResponse.accessToken());
 
         var existingConnection = spotifyConnectionRepository.findByUserId(stateRecord.getUserId());
@@ -130,6 +132,14 @@ public class SpotifyConnectionService {
                         now.plusSeconds(tokenResponse.expiresIn())
                 )
         );
+    }
+
+    private void assertSpotifyAccountAvailableToUser(UUID userId, String spotifyUserId) {
+        spotifyConnectionRepository.findBySpotifyUserIdAndStatus(spotifyUserId, SpotifyConnectionStatus.CONNECTED)
+                .filter(connection -> !connection.getUserId().equals(userId))
+                .ifPresent(connection -> {
+                    throw new SpotifyAccountAlreadyLinkedException(spotifyUserId, connection.getUserId());
+                });
     }
 
 }

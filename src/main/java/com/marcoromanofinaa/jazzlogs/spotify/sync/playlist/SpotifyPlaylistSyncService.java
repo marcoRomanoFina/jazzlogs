@@ -1,11 +1,9 @@
 package com.marcoromanofinaa.jazzlogs.spotify.sync.playlist;
-
 import com.marcoromanofinaa.jazzlogs.spotify.config.SpotifyProperties;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnection;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnectionRepository;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyConnectionStatus;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.SpotifyTokenService;
-import com.marcoromanofinaa.jazzlogs.spotify.exception.InvalidOfficialSpotifyOwnerException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyConnectionNotConnectedException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyConnectionNotFoundException;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyMissingScopesException;
@@ -38,11 +36,10 @@ public class SpotifyPlaylistSyncService {
     public void syncOfficialPlaylist(UUID adminUserId) {
         try {
             var officialPlaylistId = requireOfficialPlaylistId();
-            var officialOwnerSpotifyUserId = requireOfficialOwnerSpotifyUserId();
             var connection = spotifyConnectionRepository.findByUserIdAndStatus(adminUserId, SpotifyConnectionStatus.CONNECTED)
                     .orElseThrow(() -> new SpotifyConnectionNotFoundException(adminUserId));
 
-            validateConnection(connection, officialOwnerSpotifyUserId);
+            validateConnection(connection);
 
             var accessToken = spotifyTokenService.getValidAccessToken(adminUserId, connection.getId());
             var tracks = spotifyClient.getPlaylistTracks(accessToken, officialPlaylistId);
@@ -55,11 +52,16 @@ public class SpotifyPlaylistSyncService {
         }
         catch (SpotifyConnectionNotFoundException
                | SpotifyConnectionNotConnectedException
-               | SpotifyMissingScopesException
-               | InvalidOfficialSpotifyOwnerException exception) {
+               | SpotifyMissingScopesException exception) {
             throw exception;
         }
         catch (RuntimeException exception) {
+            log.error(
+                    "Spotify official playlist sync failed for adminUserId={} and playlistId={}",
+                    adminUserId,
+                    spotifyProperties.sync().officialPlaylistId(),
+                    exception
+            );
             throw new SpotifyPlaylistSyncException(
                     "Failed to sync official Spotify playlist for user " + adminUserId,
                     exception
@@ -67,7 +69,7 @@ public class SpotifyPlaylistSyncService {
         }
     }
 
-    private void validateConnection(SpotifyConnection connection, String officialOwnerSpotifyUserId) {
+    private void validateConnection(SpotifyConnection connection) {
         if (!connection.isConnected()) {
             throw new SpotifyConnectionNotConnectedException(connection.getUserId(), connection.getStatus());
         }
@@ -75,23 +77,12 @@ public class SpotifyPlaylistSyncService {
         if (!connection.hasScopes(REQUIRED_SCOPES)) {
             throw new SpotifyMissingScopesException(connection.getUserId(), REQUIRED_SCOPES);
         }
-
-        if (!officialOwnerSpotifyUserId.equals(connection.getSpotifyUserId())) {
-            throw new InvalidOfficialSpotifyOwnerException(connection.getSpotifyUserId(), officialOwnerSpotifyUserId);
-        }
     }
 
     private String requireOfficialPlaylistId() {
         return requireConfiguredValue(
                 spotifyProperties.sync().officialPlaylistId(),
                 "Spotify official playlist ID is not configured"
-        );
-    }
-
-    private String requireOfficialOwnerSpotifyUserId() {
-        return requireConfiguredValue(
-                spotifyProperties.sync().officialOwnerSpotifyUserId(),
-                "Spotify official owner Spotify user ID is not configured"
         );
     }
 

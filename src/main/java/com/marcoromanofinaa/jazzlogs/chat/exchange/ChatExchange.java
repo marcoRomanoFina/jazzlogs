@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
+
 @Entity
 @Table(name = "chat_exchanges")
 @Getter
@@ -48,6 +50,10 @@ public class ChatExchange {
     private List<String> winners;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "recommendation_type")
+    private BasicRecommendationTarget recommendationType;
+
+    @Enumerated(EnumType.STRING)
     @Column(name = "model_used", nullable = false)
     private AIModelType modelUsed;
 
@@ -69,6 +75,7 @@ public class ChatExchange {
             AIModelType requestedModel,
             String assistantResponse,
             List<String> winners,
+            BasicRecommendationTarget recommendationType,
             AIModelType modelUsed,
             Long routerLatencyMs,
             Long flowLatencyMs,
@@ -81,6 +88,7 @@ public class ChatExchange {
         exchange.requestedModel = requestedModel;
         exchange.assistantResponse = assistantResponse;
         exchange.winners = winners == null ? List.of() : List.copyOf(winners);
+        exchange.recommendationType = recommendationType;
         exchange.modelUsed = modelUsed;
         exchange.routerLatencyMs = routerLatencyMs == null ? 0L : Math.max(routerLatencyMs, 0L);
         exchange.flowLatencyMs = flowLatencyMs == null ? 0L : Math.max(flowLatencyMs, 0L);

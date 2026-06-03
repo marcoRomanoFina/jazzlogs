@@ -4,12 +4,12 @@ import com.marcoromanofinaa.jazzlogs.admin.editorial.album.dto.UpsertAlbumLogReq
 import com.marcoromanofinaa.jazzlogs.admin.editorial.artist.dto.UpsertArtistLogRequestDTO;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.service.AdminEditorialLogService;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.track.dto.UpsertTrackLogRequestDTO;
+import com.marcoromanofinaa.jazzlogs.auth.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import com.marcoromanofinaa.jazzlogs.auth.security.AuthenticatedUser;
 
 @RestController
 @RequestMapping("/api/v1/admin/editorial/logs")

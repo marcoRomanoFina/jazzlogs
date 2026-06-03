@@ -17,6 +17,7 @@ import com.marcoromanofinaa.jazzlogs.spotify.connection.oauth.SpotifyOAuthStateS
 import com.marcoromanofinaa.jazzlogs.spotify.connection.oauth.SpotifyScope;
 import com.marcoromanofinaa.jazzlogs.spotify.connection.oauth.TokenEncryptionService;
 import com.marcoromanofinaa.jazzlogs.spotify.config.SpotifyProperties;
+import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyAccountAlreadyLinkedException;
 import com.marcoromanofinaa.jazzlogs.spotify.integration.SpotifyClient;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.ExpiredSpotifyOAuthStateException;
 import java.net.URI;
@@ -170,6 +171,59 @@ class SpotifyConnectionServiceTest {
         assertThatThrownBy(() -> spotifyConnectionService.handleCallback("code", "expired-state"))
                 .isInstanceOf(ExpiredSpotifyOAuthStateException.class);
         assertThat(expiredState.getStatus()).isEqualTo(SpotifyOAuthStateStatus.EXPIRED);
+    }
+
+    @Test
+    void handleCallbackRejectsSpotifyAccountAlreadyLinkedToAnotherUser() {
+        var currentUserId = UUID.randomUUID();
+        var otherUserId = UUID.randomUUID();
+        var state = SpotifyOAuthState.create(
+                currentUserId,
+                "state-duplicate",
+                Instant.now().plusSeconds(600),
+                Set.of(SpotifyScope.USER_TOP_READ)
+        );
+        spotifyConnectionService = new SpotifyConnectionService(
+                oAuthStateGenerator,
+                spotifyConnectionRepository,
+                spotifyAuthorizationUrlBuilder,
+                spotifyTokenClient,
+                tokenEncryptionService,
+                spotifyOAuthStateRepository,
+                spotifyClient,
+                spotifyProperties()
+        );
+
+        when(spotifyOAuthStateRepository.findByState("state-duplicate")).thenReturn(Optional.of(state));
+        when(spotifyTokenClient.exchangeAuthorizationCode("code-123")).thenReturn(
+                new SpotifyTokenResponseDTO(
+                        "access-token",
+                        "Bearer",
+                        "user-top-read user-read-email",
+                        3600,
+                        "refresh-token"
+                )
+        );
+        when(spotifyClient.getCurrentUserProfile("access-token")).thenReturn(
+                new SpotifyUserProfileDTO("spotify-user", "Miles", "AR", "premium")
+        );
+        when(spotifyConnectionRepository.findBySpotifyUserIdAndStatus("spotify-user", SpotifyConnectionStatus.CONNECTED))
+                .thenReturn(Optional.of(SpotifyConnection.create(
+                        otherUserId,
+                        "spotify-user",
+                        "Already linked",
+                        "AR",
+                        "premium",
+                        "enc-access",
+                        "enc-refresh",
+                        "Bearer",
+                        "user-top-read",
+                        Instant.now().plusSeconds(3600)
+                )));
+
+        assertThatThrownBy(() -> spotifyConnectionService.handleCallback("code-123", "state-duplicate"))
+                .isInstanceOf(SpotifyAccountAlreadyLinkedException.class)
+                .hasMessageContaining("spotify-user");
     }
 
     private SpotifyProperties spotifyProperties() {

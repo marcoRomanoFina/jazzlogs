@@ -25,6 +25,9 @@ public record TrackLogData(
         @Size(max = 512)
         String albumName,
 
+        @Size(max = 512)
+        String primaryArtist,
+
         @Size(max = 64)
         String mainArtistSpotifyId,
 

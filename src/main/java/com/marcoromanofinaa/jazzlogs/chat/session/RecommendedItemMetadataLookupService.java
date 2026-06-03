@@ -5,8 +5,14 @@ import com.marcoromanofinaa.jazzlogs.admin.editorial.album.model.AlbumLog;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.track.TrackLogRepository;
 import com.marcoromanofinaa.jazzlogs.admin.editorial.track.model.TrackLog;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +40,38 @@ public class RecommendedItemMetadataLookupService {
                 .map(trackLog -> fromTrack(trackLog, albumMatchFor(trackLog)));
     }
 
+    public Map<String, ChatRecommendationMemory.RecommendedItemMetadata> findByWinners(
+            BasicRecommendationTarget recommendationType,
+            Collection<String> winners
+    ) {
+        var normalizedWinners = normalizeWinners(winners);
+        if (normalizedWinners.isEmpty()) {
+            return Map.of();
+        }
+
+        if (recommendationType == BasicRecommendationTarget.ALBUM) {
+            return albumLogRepository.findByAlbumNameInIgnoreCase(normalizedWinners).stream()
+                    .collect(Collectors.toMap(
+                            albumLog -> normalize(albumLog.getAlbumName()),
+                            this::fromAlbum,
+                            (left, right) -> left,
+                            LinkedHashMap::new
+                    ));
+        }
+
+        var trackLogs = trackLogRepository.findByTrackNameInIgnoreCase(normalizedWinners);
+        var albumBySpotifyId = albumLogsBySpotifyId(trackLogs);
+        var albumByName = albumLogsByName(trackLogs);
+
+        return trackLogs.stream()
+                .collect(Collectors.toMap(
+                        trackLog -> normalize(trackLog.getTrackName()),
+                        trackLog -> fromTrack(trackLog, albumFor(trackLog, albumBySpotifyId, albumByName)),
+                        (left, right) -> left,
+                        LinkedHashMap::new
+                ));
+    }
+
     private AlbumLog albumMatchFor(TrackLog trackLog) {
         if (trackLog.getSpotifyAlbumId() != null && !trackLog.getSpotifyAlbumId().isBlank()) {
             return albumLogRepository.findBySpotifyAlbumId(trackLog.getSpotifyAlbumId()).orElse(null);
@@ -42,6 +80,60 @@ public class RecommendedItemMetadataLookupService {
             return albumLogRepository.findFirstByAlbumNameIgnoreCase(trackLog.getAlbumName()).orElse(null);
         }
         return null;
+    }
+
+    private Map<String, AlbumLog> albumLogsBySpotifyId(List<TrackLog> trackLogs) {
+        var spotifyAlbumIds = trackLogs.stream()
+                .map(TrackLog::getSpotifyAlbumId)
+                .filter(id -> id != null && !id.isBlank())
+                .collect(Collectors.toSet());
+
+        if (spotifyAlbumIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return albumLogRepository.findBySpotifyAlbumIdIn(spotifyAlbumIds).stream()
+                .filter(albumLog -> albumLog.getSpotifyAlbumId() != null && !albumLog.getSpotifyAlbumId().isBlank())
+                .collect(Collectors.toMap(
+                        AlbumLog::getSpotifyAlbumId,
+                        Function.identity(),
+                        (left, right) -> left,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private Map<String, AlbumLog> albumLogsByName(List<TrackLog> trackLogs) {
+        var albumNames = trackLogs.stream()
+                .map(TrackLog::getAlbumName)
+                .map(this::normalize)
+                .filter(name -> !name.isBlank())
+                .collect(Collectors.toSet());
+
+        if (albumNames.isEmpty()) {
+            return Map.of();
+        }
+
+        return albumLogRepository.findByAlbumNameInIgnoreCase(albumNames).stream()
+                .collect(Collectors.toMap(
+                        albumLog -> normalize(albumLog.getAlbumName()),
+                        Function.identity(),
+                        (left, right) -> left,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private AlbumLog albumFor(
+            TrackLog trackLog,
+            Map<String, AlbumLog> albumBySpotifyId,
+            Map<String, AlbumLog> albumByName
+    ) {
+        if (trackLog.getSpotifyAlbumId() != null && !trackLog.getSpotifyAlbumId().isBlank()) {
+            var albumLog = albumBySpotifyId.get(trackLog.getSpotifyAlbumId());
+            if (albumLog != null) {
+                return albumLog;
+            }
+        }
+        return albumByName.get(normalize(trackLog.getAlbumName()));
     }
 
     private ChatRecommendationMemory.RecommendedItemMetadata fromAlbum(AlbumLog albumLog) {
@@ -120,5 +212,16 @@ public class RecommendedItemMetadataLookupService {
                 .map(artist -> artist.name())
                 .filter(name -> name != null && !name.isBlank())
                 .toList();
+    }
+
+    private java.util.Set<String> normalizeWinners(Collection<String> winners) {
+        return winners.stream()
+                .map(this::normalize)
+                .filter(value -> !value.isBlank())
+                .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
     }
 }

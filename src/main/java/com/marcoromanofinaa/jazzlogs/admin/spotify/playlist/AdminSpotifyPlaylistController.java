@@ -2,7 +2,6 @@ package com.marcoromanofinaa.jazzlogs.admin.spotify.playlist;
 
 import com.marcoromanofinaa.jazzlogs.auth.security.AuthenticatedUser;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.SpotifyPlaylistSyncService;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

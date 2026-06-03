@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,7 @@ public interface OutboxEventRepository extends JpaRepository<OutboxEvent, UUID> 
             for update skip locked
             """, nativeQuery = true)
     List<OutboxEvent> findPendingEventsForProcessing(@Param("now") Instant now, @Param("limit") int limit);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    int deleteAllByStatusIn(List<OutboxEventStatus> statuses);
 }

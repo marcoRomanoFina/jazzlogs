@@ -39,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/me").authenticated()
                         .requestMatchers("/api/v1/users/me/profile").authenticated()
                         .requestMatchers("/api/v1/users/me/preferences").authenticated()
+                        .requestMatchers("/api/v1/me/chats/**").authenticated()
                         .requestMatchers("/api/v1/spotify/authorization-url").authenticated()
                         .requestMatchers("/api/v1/spotify/taste-snapshot/**").authenticated()
                         .requestMatchers("/logs/**").permitAll()

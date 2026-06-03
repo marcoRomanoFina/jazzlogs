@@ -69,6 +69,7 @@ public class ChatService {
                 userMessage.requestedModel(),
                 recommendationResult.assistantResponse(),
                 recommendationResult.winners(),
+                recommendationResult.recommendationType(),
                 recommendationResult.modelUsed(),
                 recommendationResult.timing() == null ? 0L : recommendationResult.timing().routerLatencyMs(),
                 recommendationResult.timing() == null ? 0L : recommendationResult.timing().flowLatencyMs(),
@@ -131,6 +132,7 @@ public class ChatService {
                 userMessage.requestedModel(),
                 recommendationResult.assistantResponse(),
                 recommendationResult.winners(),
+                recommendationResult.recommendationType(),
                 recommendationResult.modelUsed(),
                 recommendationResult.timing() == null ? 0L : recommendationResult.timing().routerLatencyMs(),
                 recommendationResult.timing() == null ? 0L : recommendationResult.timing().flowLatencyMs(),
@@ -209,6 +211,7 @@ public class ChatService {
                 chatExchange.getRequestedModel(),
                 chatExchange.getAssistantResponse(),
                 chatExchange.getWinners(),
+                chatExchange.getRecommendationType(),
                 recommendedItemEnrichmentService.enrich(chatExchange.getWinners()),
                 chatExchange.getModelUsed(),
                 chatExchange.getCreatedAt()

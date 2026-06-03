@@ -20,6 +20,10 @@ public interface SpotifyConnectionRepository extends JpaRepository<SpotifyConnec
             SpotifyConnectionStatus status
     );
 
+    Optional<SpotifyConnection> findFirstByStatusOrderByConnectedAtAsc(
+            SpotifyConnectionStatus status
+    );
+
     default Optional<SpotifyConnection> findConnectedByUserId(UUID userId) {
         return findByUserIdAndStatus(userId, SpotifyConnectionStatus.CONNECTED);
     }
