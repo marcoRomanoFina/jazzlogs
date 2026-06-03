@@ -87,7 +87,7 @@ public class ChatService {
             chatSession.updateTitle(recommendationResult.suggestedChatTitle(), now);
         }
         chatSession.updateRecommendationMemory(
-                chatRecommendationMemoryService.append(chatSession.getRecommendationMemory(), recommendationResult),
+                chatRecommendationMemoryService.updateMemory(chatSession.getRecommendationMemory(), recommendationResult),
                 now
         );
         chatSession.markInteraction(now);
@@ -146,7 +146,7 @@ public class ChatService {
         );
 
         chatSession.updateRecommendationMemory(
-                chatRecommendationMemoryService.append(chatSession.getRecommendationMemory(), recommendationResult),
+                chatRecommendationMemoryService.updateMemory(chatSession.getRecommendationMemory(), recommendationResult),
                 now
         );
         chatSession.markInteraction(now);
