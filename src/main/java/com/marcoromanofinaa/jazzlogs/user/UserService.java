@@ -4,7 +4,7 @@ import com.marcoromanofinaa.jazzlogs.user.dto.UserProfileDto;
 import com.marcoromanofinaa.jazzlogs.user.dto.UserDto;
 import com.marcoromanofinaa.jazzlogs.user.exception.UserNotFoundException;
 import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.mapper.UserJazzPreferencesMapper;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.repository.UserJazzPreferencesRepository;
+import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.service.UserGraphPreferencesService;
 import com.marcoromanofinaa.jazzlogs.user.mapper.UserMapper;
 import com.marcoromanofinaa.jazzlogs.user.repository.UserRepository;
 import com.marcoromanofinaa.jazzlogs.user.subscription.service.UserSubscriptionService;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserJazzPreferencesRepository userJazzPreferencesRepository;
+    private final UserGraphPreferencesService userGraphPreferencesService;
     private final UserJazzPreferencesMapper userJazzPreferencesMapper;
     private final UserMapper userMapper;
     private final UserSubscriptionService userSubscriptionService;
@@ -27,7 +27,7 @@ public class UserService {
     public UserDto getUserById(UUID userId) {
         var user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
-        var hasPreferences = userJazzPreferencesRepository.findByUserId(userId).isPresent();
+        var hasPreferences = userGraphPreferencesService.hasPreferences(userId);
         var subscription = userSubscriptionService.getCurrentSubscription(userId);
         return userMapper.toDTO(user, subscription, hasPreferences);
     }
@@ -36,8 +36,8 @@ public class UserService {
     public UserProfileDto getProfile(UUID userId) {
         var user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
-        var preferences = userJazzPreferencesRepository.findByUserId(userId);
-        var hasPreferences = preferences.isPresent();
+        var preferences = userGraphPreferencesService.findByUserId(userId);
+        var hasPreferences = preferences.map(userGraphPreferencesService::hasPreferences).orElse(false);
         var subscription = userSubscriptionService.getCurrentSubscription(userId);
 
         return new UserProfileDto(

@@ -7,7 +7,7 @@ import com.marcoromanofinaa.jazzlogs.auth.exception.EmailAlreadyInUseException;
 import com.marcoromanofinaa.jazzlogs.auth.exception.InvalidCredentialsException;
 import com.marcoromanofinaa.jazzlogs.auth.exception.UserDisabledException;
 import com.marcoromanofinaa.jazzlogs.auth.security.JwtService;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.repository.UserJazzPreferencesRepository;
+import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.service.UserGraphPreferencesService;
 import com.marcoromanofinaa.jazzlogs.user.mapper.UserMapper;
 import com.marcoromanofinaa.jazzlogs.user.model.Plan;
 import com.marcoromanofinaa.jazzlogs.user.model.User;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final UserJazzPreferencesRepository userJazzPreferencesRepository;
+    private final UserGraphPreferencesService userGraphPreferencesService;
     private final UserMapper userMapper;
     private final UserSubscriptionService userSubscriptionService;
     private final PasswordEncoder passwordEncoder;
@@ -45,6 +45,7 @@ public class AuthService {
         );
 
         var savedUser = userRepository.save(user);
+        userGraphPreferencesService.createUserNode(savedUser);
         userSubscriptionService.renewSubscription(savedUser.getId(), Plan.FREE);
         var token = jwtService.generateAccessToken(savedUser);
         var subscription = userSubscriptionService.getCurrentSubscription(savedUser.getId());
@@ -66,7 +67,7 @@ public class AuthService {
 
         user.markLoggedIn();
         var token = jwtService.generateAccessToken(user);
-        var hasPreferences = userJazzPreferencesRepository.findByUserId(user.getId()).isPresent();
+        var hasPreferences = userGraphPreferencesService.hasPreferences(user.getId());
         var subscription = userSubscriptionService.getCurrentSubscription(user.getId());
         return new AuthResponse(token, userMapper.toDTO(user, subscription, hasPreferences));
     }

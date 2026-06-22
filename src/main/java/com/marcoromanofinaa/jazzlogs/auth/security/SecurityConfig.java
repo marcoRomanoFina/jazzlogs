@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -36,14 +38,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/register").permitAll()
                         .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers("/api/v1/spotify/callback").permitAll()
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/users/me").authenticated()
                         .requestMatchers("/api/v1/users/me/profile").authenticated()
-                        .requestMatchers("/api/v1/users/me/preferences").authenticated()
+                        .requestMatchers("/api/v1/users/me/preferences/**").authenticated()
                         .requestMatchers("/api/v1/me/chats/**").authenticated()
                         .requestMatchers("/api/v1/spotify/authorization-url").authenticated()
                         .requestMatchers("/api/v1/spotify/taste-snapshot/**").authenticated()
                         .requestMatchers("/logs/**").permitAll()
-                        .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().permitAll()
                 )
@@ -68,5 +70,14 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    UserDetailsService userDetailsService() {
+        return username -> {
+            throw new UsernameNotFoundException(
+                    "Direct UserDetailsService authentication is not supported; use JWT-based authentication"
+            );
+        };
     }
 }
