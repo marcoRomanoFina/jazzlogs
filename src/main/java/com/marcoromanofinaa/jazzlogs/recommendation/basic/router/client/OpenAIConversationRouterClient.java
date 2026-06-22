@@ -60,8 +60,10 @@ public class OpenAIConversationRouterClient {
         try {
             var response = openAIClient.responses().create(buildRequest(prompt, modelDefinition));
             logRawResponseIfEnabled(modelDefinition.providerModelName(), response);
+            var parsedResponse = parseResponseContent(response);
+            logParsedRouterResponse(modelDefinition.providerModelName(), parsedResponse, response);
             return new ConversationRouterResult(
-                    parseResponseContent(response),
+                    parsedResponse,
                     java.util.List.of(buildUsageRecord(response, requestedModel, modelDefinition))
             );
         } catch (RateLimitException | OpenAIRetryableException | OpenAIIoException exception) {
@@ -151,49 +153,81 @@ public class OpenAIConversationRouterClient {
     }
 
     private Map<String, JsonValue> jsonSchema() {
-        return toJsonValueMap(Map.of(
-                "type", "object",
-                "additionalProperties", false,
-                "properties", Map.of(
-                        "route", Map.of(
-                                "type", "string",
-                                "enum", java.util.List.of("DIRECT_ANSWER", "CLARIFICATION_NEEDED", "MUSIC_RECOMMENDATION")
-                        ),
-                        "userIntent", Map.of(
-                                "type", "string",
-                                "enum", java.util.List.of(
-                                        "RECOMMEND_ALBUM",
-                                        "RECOMMEND_TRACK",
-                                        "FACTUAL_QUESTION",
-                                        "REACTION",
-                                        "SMALLTALK",
-                                        "OUT_OF_SCOPE",
-                                        "NONSENSE",
-                                        "UNKNOWN"
-                                )
-                        ),
-                        "isFollowUp", Map.of("type", "boolean"),
-                        "needsRetrieval", Map.of("type", "boolean"),
-                        "updatedSessionSummary", nullableString(),
-                        "suggestedChatTitle", nullableString(),
-                        "contextualizedQuery", nullableString(),
-                        "directAnswer", nullableString(),
-                        "clarificationQuestion", nullableString(),
-                        "excludedWinners", nullableArrayOfStrings(null)
-                ),
-                "required", java.util.List.of(
-                        "route",
-                        "userIntent",
-                        "isFollowUp",
-                        "needsRetrieval",
-                        "updatedSessionSummary",
-                        "suggestedChatTitle",
-                        "contextualizedQuery",
-                        "directAnswer",
-                        "clarificationQuestion",
-                        "excludedWinners"
+        var referenceProperties = new LinkedHashMap<String, Object>();
+        referenceProperties.put("type", Map.of(
+                "type", "string",
+                "enum", java.util.List.of("ARTIST", "ALBUM", "TRACK")
+        ));
+        referenceProperties.put("name", Map.of("type", "string"));
+
+        var referenceItemSchema = new LinkedHashMap<String, Object>();
+        referenceItemSchema.put("type", "object");
+        referenceItemSchema.put("additionalProperties", false);
+        referenceItemSchema.put("properties", referenceProperties);
+        referenceItemSchema.put("required", java.util.List.of("type", "name"));
+
+        var subgraphProperties = new LinkedHashMap<String, Object>();
+        subgraphProperties.put("styles", requiredArrayOfStrings());
+        subgraphProperties.put("instruments", requiredArrayOfStrings());
+        subgraphProperties.put("rhythms", requiredArrayOfStrings());
+        subgraphProperties.put("references", Map.of(
+                "type", "array",
+                "items", referenceItemSchema
+        ));
+
+        var subgraphSchema = new LinkedHashMap<String, Object>();
+        subgraphSchema.put("type", "object");
+        subgraphSchema.put("additionalProperties", false);
+        subgraphSchema.put("properties", subgraphProperties);
+        subgraphSchema.put("required", java.util.List.of("styles", "instruments", "rhythms", "references"));
+
+        var properties = new LinkedHashMap<String, Object>();
+        properties.put("route", Map.of(
+                "type", "string",
+                "enum", java.util.List.of("DIRECT_ANSWER", "CLARIFICATION_NEEDED", "MUSIC_RECOMMENDATION")
+        ));
+        properties.put("userIntent", Map.of(
+                "type", "string",
+                "enum", java.util.List.of(
+                        "RECOMMEND_ALBUM",
+                        "RECOMMEND_TRACK",
+                        "FACTUAL_QUESTION",
+                        "REACTION",
+                        "SMALLTALK",
+                        "OUT_OF_SCOPE",
+                        "NONSENSE",
+                        "UNKNOWN"
                 )
         ));
+        properties.put("isFollowUp", Map.of("type", "boolean"));
+        properties.put("needsRetrieval", Map.of("type", "boolean"));
+        properties.put("updatedSessionSummary", nullableString());
+        properties.put("suggestedChatTitle", nullableString());
+        properties.put("contextualizedQuery", nullableString());
+        properties.put("directAnswer", nullableString());
+        properties.put("clarificationQuestion", nullableString());
+        properties.put("excludedNodeIds", nullableArrayOfStrings(null));
+        properties.put("subgraphFilters", nullableObject(subgraphSchema));
+
+        var schema = new LinkedHashMap<String, Object>();
+        schema.put("type", "object");
+        schema.put("additionalProperties", false);
+        schema.put("properties", properties);
+        schema.put("required", java.util.List.of(
+                "route",
+                "userIntent",
+                "isFollowUp",
+                "needsRetrieval",
+                "updatedSessionSummary",
+                "suggestedChatTitle",
+                "contextualizedQuery",
+                "directAnswer",
+                "clarificationQuestion",
+                "excludedNodeIds",
+                "subgraphFilters"
+        ));
+
+        return toJsonValueMap(schema);
     }
 
     private Map<String, Object> nullableString() {
@@ -210,6 +244,19 @@ public class OpenAIConversationRouterClient {
                 "type", java.util.List.of("array", "null"),
                 "items", items
         );
+    }
+
+    private Map<String, Object> requiredArrayOfStrings() {
+        return Map.of(
+                "type", "array",
+                "items", Map.of("type", "string")
+        );
+    }
+
+    private Map<String, Object> nullableObject(Map<String, Object> objectSchema) {
+        var properties = new LinkedHashMap<>(objectSchema);
+        properties.put("type", java.util.List.of("object", "null"));
+        return properties;
     }
 
     private Map<String, JsonValue> toJsonValueMap(Map<String, Object> value) {
@@ -238,10 +285,59 @@ public class OpenAIConversationRouterClient {
                 .findFirst()
                 .orElseThrow(() -> new LLMProviderException("OpenAI router response did not include text output"));
 
+        var parsed = objectMapper.readValue(content, ConversationRouterResponse.class);
         return llmResponseValidator.validate(
-                objectMapper.readValue(content, ConversationRouterResponse.class),
+                sanitize(parsed),
                 ConversationRouterResponse.class
         );
+    }
+
+    private ConversationRouterResponse sanitize(ConversationRouterResponse response) {
+        if (response == null || response.route() == null) {
+            return response;
+        }
+
+        return switch (response.route()) {
+            case DIRECT_ANSWER -> new ConversationRouterResponse(
+                    response.route(),
+                    response.userIntent(),
+                    response.isFollowUp(),
+                    false,
+                    response.updatedSessionSummary(),
+                    response.suggestedChatTitle(),
+                    null,
+                    response.directAnswer(),
+                    null,
+                    null,
+                    null
+            );
+            case CLARIFICATION_NEEDED -> new ConversationRouterResponse(
+                    response.route(),
+                    response.userIntent(),
+                    response.isFollowUp(),
+                    false,
+                    response.updatedSessionSummary(),
+                    response.suggestedChatTitle(),
+                    null,
+                    null,
+                    response.clarificationQuestion(),
+                    null,
+                    null
+            );
+            case MUSIC_RECOMMENDATION -> new ConversationRouterResponse(
+                    response.route(),
+                    response.userIntent(),
+                    response.isFollowUp(),
+                    true,
+                    response.updatedSessionSummary(),
+                    response.suggestedChatTitle(),
+                    response.contextualizedQuery(),
+                    null,
+                    null,
+                    response.excludedNodeIds(),
+                    response.subgraphFilters()
+            );
+        };
     }
 
     private ModelUsage buildUsageRecord(
@@ -276,6 +372,42 @@ public class OpenAIConversationRouterClient {
                 providerModelName,
                 buildDebugResponse(response)
         );
+    }
+
+    private void logParsedRouterResponse(
+            String providerModelName,
+            ConversationRouterResponse response,
+            com.openai.models.responses.Response rawResponse
+    ) {
+        if (!log.isInfoEnabled()) {
+            return;
+        }
+
+        var usage = rawResponse.usage().orElse(null);
+        var lines = new ArrayList<String>();
+        lines.add("");
+        lines.add("=== Router Decision ===");
+        lines.add("model: " + providerModelName);
+        lines.add("route: " + response.route());
+        lines.add("intent: " + response.userIntent());
+        lines.add("followUp: " + response.isFollowUp() + " | needsRetrieval: " + response.needsRetrieval());
+        appendIfPresent(lines, "query: " + safeInline(response.contextualizedQuery()));
+        appendIfPresent(lines, "title: " + safeInline(response.suggestedChatTitle()));
+        appendIfPresent(lines, "sessionSummary: " + safeInline(response.updatedSessionSummary()));
+        appendIfPresent(lines, "excludedNodeIds: " + safeInline(renderCompactJson(response.excludedNodeIds())));
+        appendIfPresent(lines, "subgraphFilters: " + safeInline(renderCompactJson(response.subgraphFilters())));
+        appendIfPresent(lines, "directAnswer: " + safeInline(response.directAnswer()));
+        appendIfPresent(lines, "clarificationQuestion: " + safeInline(response.clarificationQuestion()));
+        if (usage != null) {
+            lines.add("usageTokens: in=%d cached=%d out=%d total=%d".formatted(
+                    usage.inputTokens(),
+                    cachedInputTokens(usage),
+                    usage.outputTokens(),
+                    usage.totalTokens()
+            ));
+        }
+        lines.add("=======================");
+        log.info(String.join("\n", lines));
     }
 
     private String buildDebugResponse(Object response) {
@@ -442,5 +574,23 @@ public class OpenAIConversationRouterClient {
             return value;
         }
         return value.substring(0, DEBUG_OUTPUT_PREVIEW_LIMIT) + "\n...[truncated]";
+    }
+
+    private String renderCompactJson(Object value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException exception) {
+            return String.valueOf(value);
+        }
+    }
+
+    private String safeInline(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return truncateForDebug(value.replaceAll("\\s+", " ").trim());
     }
 }

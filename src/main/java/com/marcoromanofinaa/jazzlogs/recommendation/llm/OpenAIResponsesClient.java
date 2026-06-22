@@ -29,6 +29,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class OpenAIResponsesClient implements LLMClient {
 
+    private static final int DEBUG_OUTPUT_PREVIEW_LIMIT = 4_000;
+
     private final OpenAIClient openAIClient;
     private final OpenAIRecommendationProperties properties;
     private final ObjectMapper objectMapper;
@@ -222,8 +224,6 @@ public class OpenAIResponsesClient implements LLMClient {
 
     private String buildDebugResponse(Object response) {
         var payload = new LinkedHashMap<String, Object>();
-        payload.put("sdkToString", String.valueOf(response));
-
         tryAddResponseFields(payload, response);
 
         var lines = new ArrayList<String>();
@@ -281,7 +281,7 @@ public class OpenAIResponsesClient implements LLMClient {
             return;
         }
         lines.add("outputText:");
-        lines.add(indent(outputText.trim()));
+        lines.add(indent(truncateForDebug(outputText.trim())));
     }
 
     private void appendParsedJsonPreview(java.util.List<String> lines, Object output) {
@@ -290,7 +290,7 @@ public class OpenAIResponsesClient implements LLMClient {
             return;
         }
         try {
-            var parsed = objectMapper.readTree(outputText);
+            var parsed = objectMapper.readTree(truncateForDebug(outputText));
             lines.add("parsedJson:");
             lines.add(indent(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsed)));
         } catch (Exception ignored) {
@@ -377,5 +377,12 @@ public class OpenAIResponsesClient implements LLMClient {
                 .map(line -> "  " + line)
                 .reduce((left, right) -> left + "\n" + right)
                 .orElse("  " + value);
+    }
+
+    private String truncateForDebug(String value) {
+        if (value == null || value.length() <= DEBUG_OUTPUT_PREVIEW_LIMIT) {
+            return value;
+        }
+        return value.substring(0, DEBUG_OUTPUT_PREVIEW_LIMIT) + "\n...[truncated]";
     }
 }

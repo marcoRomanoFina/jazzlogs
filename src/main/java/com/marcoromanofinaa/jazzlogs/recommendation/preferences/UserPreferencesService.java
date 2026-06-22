@@ -2,7 +2,7 @@ package com.marcoromanofinaa.jazzlogs.recommendation.preferences;
 
 import com.marcoromanofinaa.jazzlogs.spotify.sync.taste.SpotifyTasteSnapshotRepository;
 import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.mapper.UserJazzPreferencesMapper;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.repository.UserJazzPreferencesRepository;
+import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.service.UserGraphPreferencesService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +12,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserPreferencesService {
 
-    private final UserJazzPreferencesRepository userJazzPreferencesRepository;
+    private final UserGraphPreferencesService userGraphPreferencesService;
     private final UserJazzPreferencesMapper userJazzPreferencesMapper;
     private final SpotifyTasteSnapshotRepository spotifyTasteSnapshotRepository;
 
     public UserPreferencesContext getPreferencesContext(UUID userId) {
-        var jazzPreferences = userJazzPreferencesRepository.findByUserId(userId)
+        var jazzPreferences = userGraphPreferencesService.findByUserId(userId)
                 .flatMap(userJazzPreferencesMapper::toDTO)
                 .orElse(null);
 

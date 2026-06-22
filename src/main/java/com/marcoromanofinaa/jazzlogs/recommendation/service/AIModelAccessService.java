@@ -30,6 +30,6 @@ public class AIModelAccessService {
             throw new AIModelAccessDeniedException(userId, requestedModel, currentPlan);
         }
 
-        usageLimitService.validateTokenBalance(userId, requestedModel);
+        usageLimitService.validateCreditBalance(userId, requestedModel);
     }
 }

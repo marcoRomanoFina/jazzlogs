@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcoromanofinaa.jazzlogs.chat.session.ChatRecommendationMemory;
 import com.marcoromanofinaa.jazzlogs.chat.usage.ModelUsage;
 import com.marcoromanofinaa.jazzlogs.chat.usage.UsageRecordStage;
@@ -18,8 +19,10 @@ import com.marcoromanofinaa.jazzlogs.recommendation.llm.LLMResult;
 import com.marcoromanofinaa.jazzlogs.recommendation.llm.LLMResponseValidator;
 import com.marcoromanofinaa.jazzlogs.recommendation.llm.StructuredLLMResult;
 import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationFlowCommand;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 import com.marcoromanofinaa.jazzlogs.recommendation.preferences.UserPreferencesContext;
 import com.marcoromanofinaa.jazzlogs.recommendation.preferences.UserPreferencesService;
+import com.marcoromanofinaa.jazzlogs.recommendation.retrieval.ReferenceResolutionService;
 import com.marcoromanofinaa.jazzlogs.recommendation.retrieval.RetrievalCommand;
 import com.marcoromanofinaa.jazzlogs.recommendation.retrieval.RetrievalService;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.ConversationRouter;
@@ -32,12 +35,10 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.document.Document;
 
 class BasicRecommendationFlowTest {
 
@@ -45,6 +46,7 @@ class BasicRecommendationFlowTest {
     void generateReturnsRouterDirectAnswerWithoutCallingRetrieval() {
         var preferencesService = Mockito.mock(UserPreferencesService.class);
         var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
         var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
         var llmClientResolver = Mockito.mock(LLMClientResolver.class);
         var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
@@ -52,16 +54,18 @@ class BasicRecommendationFlowTest {
         var flow = new BasicRecommendationFlow(
                 preferencesService,
                 retrievalService,
+                referenceResolutionService,
                 promptBuilder,
                 llmClientResolver,
                 llmResponseValidator,
                 conversationRouter,
                 openAIProperties(),
+                new ObjectMapper(),
                 fixedClock()
         );
 
         Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
-                new ConversationRouterResponse(
+                routerResponse(
                         ConversationRoute.DIRECT_ANSWER,
                         ConversationUserIntent.SMALLTALK,
                         false,
@@ -85,35 +89,31 @@ class BasicRecommendationFlowTest {
     }
 
     @Test
-    void generateNormalizesAlbumWinnerWhenModelReturnsTrackName() {
+    void generateFailsWhenModelReturnsNamesInsteadOfCandidateNodeIds() {
         var preferencesService = Mockito.mock(UserPreferencesService.class);
         var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
         var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
         var llmClientResolver = Mockito.mock(LLMClientResolver.class);
         var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
         var llmClient = Mockito.mock(LLMClient.class);
         var conversationRouter = Mockito.mock(ConversationRouter.class);
-        var candidateDocument = new Document(
-                "Album overview",
-                Map.of(
-                        "sourceType", "TRACK_LOG",
-                        "album", "Waltz for Debby",
-                        "track", "My Foolish Heart"
-                )
-        );
+        var candidate = trackCandidate("Waltz for Debby", "My Foolish Heart");
         var flow = new BasicRecommendationFlow(
                 preferencesService,
                 retrievalService,
+                referenceResolutionService,
                 promptBuilder,
                 llmClientResolver,
                 llmResponseValidator,
                 conversationRouter,
                 openAIProperties(),
+                new ObjectMapper(),
                 fixedClock()
         );
 
         Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
-                new ConversationRouterResponse(
+                routerResponse(
                         ConversationRoute.MUSIC_RECOMMENDATION,
                         ConversationUserIntent.RECOMMEND_ALBUM,
                         false,
@@ -130,7 +130,7 @@ class BasicRecommendationFlowTest {
         Mockito.when(preferencesService.getPreferencesContext(Mockito.any())).thenReturn(
                 new UserPreferencesContext(null, List.of(), List.of())
         );
-        Mockito.when(retrievalService.retrieveRelevantDocuments(Mockito.any())).thenReturn(List.of(candidateDocument));
+        Mockito.when(retrievalService.retrieveCandidates(Mockito.any())).thenReturn(List.of(candidate));
         Mockito.when(promptBuilder.build(Mockito.any())).thenReturn(new Prompt("prompt"));
         Mockito.when(llmClientResolver.resolve(AIProvider.OPENAI)).thenReturn(llmClient);
         Mockito.when(llmResponseValidator.validate(Mockito.any(), Mockito.eq(BasicRecommendationFlow.BasicRecommendationResponse.class)))
@@ -151,16 +151,90 @@ class BasicRecommendationFlowTest {
                 )
         );
 
-        var result = flow.generate(baseCommand(null));
-
-        assertThat(result.winners()).containsExactly("Waltz for Debby");
-        assertThat(result.usageEntries()).containsExactly(routerUsage(), basicUsage());
+        assertThatThrownBy(() -> flow.generate(baseCommand(null)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("candidate node ids");
     }
+
+    @Test
+    void generateFailsWhenTrackRecommendationReturnsMoreThanThreeWinners() {
+        var preferencesService = Mockito.mock(UserPreferencesService.class);
+        var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
+        var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
+        var llmClientResolver = Mockito.mock(LLMClientResolver.class);
+        var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
+        var llmClient = Mockito.mock(LLMClient.class);
+        var conversationRouter = Mockito.mock(ConversationRouter.class);
+        var candidates = List.of(
+                trackCandidate("Kind Of Blue", "So What"),
+                trackCandidate("Kind Of Blue", "Freddie Freeloader"),
+                trackCandidate("Kind Of Blue", "Blue in Green"),
+                trackCandidate("Kind Of Blue", "All Blues")
+        );
+        var flow = new BasicRecommendationFlow(
+                preferencesService,
+                retrievalService,
+                referenceResolutionService,
+                promptBuilder,
+                llmClientResolver,
+                llmResponseValidator,
+                conversationRouter,
+                openAIProperties(),
+                new ObjectMapper(),
+                fixedClock()
+        );
+
+        Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
+                routerResponse(
+                        ConversationRoute.MUSIC_RECOMMENDATION,
+                        ConversationUserIntent.RECOMMEND_TRACK,
+                        false,
+                        true,
+                        null,
+                        null,
+                        "pasame temas",
+                        null,
+                        null,
+                        List.of()
+                ),
+                List.of(routerUsage())
+        ));
+        Mockito.when(preferencesService.getPreferencesContext(Mockito.any())).thenReturn(
+                new UserPreferencesContext(null, List.of(), List.of())
+        );
+        Mockito.when(retrievalService.retrieveCandidates(Mockito.any())).thenReturn(candidates);
+        Mockito.when(promptBuilder.build(Mockito.any())).thenReturn(new Prompt("prompt"));
+        Mockito.when(llmClientResolver.resolve(AIProvider.OPENAI)).thenReturn(llmClient);
+        Mockito.when(llmResponseValidator.validate(Mockito.any(), Mockito.eq(BasicRecommendationFlow.BasicRecommendationResponse.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+        Mockito.when(llmClient.generateStructured(Mockito.any())).thenReturn(
+                new StructuredLLMResult<>(
+                        new BasicRecommendationFlow.BasicRecommendationResponse(
+                                "Aca van cuatro.",
+                                BasicRecommendationTarget.TRACKS,
+                                List.of("track-node-1", "track-node-2", "track-node-3", "track-node-4"),
+                                null
+                        ),
+                        AIModelType.BASIC,
+                        "gpt-5.4-mini",
+                        100,
+                        0,
+                        40
+                )
+        );
+
+        assertThatThrownBy(() -> flow.generate(baseCommand(null)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("more than 3 track winners");
+    }
+
 
     @Test
     void generateUsesContextualizedQueryFromRouterForRetrieval() {
         var preferencesService = Mockito.mock(UserPreferencesService.class);
         var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
         var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
         var llmClientResolver = Mockito.mock(LLMClientResolver.class);
         var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
@@ -169,16 +243,18 @@ class BasicRecommendationFlowTest {
         var flow = new BasicRecommendationFlow(
                 preferencesService,
                 retrievalService,
+                referenceResolutionService,
                 promptBuilder,
                 llmClientResolver,
                 llmResponseValidator,
                 conversationRouter,
                 openAIProperties(),
+                new ObjectMapper(),
                 fixedClock()
         );
 
         Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
-                new ConversationRouterResponse(
+                routerResponse(
                         ConversationRoute.MUSIC_RECOMMENDATION,
                         ConversationUserIntent.RECOMMEND_TRACK,
                         true,
@@ -195,7 +271,7 @@ class BasicRecommendationFlowTest {
         Mockito.when(preferencesService.getPreferencesContext(Mockito.any())).thenReturn(
                 new UserPreferencesContext(null, List.of(), List.of())
         );
-        Mockito.when(retrievalService.retrieveRelevantDocuments(Mockito.any())).thenReturn(List.of());
+        Mockito.when(retrievalService.retrieveCandidates(Mockito.any())).thenReturn(List.of());
         Mockito.when(promptBuilder.build(Mockito.any())).thenReturn(new Prompt("prompt"));
         Mockito.when(llmClientResolver.resolve(AIProvider.OPENAI)).thenReturn(llmClient);
         Mockito.when(llmClient.generate(Mockito.any())).thenReturn(new LLMResult(
@@ -228,7 +304,7 @@ class BasicRecommendationFlowTest {
 
         var retrievalCommand = Mockito.mockingDetails(retrievalService)
                 .getInvocations().stream()
-                .filter(invocation -> invocation.getMethod().getName().equals("retrieveRelevantDocuments"))
+                .filter(invocation -> invocation.getMethod().getName().equals("retrieveCandidates"))
                 .map(invocation -> (RetrievalCommand) invocation.getArgument(0))
                 .findFirst()
                 .orElseThrow();
@@ -241,6 +317,7 @@ class BasicRecommendationFlowTest {
     void generateReturnsFallbackWithoutCallingMiniWhenNoCandidatesExist() {
         var preferencesService = Mockito.mock(UserPreferencesService.class);
         var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
         var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
         var llmClientResolver = Mockito.mock(LLMClientResolver.class);
         var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
@@ -249,16 +326,18 @@ class BasicRecommendationFlowTest {
         var flow = new BasicRecommendationFlow(
                 preferencesService,
                 retrievalService,
+                referenceResolutionService,
                 promptBuilder,
                 llmClientResolver,
                 llmResponseValidator,
                 conversationRouter,
                 openAIProperties(),
+                new ObjectMapper(),
                 fixedClock()
         );
 
         Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
-                new ConversationRouterResponse(
+                routerResponse(
                         ConversationRoute.MUSIC_RECOMMENDATION,
                         ConversationUserIntent.RECOMMEND_ALBUM,
                         false,
@@ -275,7 +354,7 @@ class BasicRecommendationFlowTest {
         Mockito.when(preferencesService.getPreferencesContext(Mockito.any())).thenReturn(
                 new UserPreferencesContext(null, List.of(), List.of())
         );
-        Mockito.when(retrievalService.retrieveRelevantDocuments(Mockito.any())).thenReturn(List.of());
+        Mockito.when(retrievalService.retrieveCandidates(Mockito.any())).thenReturn(List.of());
         Mockito.when(llmClientResolver.resolve(AIProvider.OPENAI)).thenReturn(llmClient);
         Mockito.when(llmClient.generateStructured(Mockito.any())).thenReturn(null);
         Mockito.when(llmClient.generate(Mockito.any())).thenReturn(new LLMResult(
@@ -300,28 +379,28 @@ class BasicRecommendationFlowTest {
     void generateFailsWhenMiniReturnsRecommendationTypeThatConflictsWithRouterTarget() {
         var preferencesService = Mockito.mock(UserPreferencesService.class);
         var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
         var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
         var llmClientResolver = Mockito.mock(LLMClientResolver.class);
         var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
         var llmClient = Mockito.mock(LLMClient.class);
         var conversationRouter = Mockito.mock(ConversationRouter.class);
-        var candidateDocument = new Document(
-                "Album overview",
-                Map.of("sourceType", "ALBUM_LOG", "album", "Waltz for Debby")
-        );
+        var candidate = albumCandidate("Waltz for Debby");
         var flow = new BasicRecommendationFlow(
                 preferencesService,
                 retrievalService,
+                referenceResolutionService,
                 promptBuilder,
                 llmClientResolver,
                 llmResponseValidator,
                 conversationRouter,
                 openAIProperties(),
+                new ObjectMapper(),
                 fixedClock()
         );
 
         Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
-                new ConversationRouterResponse(
+                routerResponse(
                         ConversationRoute.MUSIC_RECOMMENDATION,
                         ConversationUserIntent.RECOMMEND_ALBUM,
                         false,
@@ -338,7 +417,7 @@ class BasicRecommendationFlowTest {
         Mockito.when(preferencesService.getPreferencesContext(Mockito.any())).thenReturn(
                 new UserPreferencesContext(null, List.of(), List.of())
         );
-        Mockito.when(retrievalService.retrieveRelevantDocuments(Mockito.any())).thenReturn(List.of(candidateDocument));
+        Mockito.when(retrievalService.retrieveCandidates(Mockito.any())).thenReturn(List.of(candidate));
         Mockito.when(promptBuilder.build(Mockito.any())).thenReturn(new Prompt("prompt"));
         Mockito.when(llmClientResolver.resolve(AIProvider.OPENAI)).thenReturn(llmClient);
         Mockito.when(llmResponseValidator.validate(Mockito.any(), Mockito.eq(BasicRecommendationFlow.BasicRecommendationResponse.class)))
@@ -368,45 +447,50 @@ class BasicRecommendationFlowTest {
     void generateExcludesAllPreviouslyRecommendedTracksFromReferencedAlbum() {
         var preferencesService = Mockito.mock(UserPreferencesService.class);
         var retrievalService = Mockito.mock(RetrievalService.class);
+        var referenceResolutionService = passThroughReferenceResolutionService();
         var promptBuilder = Mockito.mock(BasicPromptBuilder.class);
         var llmClientResolver = Mockito.mock(LLMClientResolver.class);
         var llmResponseValidator = Mockito.mock(LLMResponseValidator.class);
         var llmClient = Mockito.mock(LLMClient.class);
         var conversationRouter = Mockito.mock(ConversationRouter.class);
         var recommendationMemory = new ChatRecommendationMemory(
-                new ChatRecommendationMemory.LastRecommendedItem(
-                        "TRACKS",
-                        "respuesta",
-                        List.of("Under a Blanket of Blue", "Tenderly", "The Nearness of You"),
+                new ChatRecommendationMemory.LastRecommendationBatch(
                         List.of(
-                                trackMetadata("Ella and Louis"),
-                                trackMetadata("Ella and Louis"),
-                                trackMetadata("Ella and Louis")
+                                winner("track-node-4", "Under a Blanket of Blue"),
+                                winner("track-node-5", "Tenderly"),
+                                winner("track-node-6", "The Nearness of You")
+                        ),
+                        List.of(
+                                trackMetadata("track-node-4", "Ella and Louis"),
+                                trackMetadata("track-node-5", "Ella and Louis"),
+                                trackMetadata("track-node-6", "Ella and Louis")
                         )
                 ),
                 List.of(
-                        new ChatRecommendationMemory.OrderedRecommendedItem(1, "TRACKS", "Can't We Be Friends?", trackMetadata("Ella and Louis")),
-                        new ChatRecommendationMemory.OrderedRecommendedItem(2, "TRACKS", "They Can't Take That Away from Me", trackMetadata("Ella and Louis")),
-                        new ChatRecommendationMemory.OrderedRecommendedItem(3, "TRACKS", "Moonlight in Vermont", trackMetadata("Ella and Louis")),
-                        new ChatRecommendationMemory.OrderedRecommendedItem(4, "TRACKS", "Under a Blanket of Blue", trackMetadata("Ella and Louis")),
-                        new ChatRecommendationMemory.OrderedRecommendedItem(5, "TRACKS", "Tenderly", trackMetadata("Ella and Louis")),
-                        new ChatRecommendationMemory.OrderedRecommendedItem(6, "TRACKS", "The Nearness of You", trackMetadata("Ella and Louis"))
+                        new ChatRecommendationMemory.RecommendationHistoryEntry(1, winner("track-node-1", "Can't We Be Friends?"), "Ella Fitzgerald", "Ella and Louis", "Can't We Be Friends?"),
+                        new ChatRecommendationMemory.RecommendationHistoryEntry(2, winner("track-node-2", "They Can't Take That Away from Me"), "Ella Fitzgerald", "Ella and Louis", "They Can't Take That Away from Me"),
+                        new ChatRecommendationMemory.RecommendationHistoryEntry(3, winner("track-node-3", "Moonlight in Vermont"), "Ella Fitzgerald", "Ella and Louis", "Moonlight in Vermont"),
+                        new ChatRecommendationMemory.RecommendationHistoryEntry(4, winner("track-node-4", "Under a Blanket of Blue"), "Ella Fitzgerald", "Ella and Louis", "Under a Blanket of Blue"),
+                        new ChatRecommendationMemory.RecommendationHistoryEntry(5, winner("track-node-5", "Tenderly"), "Ella Fitzgerald", "Ella and Louis", "Tenderly"),
+                        new ChatRecommendationMemory.RecommendationHistoryEntry(6, winner("track-node-6", "The Nearness of You"), "Ella Fitzgerald", "Ella and Louis", "The Nearness of You")
                 ),
                 null
         );
         var flow = new BasicRecommendationFlow(
                 preferencesService,
                 retrievalService,
+                referenceResolutionService,
                 promptBuilder,
                 llmClientResolver,
                 llmResponseValidator,
                 conversationRouter,
                 openAIProperties(),
+                new ObjectMapper(),
                 fixedClock()
         );
 
         Mockito.when(conversationRouter.route(any())).thenReturn(new ConversationRouterResult(
-                new ConversationRouterResponse(
+                routerResponse(
                         ConversationRoute.MUSIC_RECOMMENDATION,
                         ConversationUserIntent.RECOMMEND_TRACK,
                         true,
@@ -416,14 +500,14 @@ class BasicRecommendationFlowTest {
                         "Más temas de Ella and Louis para seguir con un clima vocal tranqui de duetos Ella Fitzgerald y Louis Armstrong, sin salir del mismo disco.",
                         null,
                         null,
-                        List.of("Under a Blanket of Blue", "Tenderly", "The Nearness of You")
+                        null
                 ),
                 List.of(routerUsage())
         ));
         Mockito.when(preferencesService.getPreferencesContext(Mockito.any())).thenReturn(
                 new UserPreferencesContext(null, List.of(), List.of())
         );
-        Mockito.when(retrievalService.retrieveRelevantDocuments(Mockito.any())).thenReturn(List.of());
+        Mockito.when(retrievalService.retrieveCandidates(Mockito.any())).thenReturn(List.of());
         Mockito.when(promptBuilder.build(Mockito.any())).thenReturn(new Prompt("prompt"));
         Mockito.when(llmClientResolver.resolve(AIProvider.OPENAI)).thenReturn(llmClient);
         Mockito.when(llmClient.generate(Mockito.any())).thenReturn(new LLMResult(
@@ -456,18 +540,18 @@ class BasicRecommendationFlowTest {
 
         var retrievalCommand = Mockito.mockingDetails(retrievalService)
                 .getInvocations().stream()
-                .filter(invocation -> invocation.getMethod().getName().equals("retrieveRelevantDocuments"))
+                .filter(invocation -> invocation.getMethod().getName().equals("retrieveCandidates"))
                 .map(invocation -> (RetrievalCommand) invocation.getArgument(0))
                 .findFirst()
                 .orElseThrow();
 
-        assertThat(retrievalCommand.excludedWinners()).containsExactly(
-                "Under a Blanket of Blue",
-                "Tenderly",
-                "The Nearness of You",
-                "Can't We Be Friends?",
-                "They Can't Take That Away from Me",
-                "Moonlight in Vermont"
+        assertThat(retrievalCommand.excludedNodeIds()).containsExactlyInAnyOrder(
+                "track-node-1",
+                "track-node-2",
+                "track-node-3",
+                "track-node-4",
+                "track-node-5",
+                "track-node-6"
         );
     }
 
@@ -481,10 +565,42 @@ class BasicRecommendationFlowTest {
                 null,
                 recommendationMemory == null ? null : recommendationMemory.sessionSummary(),
                 List.of(),
-                List.of(),
                 AIModelType.BASIC,
                 basicModel(),
                 List.of(),
+                null
+        );
+    }
+
+    private ReferenceResolutionService passThroughReferenceResolutionService() {
+        var service = Mockito.mock(ReferenceResolutionService.class);
+        Mockito.when(service.resolve(Mockito.any())).thenAnswer(invocation -> invocation.getArgument(0));
+        return service;
+    }
+
+    private ConversationRouterResponse routerResponse(
+            ConversationRoute route,
+            ConversationUserIntent userIntent,
+            boolean isFollowUp,
+            boolean needsRetrieval,
+            String updatedSessionSummary,
+            String suggestedChatTitle,
+            String contextualizedQuery,
+            String directAnswer,
+            String clarificationQuestion,
+            List<String> excludedWinners
+    ) {
+        return new ConversationRouterResponse(
+                route,
+                userIntent,
+                isFollowUp,
+                needsRetrieval,
+                updatedSessionSummary,
+                suggestedChatTitle,
+                contextualizedQuery,
+                directAnswer,
+                clarificationQuestion,
+                excludedWinners,
                 null
         );
     }
@@ -500,40 +616,90 @@ class BasicRecommendationFlowTest {
         );
     }
 
-    private ModelUsage basicUsage() {
-        return new ModelUsage(
-                UsageRecordStage.BASIC_RECOMMENDATION,
-                AIModelType.BASIC,
-                "gpt-5.4-mini",
-                100,
-                0,
-                40
-        );
-    }
 
-    private ChatRecommendationMemory.RecommendedItemMetadata trackMetadata(String album) {
-        return new ChatRecommendationMemory.RecommendedItemMetadata(
-                null,
-                null,
+
+    private com.marcoromanofinaa.jazzlogs.chat.session.ResolvedRecommendationMemoryItem trackMetadata(String nodeId, String album) {
+        return new com.marcoromanofinaa.jazzlogs.chat.session.ResolvedRecommendationMemoryItem(
                 album,
                 "track",
+                "Ella Fitzgerald",
                 null,
                 null,
                 null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
+                List.of(),
                 null,
                 null,
                 null,
                 null
+        );
+    }
+
+    private WinnerReference winner(String nodeId, String name) {
+        return new WinnerReference(
+                BasicRecommendationTarget.TRACKS,
+                nodeId,
+                name,
+                "Ella Fitzgerald y Louis Armstrong"
+        );
+    }
+
+    private RecommendationCandidate albumCandidate(String album) {
+        return new RecommendationCandidate(
+                "album-node-1",
+                BasicRecommendationTarget.ALBUM,
+                1,
+                "album-1",
+                null,
+                album,
+                album,
+                null,
+                "Bill Evans",
+                List.of(),
+                "A",
+                "Cool Jazz",
+                "Instrumental",
+                List.of("Nocturnal"),
+                "Medium",
+                "High",
+                null,
+                "Piano",
+                List.of("Night"),
+                null,
+                null,
+                null,
+                "caption",
+                "note",
+                "editorial"
+        );
+    }
+
+    private RecommendationCandidate trackCandidate(String album, String track) {
+        return new RecommendationCandidate(
+                "track-node-1",
+                BasicRecommendationTarget.TRACKS,
+                1,
+                "album-1",
+                "track-1",
+                track,
+                album,
+                track,
+                "Bill Evans",
+                List.of(),
+                "A",
+                "Cool Jazz",
+                "Instrumental",
+                List.of("Nocturnal"),
+                "Medium",
+                "High",
+                null,
+                "Piano",
+                List.of("Night"),
+                null,
+                null,
+                null,
+                "caption",
+                "note",
+                "editorial"
         );
     }
 

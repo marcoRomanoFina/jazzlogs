@@ -1,6 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.chat.usage.config;
 
 import com.marcoromanofinaa.jazzlogs.recommendation.AIModelType;
+import com.marcoromanofinaa.jazzlogs.chat.usage.UsageRecordStage;
 import com.marcoromanofinaa.jazzlogs.user.model.Plan;
 import java.time.Duration;
 import java.util.Map;
@@ -8,20 +9,25 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "jazzlogs.chat.usage")
 public record UsageLimitProperties(
-        Map<Plan, Long> monthlyTokenLimit,
-        Map<AIModelType, Long> minimumBalanceRequiredTokens,
+        Map<Plan, Long> monthlyCreditLimit,
+        Map<AIModelType, Long> minimumBalanceRequiredCredits,
+        Map<UsageRecordStage, Long> stageCreditCost,
         String pricingVersion,
         Map<String, ModelPricing> modelPricing,
         Duration periodDuration
 ) {
 
-    public long monthlyTokenLimitFor(Plan plan) {
-        return monthlyTokenLimit().getOrDefault(plan, 0L);
+    public long monthlyCreditLimitFor(Plan plan) {
+        return monthlyCreditLimit().getOrDefault(plan, 0L);
     }
 
-    public long minimumBalanceRequiredTokensFor(AIModelType modelType) {
-        return minimumBalanceRequiredTokens()
+    public long minimumBalanceRequiredCreditsFor(AIModelType modelType) {
+        return minimumBalanceRequiredCredits()
                 .getOrDefault(modelType, 1L);
+    }
+
+    public long creditCostFor(UsageRecordStage stage) {
+        return stageCreditCost().getOrDefault(stage, 1L);
     }
 
     public ModelPricing pricingFor(String providerModelName) {

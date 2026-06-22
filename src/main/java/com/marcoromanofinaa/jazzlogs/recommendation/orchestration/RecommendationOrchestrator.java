@@ -24,7 +24,6 @@ public class RecommendationOrchestrator {
                 null,
                 command.recommendationMemory() == null ? null : command.recommendationMemory().sessionSummary(),
                 List.of(),
-                List.of(),
                 command.requestedModel(),
                 modelDefinition,
                 command.recentHistory(),
