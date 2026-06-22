@@ -1,0 +1,55 @@
+CREATE CONSTRAINT album_id IF NOT EXISTS
+FOR (a:Album)
+REQUIRE a.id IS UNIQUE;
+
+CREATE CONSTRAINT album_spotify_album_id IF NOT EXISTS
+FOR (a:Album)
+REQUIRE a.spotifyAlbumId IS UNIQUE;
+
+CREATE CONSTRAINT album_log_number IF NOT EXISTS
+FOR (a:Album)
+REQUIRE a.logNumber IS UNIQUE;
+
+CREATE CONSTRAINT artist_id IF NOT EXISTS
+FOR (a:Artist)
+REQUIRE a.id IS UNIQUE;
+
+CREATE CONSTRAINT artist_spotify_artist_id IF NOT EXISTS
+FOR (a:Artist)
+REQUIRE a.spotifyArtistId IS UNIQUE;
+
+CREATE CONSTRAINT artist_name IF NOT EXISTS
+FOR (a:Artist)
+REQUIRE a.name IS UNIQUE;
+
+CREATE CONSTRAINT instrument_name IF NOT EXISTS
+FOR (i:Instrument)
+REQUIRE i.name IS UNIQUE;
+
+CREATE CONSTRAINT track_id IF NOT EXISTS
+FOR (t:Track)
+REQUIRE t.id IS UNIQUE;
+
+CREATE CONSTRAINT track_spotify_track_id IF NOT EXISTS
+FOR (t:Track)
+REQUIRE t.spotifyTrackId IS UNIQUE;
+
+CREATE CONSTRAINT track_log_number IF NOT EXISTS
+FOR (t:Track)
+REQUIRE t.logNumber IS UNIQUE;
+
+CREATE CONSTRAINT style_name IF NOT EXISTS
+FOR (s:Style)
+REQUIRE s.name IS UNIQUE;
+
+CREATE CONSTRAINT mood_name IF NOT EXISTS
+FOR (m:Mood)
+REQUIRE m.name IS UNIQUE;
+
+CREATE CONSTRAINT context_name IF NOT EXISTS
+FOR (c:Context)
+REQUIRE c.name IS UNIQUE;
+
+CREATE CONSTRAINT rhythm_name IF NOT EXISTS
+FOR (r:Rhythm)
+REQUIRE r.name IS UNIQUE;

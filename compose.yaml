@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: pgvector/pgvector:pg17
+    image: postgres:17
     container_name: jazzlogs-postgres
     environment:
       POSTGRES_DB: jazzlogs
@@ -17,5 +17,27 @@ services:
       timeout: 5s
       retries: 5
 
+  neo4j:
+    image: neo4j:5.26
+    container_name: jazzlogs-neo4j
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:-neo4j/jazzlogs-dev-password}
+      NEO4J_server_memory_heap_initial__size: ${NEO4J_HEAP_INITIAL_SIZE:-512m}
+      NEO4J_server_memory_heap_max__size: ${NEO4J_HEAP_MAX_SIZE:-512m}
+      NEO4J_server_memory_pagecache_size: ${NEO4J_PAGECACHE_SIZE:-512m}
+    ports:
+      - "${NEO4J_HTTP_PORT:-7474}:7474"
+      - "${NEO4J_BOLT_PORT:-7687}:7687"
+    volumes:
+      - neo4j-data:/data
+      - neo4j-logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -a bolt://localhost:7687 -u neo4j -p \"$${NEO4J_AUTH#*/}\" \"RETURN 1;\" || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
 volumes:
   postgres-data:
+  neo4j-data:
+  neo4j-logs:
