@@ -1,112 +1,83 @@
 package com.marcoromanofinaa.jazzlogs.chat.session;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.marcoromanofinaa.jazzlogs.chat.usage.ModelUsage;
+import com.marcoromanofinaa.jazzlogs.chat.usage.UsageRecordStage;
+import com.marcoromanofinaa.jazzlogs.recommendation.AIModelType;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
 import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationResult;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationTiming;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 class ChatRecommendationMemoryServiceTest {
 
     @Test
-    void appendUpdatesSessionSummaryEvenWithoutNewWinners() {
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
+    void updateMemoryUpdatesSessionSummaryEvenWithoutNewWinners() {
+        var resolver = Mockito.mock(RecommendedItemMetadataResolver.class);
         var service = new ChatRecommendationMemoryService(resolver);
         var current = new ChatRecommendationMemory(
                 null,
                 List.of(),
                 "Le gusto una linea nocturna para cerrar el dia."
         );
-        var result = new RecommendationResult(
+        var result = recommendationResult(
                 "Que bueno.",
                 List.of(),
                 null,
-                null,
-                "Le gusto una linea nocturna para cerrar el dia y ahora busca algo un poco mas oscuro.",
-                null,
-                List.of()
+                "Le gusto una linea nocturna para cerrar el dia y ahora busca algo un poco mas oscuro."
         );
 
         var updated = service.updateMemory(current, result);
 
         assertThat(updated.sessionSummary())
                 .isEqualTo("Le gusto una linea nocturna para cerrar el dia y ahora busca algo un poco mas oscuro.");
-        assertThat(updated.orderedRecommendedItems()).isEmpty();
+        assertThat(updated.recommendationHistory()).isEmpty();
     }
 
     @Test
-    void appendKeepsResolvedMetadataAlignedWithTheCorrectWinner() {
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
+    void updateMemoryFailsWhenAnyWinnerMetadataCannotBeResolved() {
+        var resolver = Mockito.mock(RecommendedItemMetadataResolver.class);
         var service = new ChatRecommendationMemoryService(resolver);
-        var secondWinnerMetadata = new ChatRecommendationMemory.RecommendedItemMetadata(
-                "ALBUM_LOG",
-                "source-1",
-                "Blue Hour",
-                null,
-                "Stanley Turrentine",
-                "Stanley Turrentine",
-                List.of("The Three Sounds"),
-                "album-1",
-                null,
-                "A",
-                "1961",
-                "Hard Bop",
-                "Instrumental",
-                List.of("Nocturnal"),
-                List.of("Warm"),
-                "Medium",
-                "High",
-                null,
-                null,
-                null,
-                null
-        );
+        var unknownWinner = winner("album-unknown", "Unknown Winner", "Unknown Artist");
+        var blueHourWinner = winner("album-1", "Blue Hour", "Stanley Turrentine");
 
-        Mockito.when(resolver.findByWinner(BasicRecommendationTarget.ALBUM, "Unknown Winner")).thenReturn(Optional.empty());
-        Mockito.when(resolver.findByWinner(BasicRecommendationTarget.ALBUM, "Blue Hour")).thenReturn(Optional.of(secondWinnerMetadata));
+        Mockito.when(resolver.resolveAll(BasicRecommendationTarget.ALBUM, List.of("album-unknown", "album-1")))
+                .thenThrow(new RecommendedItemMetadataResolutionException(
+                        "Failed to resolve recommended item metadata for winner ids: album-unknown"
+                ));
 
-        var updated = service.updateMemory(
+        assertThatThrownBy(() -> service.updateMemory(
                 null,
-                new RecommendationResult(
+                recommendationResult(
                         "Aca va.",
-                        List.of("Unknown Winner", "Blue Hour"),
+                        List.of(unknownWinner, blueHourWinner),
                         BasicRecommendationTarget.ALBUM,
-                        null,
-                        null,
-                        null,
-                        List.of()
+                        null
                 )
-        );
-
-        assertThat(updated.orderedRecommendedItems()).hasSize(2);
-        assertThat(updated.orderedRecommendedItems().get(0).winnerName()).isEqualTo("Unknown Winner");
-        assertThat(updated.orderedRecommendedItems().get(0).item()).isNull();
-        assertThat(updated.orderedRecommendedItems().get(1).winnerName()).isEqualTo("Blue Hour");
-        assertThat(updated.orderedRecommendedItems().get(1).item()).isEqualTo(secondWinnerMetadata);
-        assertThat(updated.lastRecommendedItem().winners()).containsExactly("Unknown Winner", "Blue Hour");
-        assertThat(updated.lastRecommendedItem().items()).containsExactly(null, secondWinnerMetadata);
+        ))
+                .isInstanceOf(RecommendedItemMetadataResolutionException.class)
+                .hasMessageContaining("album-unknown");
     }
 
     @Test
-    void appendMergesSessionSummaryInsteadOfOverwritingIt() {
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
+    void updateMemoryPrefersTheFreshSummaryInsteadOfKeepingTheOldOne() {
+        var resolver = Mockito.mock(RecommendedItemMetadataResolver.class);
         var service = new ChatRecommendationMemoryService(resolver);
         var current = new ChatRecommendationMemory(
                 null,
                 List.of(),
                 "A Marco le encantó Rattlesnake y busca canciones parecidas con energía alta."
         );
-        var result = new RecommendationResult(
+        var result = recommendationResult(
                 "Seguimos.",
                 List.of(),
                 null,
-                null,
-                "Marco disfruta mucho el jazz y quiere seguir escuchando con ganas.",
-                null,
-                List.of()
+                "Marco disfruta mucho el jazz y quiere seguir escuchando con ganas."
         );
 
         var updated = service.updateMemory(current, result);
@@ -117,22 +88,19 @@ class ChatRecommendationMemoryServiceTest {
     }
 
     @Test
-    void appendUsesRefreshedSummaryWhenRouterSendsCorrection() {
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
+    void updateMemoryUsesRefreshedSummaryWhenRouterSendsCorrection() {
+        var resolver = Mockito.mock(RecommendedItemMetadataResolver.class);
         var service = new ChatRecommendationMemoryService(resolver);
         var current = new ChatRecommendationMemory(
                 null,
                 List.of(),
                 "Le encantó la vibra vocal tranquila para la noche. Busca discos suaves."
         );
-        var result = new RecommendationResult(
+        var result = recommendationResult(
                 "Seguimos.",
                 List.of(),
                 null,
-                null,
-                "Pero ahora no quiere vocales; prefiere algo más instrumental.",
-                null,
-                List.of()
+                "Pero ahora no quiere vocales; prefiere algo más instrumental."
         );
 
         var updated = service.updateMemory(current, result);
@@ -141,4 +109,31 @@ class ChatRecommendationMemoryServiceTest {
                 .isEqualTo("Pero ahora no quiere vocales; prefiere algo más instrumental.");
     }
 
+    private RecommendationResult recommendationResult(
+            String assistantResponse,
+            List<WinnerReference> winners,
+            BasicRecommendationTarget recommendationType,
+            String updatedSessionSummary
+    ) {
+        return new RecommendationResult(
+                assistantResponse,
+                winners,
+                recommendationType,
+                null,
+                updatedSessionSummary,
+                new RecommendationTiming(0L, 0L, 0L),
+                List.of(new ModelUsage(
+                        UsageRecordStage.BASIC_RECOMMENDATION,
+                        AIModelType.BASIC,
+                        "test-model",
+                        10,
+                        0,
+                        5
+                ))
+        );
+    }
+
+    private WinnerReference winner(String id, String name, String artistFullName) {
+        return new WinnerReference(BasicRecommendationTarget.ALBUM, id, name, artistFullName);
+    }
 }

@@ -1,167 +1,275 @@
 package com.marcoromanofinaa.jazzlogs.chat.application;
 
-import com.marcoromanofinaa.jazzlogs.admin.editorial.album.AlbumLogRepository;
-import com.marcoromanofinaa.jazzlogs.admin.editorial.album.model.AlbumLog;
-import com.marcoromanofinaa.jazzlogs.admin.editorial.track.TrackLogRepository;
-import com.marcoromanofinaa.jazzlogs.admin.editorial.track.model.TrackLog;
 import com.marcoromanofinaa.jazzlogs.chat.api.dto.RecommendedItemDTO;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbum;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbumRepository;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyTrack;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyTrackRepository;
+import com.marcoromanofinaa.jazzlogs.chat.exchange.ChatExchange;
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class RecommendedItemEnrichmentService {
 
-    private final AlbumLogRepository albumLogRepository;
-    private final TrackLogRepository trackLogRepository;
-    private final SpotifyAlbumRepository spotifyAlbumRepository;
-    private final SpotifyTrackRepository spotifyTrackRepository;
+    private final Neo4jClient neo4jClient;
 
-    public List<RecommendedItemDTO> enrich(List<String> winners) {
-        if (winners == null || winners.isEmpty()) {
+    public List<RecommendedItemDTO> enrich(BasicRecommendationTarget recommendationType, List<WinnerReference> winners) {
+        if (recommendationType == null || winners == null || winners.isEmpty()) {
             return List.of();
         }
-        return winners.stream()
-                .map(this::enrichWinner)
-                .flatMap(Optional::stream)
+
+        var winnerReferences = requireValidWinnerReferences(recommendationType, winners);
+        var dtosByWinnerId = loadDtosByWinnerId(recommendationType, winnerReferences);
+        var missingWinnerIds = missingWinnerIds(winnerReferences, dtosByWinnerId);
+        if (!missingWinnerIds.isEmpty()) {
+            throw new RecommendedItemEnrichmentException(
+                    "Failed to enrich recommended items for winner ids: " + String.join(", ", missingWinnerIds)
+            );
+        }
+
+        return winnerReferences.stream()
+                .map(winner -> {
+                    var queue = dtosByWinnerId.get(winner.id());
+                    return queue.removeFirst();
+                })
                 .toList();
     }
 
-    private Optional<RecommendedItemDTO> enrichWinner(String winner) {
-        if (winner == null || winner.isBlank()) {
-            return Optional.empty();
+    public Map<UUID, List<RecommendedItemDTO>> enrichByExchangeId(List<ChatExchange> exchanges) {
+        if (exchanges == null || exchanges.isEmpty()) {
+            return Map.of();
         }
 
-        var albumLog = albumLogRepository.findFirstByAlbumNameIgnoreCase(winner.trim());
-        if (albumLog.isPresent()) {
-            return Optional.of(fromAlbum(winner, albumLog.get(), spotifyAlbum(albumLog.get()).orElse(null)));
+        var enrichedByExchangeId = new LinkedHashMap<UUID, List<RecommendedItemDTO>>();
+        var byType = new LinkedHashMap<BasicRecommendationTarget, List<ChatExchange>>();
+
+        for (var exchange : exchanges) {
+            if (exchange == null || exchange.getId() == null) {
+                continue;
+            }
+            if (exchange.getRecommendationType() == null || exchange.getWinners() == null || exchange.getWinners().isEmpty()) {
+                enrichedByExchangeId.put(exchange.getId(), List.of());
+                continue;
+            }
+            byType.computeIfAbsent(exchange.getRecommendationType(), ignored -> new java.util.ArrayList<>())
+                    .add(exchange);
         }
 
-        var trackLog = trackLogRepository.findFirstByTrackNameIgnoreCase(winner.trim());
-        if (trackLog.isPresent()) {
-            var spotifyTrack = spotifyTrackRepository.findBySpotifyTrackId(trackLog.get().getSpotifyTrackId());
-            var album = albumFor(trackLog.get(), spotifyTrack.orElse(null));
-            return Optional.of(fromTrack(winner, trackLog.get(), album, spotifyTrack.orElse(null)));
+        for (var entry : byType.entrySet()) {
+            var recommendationType = entry.getKey();
+            var exchangesForType = entry.getValue();
+            var winnerReferences = exchangesForType.stream()
+                    .flatMap(exchange -> requireValidWinnerReferences(recommendationType, exchange.getWinners()).stream())
+                    .toList();
+            var dtosByWinnerId = loadDtosByWinnerId(recommendationType, winnerReferences);
+            var missingWinnerIds = missingWinnerIds(winnerReferences, dtosByWinnerId);
+            if (!missingWinnerIds.isEmpty()) {
+                throw new RecommendedItemEnrichmentException(
+                        "Failed to enrich recommended items for winner ids: " + String.join(", ", missingWinnerIds)
+                );
+            }
+
+            for (var exchange : exchangesForType) {
+                var items = requireValidWinnerReferences(recommendationType, exchange.getWinners()).stream()
+                        .map(winner -> dtosByWinnerId.get(winner.id()).removeFirst())
+                        .toList();
+                enrichedByExchangeId.put(exchange.getId(), items);
+            }
         }
 
-        return Optional.empty();
+        return Map.copyOf(enrichedByExchangeId);
     }
 
-    private RecommendedItemDTO fromAlbum(String winnerName, AlbumLog albumLog, SpotifyAlbum spotifyAlbum) {
-        return new RecommendedItemDTO(
-                winnerName,
-                "ALBUM_LOG",
-                albumLog.getAlbumName(),
-                null,
-                firstArtistName(albumLog).orElse(null),
-                secondaryArtistNames(albumLog),
-                albumLog.getLogNumber(),
-                albumLog.getTier(),
-                albumLog.getReleaseYear(),
-                albumLog.getSpotifyAlbumId(),
-                null,
-                spotifyAlbum == null ? null : spotifyAlbum.getSpotifyUrl(),
-                spotifyAlbum == null ? null : spotifyAlbum.getImageUrl(),
-                albumLog.getInstagramPermalink()
-        );
-    }
-
-    private RecommendedItemDTO fromTrack(
-            String winnerName,
-            TrackLog trackLog,
-            AlbumLog albumLog,
-            SpotifyTrack spotifyTrack
+    private List<WinnerReference> requireValidWinnerReferences(
+            BasicRecommendationTarget recommendationType,
+            List<WinnerReference> winners
     ) {
-        var spotifyAlbum = spotifyTrack == null ? null : spotifyTrack.getAlbum();
+        var winnerReferences = winners.stream()
+                .filter(winner -> winner != null)
+                .toList();
+        if (winnerReferences.size() != winners.size()
+                || winnerReferences.stream().anyMatch(winner -> winner.id() == null || winner.id().isBlank())) {
+            throw new RecommendedItemEnrichmentException(
+                    "Failed to enrich recommended items: one or more winners are missing a valid node id"
+            );
+        }
+        if (winnerReferences.isEmpty()) {
+            throw new RecommendedItemEnrichmentException(
+                    "Failed to enrich recommended items: no valid winners were provided"
+            );
+        }
+        if (winnerReferences.stream().anyMatch(winner -> winner.type() != recommendationType)) {
+            throw new RecommendedItemEnrichmentException(
+                    "Failed to enrich recommended items: winner types do not match recommendation type " + recommendationType
+            );
+        }
+        return winnerReferences;
+    }
+
+    private LinkedHashMap<String, ArrayDeque<RecommendedItemDTO>> loadDtosByWinnerId(
+            BasicRecommendationTarget recommendationType,
+            List<WinnerReference> winnerReferences
+    ) {
+        var rows = neo4jClient.query(recommendationType == BasicRecommendationTarget.ALBUM
+                        ? albumQuery()
+                        : trackQuery())
+                .bind(winnerReferences.stream().map(WinnerReference::id).toList()).to("winnerNodeIds")
+                .fetch()
+                .all();
+
+        var dtosByWinner = new LinkedHashMap<String, ArrayDeque<RecommendedItemDTO>>();
+        for (var row : rows) {
+            var requestedWinnerNodeId = stringValue(row.get("requestedWinnerNodeId"));
+            if (requestedWinnerNodeId == null) {
+                continue;
+            }
+            dtosByWinner.computeIfAbsent(requestedWinnerNodeId, ignored -> new ArrayDeque<>())
+                    .add(toDto(requestedWinnerNodeId, recommendationType, row));
+        }
+        return dtosByWinner;
+    }
+
+    private List<String> missingWinnerIds(
+            List<WinnerReference> winnerReferences,
+            Map<String, ArrayDeque<RecommendedItemDTO>> dtosByWinner
+    ) {
+        var missingWinnerIds = winnerReferences.stream()
+                .map(WinnerReference::id)
+                .filter(winnerId -> {
+                    var queue = dtosByWinner.get(winnerId);
+                    return queue == null || queue.isEmpty();
+                })
+                .toList();
+        return missingWinnerIds;
+    }
+
+    private String albumQuery() {
+        return """
+                UNWIND $winnerNodeIds AS requestedWinnerNodeId
+                CALL (requestedWinnerNodeId) {
+                  MATCH (album:Album)
+                  WHERE album.id = requestedWinnerNodeId
+                  CALL (album) {
+                    OPTIONAL MATCH (artist:Artist)-[:LEADER_OF]->(album)
+                    WITH artist.name AS artistName
+                    WHERE artistName IS NOT NULL
+                    ORDER BY artistName ASC
+                    RETURN collect(artistName) AS mainArtists
+                  }
+                  RETURN
+                    album.name AS album,
+                    null AS track,
+                    mainArtists AS mainArtists,
+                    album.logNumber AS logNumber,
+                    album.tier AS tier,
+                    album.releaseDate AS releaseDate,
+                    album.spotifyAlbumId AS spotifyAlbumId,
+                    null AS spotifyTrackId,
+                    album.spotifyUrl AS spotifyUrl,
+                    album.imageUrl AS imageUrl,
+                    album.instagramPermalink AS instagramPermalink
+                  LIMIT 1
+                }
+                RETURN requestedWinnerNodeId, album, track, mainArtists, logNumber, tier, releaseDate,
+                       spotifyAlbumId, spotifyTrackId, spotifyUrl, imageUrl, instagramPermalink
+                """;
+    }
+
+    private String trackQuery() {
+        return """
+                UNWIND $winnerNodeIds AS requestedWinnerNodeId
+                CALL (requestedWinnerNodeId) {
+                  MATCH (track:Track)
+                  WHERE track.id = requestedWinnerNodeId
+                  OPTIONAL MATCH (album:Album)-[:CONTAINS]->(track)
+                  CALL (track) {
+                    OPTIONAL MATCH (artist:Artist)-[performance:PERFORMED_ON]->(track)
+                    WITH artist.name AS artistName, coalesce(performance.position, 999) AS position
+                    WHERE artistName IS NOT NULL
+                    ORDER BY position ASC, artistName ASC
+                    RETURN collect(artistName) AS mainArtists
+                  }
+                  RETURN
+                    album.name AS album,
+                    track.name AS track,
+                    mainArtists AS mainArtists,
+                    track.logNumber AS logNumber,
+                    track.tier AS tier,
+                    album.releaseDate AS releaseDate,
+                    album.spotifyAlbumId AS spotifyAlbumId,
+                    track.spotify_track_id AS spotifyTrackId,
+                    track.spotifyUrl AS spotifyUrl,
+                    album.imageUrl AS imageUrl,
+                    album.instagramPermalink AS instagramPermalink
+                  LIMIT 1
+                }
+                RETURN requestedWinnerNodeId, album, track, mainArtists, logNumber, tier, releaseDate,
+                       spotifyAlbumId, spotifyTrackId, spotifyUrl, imageUrl, instagramPermalink
+                """;
+    }
+
+    private RecommendedItemDTO toDto(
+            String winnerNodeId,
+            BasicRecommendationTarget recommendationType,
+            Map<String, Object> row
+    ) {
+        var mainArtists = stringList(row.get("mainArtists"));
         return new RecommendedItemDTO(
-                winnerName,
-                "TRACK_LOG",
-                trackLog.getAlbumName(),
-                trackLog.getTrackName(),
-                primaryArtistForTrack(trackLog, albumLog, spotifyTrack),
-                secondaryArtistsForTrack(albumLog, spotifyTrack),
-                trackLog.getLogNumber(),
-                trackLog.getTier(),
-                albumLog == null ? null : albumLog.getReleaseYear(),
-                trackLog.getSpotifyAlbumId(),
-                trackLog.getSpotifyTrackId(),
-                spotifyTrack == null ? null : spotifyTrack.getSpotifyUrl(),
-                spotifyAlbum == null ? null : spotifyAlbum.getImageUrl(),
-                albumLog == null ? null : albumLog.getInstagramPermalink()
+                winnerNodeId,
+                recommendationType == BasicRecommendationTarget.ALBUM
+                        ? BasicRecommendationTarget.ALBUM
+                        : BasicRecommendationTarget.TRACKS,
+                stringValue(row.get("album")),
+                stringValue(row.get("track")),
+                mainArtists,
+                integerValue(row.get("logNumber")),
+                stringValue(row.get("tier")),
+                releaseYear(row.get("releaseDate")),
+                stringValue(row.get("spotifyAlbumId")),
+                stringValue(row.get("spotifyTrackId")),
+                stringValue(row.get("spotifyUrl")),
+                stringValue(row.get("imageUrl")),
+                stringValue(row.get("instagramPermalink"))
         );
     }
 
-    private Optional<SpotifyAlbum> spotifyAlbum(AlbumLog albumLog) {
-        if (albumLog.getSpotifyAlbumId() == null || albumLog.getSpotifyAlbumId().isBlank()) {
-            return Optional.empty();
+    private List<String> stringList(Object value) {
+        if (!(value instanceof Collection<?> collection)) {
+            return List.of();
         }
-        return spotifyAlbumRepository.findBySpotifyAlbumId(albumLog.getSpotifyAlbumId());
+        return collection.stream()
+                .map(this::stringValue)
+                .filter(item -> item != null && !item.isBlank())
+                .toList();
     }
 
-    private AlbumLog albumFor(TrackLog trackLog, SpotifyTrack spotifyTrack) {
-        if (trackLog.getSpotifyAlbumId() != null && !trackLog.getSpotifyAlbumId().isBlank()) {
-            var bySpotifyId = albumLogRepository.findBySpotifyAlbumId(trackLog.getSpotifyAlbumId());
-            if (bySpotifyId.isPresent()) {
-                return bySpotifyId.get();
-            }
+    private String stringValue(Object value) {
+        if (value == null) {
+            return null;
         }
-        if (trackLog.getAlbumName() != null && !trackLog.getAlbumName().isBlank()) {
-            var byName = albumLogRepository.findFirstByAlbumNameIgnoreCase(trackLog.getAlbumName());
-            if (byName.isPresent()) {
-                return byName.get();
-            }
-        }
-        if (spotifyTrack != null && spotifyTrack.getAlbum() != null) {
-            return albumLogRepository.findBySpotifyAlbumId(spotifyTrack.getAlbum().getSpotifyAlbumId()).orElse(null);
+        var rendered = value.toString().trim();
+        return rendered.isBlank() ? null : rendered;
+    }
+
+    private Integer integerValue(Object value) {
+        if (value instanceof Number number) {
+            return number.intValue();
         }
         return null;
     }
 
-    private String primaryArtistForTrack(TrackLog trackLog, AlbumLog albumLog, SpotifyTrack spotifyTrack) {
-        if (spotifyTrack != null && spotifyTrack.getArtists() != null && !spotifyTrack.getArtists().isEmpty()) {
-            var artist = spotifyTrack.getArtists().getFirst();
-            if (artist != null && artist.getName() != null && !artist.getName().isBlank()) {
-                return artist.getName();
-            }
+    private String releaseYear(Object releaseDate) {
+        var value = stringValue(releaseDate);
+        if (value == null) {
+            return null;
         }
-        return firstArtistName(albumLog).orElse(null);
-    }
-
-    private List<String> secondaryArtistsForTrack(AlbumLog albumLog, SpotifyTrack spotifyTrack) {
-        if (spotifyTrack != null && spotifyTrack.getArtists() != null && spotifyTrack.getArtists().size() > 1) {
-            return spotifyTrack.getArtists().stream()
-                    .skip(1)
-                    .map(artist -> artist.getName())
-                    .filter(name -> name != null && !name.isBlank())
-                    .toList();
-        }
-        return secondaryArtistNames(albumLog);
-    }
-
-    private Optional<String> firstArtistName(AlbumLog albumLog) {
-        if (albumLog == null || albumLog.getMainArtists() == null || albumLog.getMainArtists().isEmpty()) {
-            return Optional.empty();
-        }
-        return albumLog.getMainArtists().stream()
-                .map(artist -> artist.name())
-                .filter(name -> name != null && !name.isBlank())
-                .findFirst();
-    }
-
-    private List<String> secondaryArtistNames(AlbumLog albumLog) {
-        if (albumLog == null || albumLog.getMainArtists() == null || albumLog.getMainArtists().size() <= 1) {
-            return List.of();
-        }
-        return albumLog.getMainArtists().stream()
-                .skip(1)
-                .map(artist -> artist.name())
-                .filter(name -> name != null && !name.isBlank())
-                .toList();
+        return value.length() >= 4 ? value.substring(0, 4) : value;
     }
 }

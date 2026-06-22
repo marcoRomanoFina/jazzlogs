@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.marcoromanofinaa.jazzlogs.recommendation.AIModelType;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,7 +48,7 @@ public class ChatExchange {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "winners", nullable = false, columnDefinition = "jsonb")
-    private List<String> winners;
+    private List<WinnerReference> winners;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "recommendation_type")
@@ -74,7 +75,7 @@ public class ChatExchange {
             String userMessage,
             AIModelType requestedModel,
             String assistantResponse,
-            List<String> winners,
+            List<WinnerReference> winners,
             BasicRecommendationTarget recommendationType,
             AIModelType modelUsed,
             Long routerLatencyMs,

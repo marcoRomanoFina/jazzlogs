@@ -2,8 +2,6 @@ package com.marcoromanofinaa.jazzlogs.chat.session;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.Instant;
@@ -21,7 +19,6 @@ import org.hibernate.type.SqlTypes;
 public class ChatSession {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "user_id", nullable = false)
@@ -47,7 +44,12 @@ public class ChatSession {
     private Instant updatedAt;
 
     public static ChatSession create(UUID userId, Instant now) {
+        return create(UUID.randomUUID(), userId, now);
+    }
+
+    public static ChatSession create(UUID chatSessionId, UUID userId, Instant now) {
         var session = new ChatSession();
+        session.id = chatSessionId;
         session.userId = userId;
         session.createdAt = now;
         session.updatedAt = now;

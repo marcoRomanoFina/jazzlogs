@@ -1,14 +1,14 @@
 package com.marcoromanofinaa.jazzlogs.chat.api.dto;
 
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
 import java.util.List;
 
 public record RecommendedItemDTO(
-        String winnerName,
-        String sourceType,
+        String winnerNodeId,
+        BasicRecommendationTarget recommendationType,
         String album,
         String track,
-        String primaryArtist,
-        List<String> secondaryArtists,
+        List<String> mainArtists,
         Integer logNumber,
         String tier,
         String releaseYear,

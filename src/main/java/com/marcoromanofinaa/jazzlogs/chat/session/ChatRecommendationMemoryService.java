@@ -1,7 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.chat.session;
 
 import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationResult;
-import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ import org.springframework.validation.annotation.Validated;
 @RequiredArgsConstructor
 public class ChatRecommendationMemoryService {
 
-    private final RecommendedItemMetadataLookupService recommendedItemMetadataLookupService;
+    private final RecommendedItemMetadataResolver recommendedItemMetadataResolver;
 
     public ChatRecommendationMemory updateMemory(
             ChatRecommendationMemory current,
@@ -31,39 +31,39 @@ public class ChatRecommendationMemoryService {
             return current;
         }
 
-        var ordered = new ArrayList<>(currentOrderedItems(current));
+        var history = new ArrayList<>(currentHistory(current));
 
         if (winners.isEmpty()) {
             return new ChatRecommendationMemory(
-                    currentLastRecommendedItem(current).orElse(null),
-                    List.copyOf(ordered),
+                    currentLastRecommendationBatch(current).orElse(null),
+                    List.copyOf(history),
                     updatedSessionSummary
             );
         }
 
-        var recommendationType = Optional.ofNullable(recommendationResult.recommendationType())
+        var recommendationTarget = Optional.ofNullable(recommendationResult.recommendationType())
                 .orElseThrow(() -> new IllegalArgumentException("recommendationType is required when winners are present"))
-                .name();
-        var resolvedMetadata = resolveWinnerMetadata(recommendationResult.recommendationType(), winners);
+                ;
+        var resolvedMetadata = resolveWinnerMetadata(recommendationTarget, winners);
 
-        int nextOrder = ordered.size() + 1;
+        int nextOrder = history.size() + 1;
         for (int index = 0; index < winners.size(); index++) {
-            ordered.add(new ChatRecommendationMemory.OrderedRecommendedItem(
+            var metadata = resolvedMetadata.get(index);
+            history.add(new ChatRecommendationMemory.RecommendationHistoryEntry(
                     nextOrder++,
-                    recommendationType,
                     winners.get(index),
-                    resolvedMetadata.get(index)
+                    metadata == null ? null : metadata.primaryArtist(),
+                    metadata == null ? null : metadata.album(),
+                    metadata == null ? null : metadata.track()
             ));
         }
 
         return new ChatRecommendationMemory(
-                new ChatRecommendationMemory.LastRecommendedItem(
-                        recommendationType,
-                        recommendationResult.assistantResponse(),
+                new ChatRecommendationMemory.LastRecommendationBatch(
                         winners,
-                        java.util.Collections.unmodifiableList(new ArrayList<>(resolvedMetadata))
+                        List.copyOf(resolvedMetadata)
                 ),
-                List.copyOf(ordered),
+                List.copyOf(history),
                 updatedSessionSummary
         );
     }
@@ -72,34 +72,42 @@ public class ChatRecommendationMemoryService {
         return Optional.ofNullable(current).map(ChatRecommendationMemory::sessionSummary);
     }
 
-    private Optional<ChatRecommendationMemory.LastRecommendedItem> currentLastRecommendedItem(
+    private Optional<ChatRecommendationMemory.LastRecommendationBatch> currentLastRecommendationBatch(
             ChatRecommendationMemory current
     ) {
-        return Optional.ofNullable(current).map(ChatRecommendationMemory::lastRecommendedItem);
+        return Optional.ofNullable(current).map(ChatRecommendationMemory::lastRecommendationBatch);
     }
 
-    private List<ChatRecommendationMemory.OrderedRecommendedItem> currentOrderedItems(
+    private List<ChatRecommendationMemory.RecommendationHistoryEntry> currentHistory(
             ChatRecommendationMemory current
     ) {
         return Optional.ofNullable(current)
-                .map(ChatRecommendationMemory::orderedRecommendedItems)
+                .map(ChatRecommendationMemory::recommendationHistory)
                 .orElse(List.of());
     }
 
-    private List<String> sanitizeWinners(RecommendationResult recommendationResult) {
-        return recommendationResult.winners().stream()
-                .map(String::trim)
+    private List<WinnerReference> sanitizeWinners(RecommendationResult recommendationResult) {
+        return Optional.ofNullable(recommendationResult.winners())
+                .orElse(List.of())
+                .stream()
+                .filter(winner -> winner != null
+                        && winner.id() != null && !winner.id().isBlank()
+                        && winner.name() != null && !winner.name().isBlank()
+                        && winner.artistFullName() != null && !winner.artistFullName().isBlank()
+                        && winner.type() != null)
                 .toList();
     }
 
-    private List<ChatRecommendationMemory.RecommendedItemMetadata> resolveWinnerMetadata(
-            BasicRecommendationTarget recommendationType,
-            List<String> winners
+    private List<ResolvedRecommendationMemoryItem> resolveWinnerMetadata(
+            com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget recommendationType,
+            List<WinnerReference> winners
     ) {
-        return winners.stream()
-                .map(winner -> recommendedItemMetadataLookupService.findByWinner(recommendationType, winner))
-                .map(optional -> optional.orElse(null))
-                .toList();
+        return recommendedItemMetadataResolver.resolveAll(
+                recommendationType,
+                winners.stream()
+                        .map(WinnerReference::id)
+                        .toList()
+                );
     }
 
     private Optional<String> blankToOptional(String value) {

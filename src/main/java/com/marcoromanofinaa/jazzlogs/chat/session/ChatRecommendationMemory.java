@@ -1,51 +1,26 @@
 package com.marcoromanofinaa.jazzlogs.chat.session;
 
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 import java.util.List;
 
 public record ChatRecommendationMemory(
-        LastRecommendedItem lastRecommendedItem,
-        List<OrderedRecommendedItem> orderedRecommendedItems,
+        LastRecommendationBatch lastRecommendationBatch,
+        List<RecommendationHistoryEntry> recommendationHistory,
         String sessionSummary
 ) {
 
-    public record LastRecommendedItem(
-            String recommendationType,
-            String assistantResponse,
-            List<String> winners,
-            List<RecommendedItemMetadata> items
+    public record LastRecommendationBatch(
+            List<WinnerReference> winners,
+            List<ResolvedRecommendationMemoryItem> items
     ) {
     }
 
-    public record OrderedRecommendedItem(
+    public record RecommendationHistoryEntry(
             Integer order,
-            String recommendationType,
-            String winnerName,
-            RecommendedItemMetadata item
-    ) {
-    }
-
-    public record RecommendedItemMetadata(
-            String sourceType,
-            String sourceId,
-            String album,
-            String track,
-            String artistName,
+            WinnerReference winner,
             String primaryArtist,
-            List<String> secondaryArtists,
-            String spotifyAlbumId,
-            String spotifyTrackId,
-            String tier,
-            String releaseYear,
-            String style,
-            String vocalProfile,
-            List<String> moods,
-            List<String> vibe,
-            String energy,
-            String accessibility,
-            String tempoFeel,
-            String instrumentFocus,
-            String primaryInstrument,
-            String importance
+            String album,
+            String track
     ) {
     }
 }
