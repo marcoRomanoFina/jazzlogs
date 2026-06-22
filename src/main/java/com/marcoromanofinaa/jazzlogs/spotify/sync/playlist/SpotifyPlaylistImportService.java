@@ -1,36 +1,41 @@
 package com.marcoromanofinaa.jazzlogs.spotify.sync.playlist;
 
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbum;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyAlbumRepository;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyArtist;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyArtistRepository;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyTrack;
-import com.marcoromanofinaa.jazzlogs.spotify.catalog.SpotifyTrackRepository;
+import com.marcoromanofinaa.jazzlogs.editorial.graph.album.AlbumGraphWriter;
+import com.marcoromanofinaa.jazzlogs.editorial.graph.artist.ArtistGraphWriter;
+import com.marcoromanofinaa.jazzlogs.editorial.graph.model.node.AlbumNode;
+import com.marcoromanofinaa.jazzlogs.editorial.graph.model.node.ArtistNode;
+import com.marcoromanofinaa.jazzlogs.editorial.graph.track.TrackGraphWriter;
 import com.marcoromanofinaa.jazzlogs.spotify.exception.SpotifyCatalogImportException;
-import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyAlbumDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyArtistDTO;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyPlaylistTrackDTO;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.neo4j.core.Neo4jClient;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SpotifyPlaylistImportService {
 
-    private final SpotifyArtistRepository spotifyArtistRepository;
-    private final SpotifyAlbumRepository spotifyAlbumRepository;
-    private final SpotifyTrackRepository spotifyTrackRepository;
+    private record ArtistAlbumLeaderLink(String artistId, String albumId) {
+    }
 
-    @Transactional
+    private record AlbumTrackLink(String albumId, String trackId, Integer trackNumber) {
+    }
+
+    private record ArtistTrackPerformanceLink(String artistId, String trackId, int position, boolean primaryCredit) {
+    }
+
+    private final ArtistGraphWriter artistGraphWriter;
+    private final AlbumGraphWriter albumGraphWriter;
+    private final TrackGraphWriter trackGraphWriter;
+    private final Neo4jClient neo4jClient;
+
     public void importPlaylistTracks(List<SpotifyPlaylistTrackDTO> tracks) {
         try {
             if (tracks == null || tracks.isEmpty()) {
@@ -45,127 +50,162 @@ public class SpotifyPlaylistImportService {
                 return;
             }
 
-            Instant now = Instant.now();
-            var artistsBySpotifyId = upsertArtists(importableTracks, now);
-            var albumsBySpotifyId = upsertAlbums(importableTracks, artistsBySpotifyId, now);
-            upsertTracks(importableTracks, artistsBySpotifyId, albumsBySpotifyId, now);
+            var artistsBySpotifyId = upsertArtists(importableTracks);
+            var albumsBySpotifyId = upsertAlbums(importableTracks, artistsBySpotifyId);
+            upsertTracks(importableTracks, artistsBySpotifyId, albumsBySpotifyId);
         }
         catch (RuntimeException exception) {
-            throw new SpotifyCatalogImportException("Failed to import Spotify playlist tracks into catalog", exception);
+            log.error("Spotify playlist catalog import failed. trackCount={}", tracks == null ? 0 : tracks.size(), exception);
+            throw new SpotifyCatalogImportException(buildImportFailureMessage(exception), exception);
         }
     }
 
-    private Map<String, SpotifyArtist> upsertArtists(List<SpotifyPlaylistTrackDTO> tracks, Instant now) {
+    private Map<String, ArtistNode> upsertArtists(List<SpotifyPlaylistTrackDTO> tracks) {
         var artistDtosBySpotifyId = new LinkedHashMap<String, SpotifyArtistDTO>();
         for (SpotifyPlaylistTrackDTO track : tracks) {
             collectArtists(track.artists(), artistDtosBySpotifyId);
             collectArtists(track.album().artists(), artistDtosBySpotifyId);
         }
 
-        var existingArtistsBySpotifyId = indexArtistsBySpotifyId(
-                spotifyArtistRepository.findAllBySpotifyArtistIdIn(artistDtosBySpotifyId.keySet())
-        );
+        var artistsBySpotifyId = new LinkedHashMap<String, ArtistNode>();
 
         for (SpotifyArtistDTO artist : artistDtosBySpotifyId.values()) {
-            var spotifyArtist = existingArtistsBySpotifyId.computeIfAbsent(
-                    artist.spotifyArtistId(),
-                    spotifyArtistId -> SpotifyArtist.create(
-                            spotifyArtistId,
-                            defaultText(artist.name()),
-                            artist.spotifyUrl(),
-                            now
-                    )
-            );
-            spotifyArtist.updateMetadata(defaultText(artist.name()), artist.spotifyUrl(), now);
+            try {
+                var artistNode = artistGraphWriter.upsertFromSpotify(
+                        artist.spotifyArtistId(),
+                        defaultText(artist.name()),
+                        artist.spotifyUrl()
+                );
+                artistsBySpotifyId.put(artist.spotifyArtistId(), artistNode);
+            }
+            catch (RuntimeException exception) {
+                throw stageFailure(
+                        "upsert artist",
+                        exception,
+                        contextOf(
+                                "spotifyArtistId", artist.spotifyArtistId(),
+                                "artistName", defaultText(artist.name())
+                        )
+                );
+            }
         }
-
-        spotifyArtistRepository.saveAll(existingArtistsBySpotifyId.values());
-        return existingArtistsBySpotifyId;
+        return artistsBySpotifyId;
     }
 
-    private Map<String, SpotifyAlbum> upsertAlbums(
+    private Map<String, AlbumNode> upsertAlbums(
             List<SpotifyPlaylistTrackDTO> tracks,
-            Map<String, SpotifyArtist> artistsBySpotifyId,
-            Instant now
+            Map<String, ArtistNode> artistsBySpotifyId
     ) {
-        var albumDtosBySpotifyId = new LinkedHashMap<String, SpotifyAlbumDTO>();
+        var albumDtosBySpotifyId = new LinkedHashMap<String, com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.dto.SpotifyAlbumDTO>();
         for (SpotifyPlaylistTrackDTO track : tracks) {
             albumDtosBySpotifyId.put(track.album().spotifyAlbumId(), track.album());
         }
 
-        var existingAlbumsBySpotifyId = indexAlbumsBySpotifyId(
-                spotifyAlbumRepository.findAllBySpotifyAlbumIdIn(albumDtosBySpotifyId.keySet())
-        );
+        var albumsBySpotifyId = new LinkedHashMap<String, AlbumNode>();
+        var leaderLinks = new ArrayList<ArtistAlbumLeaderLink>();
 
-        for (SpotifyAlbumDTO album : albumDtosBySpotifyId.values()) {
-            var spotifyAlbum = existingAlbumsBySpotifyId.computeIfAbsent(
-                    album.spotifyAlbumId(),
-                    spotifyAlbumId -> SpotifyAlbum.create(
-                            spotifyAlbumId,
-                            defaultText(album.name()),
-                            album.releaseDate(),
-                            album.totalTracks(),
-                            album.imageUrl(),
-                            album.spotifyUrl(),
-                            now
-                    )
-            );
+        for (var album : albumDtosBySpotifyId.values()) {
+            try {
+                var albumNode = albumGraphWriter.upsertFromSpotify(
+                        album.spotifyAlbumId(),
+                        defaultText(album.name()),
+                        album.releaseDate(),
+                        album.totalTracks(),
+                        album.imageUrl(),
+                        album.spotifyUrl()
+                );
 
-            spotifyAlbum.updateMetadata(
-                    defaultText(album.name()),
-                    album.releaseDate(),
-                    album.totalTracks(),
-                    album.imageUrl(),
-                    album.spotifyUrl(),
-                    now
-            );
-            spotifyAlbum.replaceArtistsInSpotifyOrder(resolveArtistsInSpotifyOrder(album.artists(), artistsBySpotifyId));
+                for (var artist : resolveArtistsInSpotifyOrder(album.artists(), artistsBySpotifyId)) {
+                    leaderLinks.add(new ArtistAlbumLeaderLink(artist.getId(), albumNode.getId()));
+                }
+                albumsBySpotifyId.put(album.spotifyAlbumId(), albumNode);
+            }
+            catch (RuntimeException exception) {
+                throw stageFailure(
+                        "upsert album",
+                        exception,
+                        contextOf(
+                                "spotifyAlbumId", album.spotifyAlbumId(),
+                                "albumName", defaultText(album.name())
+                        )
+                );
+            }
         }
 
-        spotifyAlbumRepository.saveAll(existingAlbumsBySpotifyId.values());
-        return existingAlbumsBySpotifyId;
+        try {
+            linkArtistsToAlbumsAsLeaders(leaderLinks);
+        }
+        catch (RuntimeException exception) {
+            throw stageFailure(
+                    "link album leaders",
+                    exception,
+                    contextOf("linkCount", leaderLinks.size())
+            );
+        }
+        return albumsBySpotifyId;
     }
 
     private void upsertTracks(
             List<SpotifyPlaylistTrackDTO> tracks,
-            Map<String, SpotifyArtist> artistsBySpotifyId,
-            Map<String, SpotifyAlbum> albumsBySpotifyId,
-            Instant now
+            Map<String, ArtistNode> artistsBySpotifyId,
+            Map<String, AlbumNode> albumsBySpotifyId
     ) {
-        var trackIds = tracks.stream()
-                .map(SpotifyPlaylistTrackDTO::spotifyTrackId)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
-        var existingTracksBySpotifyId = indexTracksBySpotifyId(
-                spotifyTrackRepository.findAllBySpotifyTrackIdIn(trackIds)
-        );
+        var albumTrackLinks = new ArrayList<AlbumTrackLink>();
+        var artistTrackLinks = new ArrayList<ArtistTrackPerformanceLink>();
 
         for (SpotifyPlaylistTrackDTO track : tracks) {
-            var album = albumsBySpotifyId.get(track.album().spotifyAlbumId());
-            var spotifyTrack = existingTracksBySpotifyId.computeIfAbsent(
-                    track.spotifyTrackId(),
-                    spotifyTrackId -> SpotifyTrack.create(
-                            spotifyTrackId,
-                            defaultText(track.name()),
-                            album,
-                            track.durationMs(),
-                            track.trackNumber(),
-                            track.spotifyUrl(),
-                            now
-                    )
-            );
+            try {
+                var album = albumsBySpotifyId.get(track.album().spotifyAlbumId());
+                var trackNode = trackGraphWriter.upsertFromSpotify(
+                        track.spotifyTrackId(),
+                        defaultText(track.name()),
+                        track.durationMs(),
+                        track.spotifyUrl()
+                );
 
-            spotifyTrack.updateMetadata(
-                    defaultText(track.name()),
-                    album,
-                    track.durationMs(),
-                    track.trackNumber(),
-                    track.spotifyUrl(),
-                    now
-            );
-            spotifyTrack.replaceArtistsInSpotifyOrder(resolveArtistsInSpotifyOrder(track.artists(), artistsBySpotifyId));
+                if (album != null) {
+                    albumTrackLinks.add(new AlbumTrackLink(album.getId(), trackNode.getId(), track.trackNumber()));
+                }
+
+                var orderedArtists = resolveArtistsInSpotifyOrder(track.artists(), artistsBySpotifyId);
+                for (int index = 0; index < orderedArtists.size(); index++) {
+                    var artist = orderedArtists.get(index);
+                    artistTrackLinks.add(new ArtistTrackPerformanceLink(
+                            artist.getId(),
+                            trackNode.getId(),
+                            index,
+                            index == 0
+                    ));
+                }
+            }
+            catch (RuntimeException exception) {
+                throw stageFailure(
+                        "upsert track",
+                        exception,
+                        contextOf(
+                                "spotifyTrackId", track.spotifyTrackId(),
+                                "trackName", defaultText(track.name()),
+                                "spotifyAlbumId", track.album() == null ? null : track.album().spotifyAlbumId(),
+                                "albumName", track.album() == null ? null : defaultText(track.album().name())
+                        )
+                );
+            }
         }
 
-        spotifyTrackRepository.saveAll(existingTracksBySpotifyId.values());
+        try {
+            linkAlbumsToTracks(albumTrackLinks);
+            linkArtistsToTracks(artistTrackLinks);
+        }
+        catch (RuntimeException exception) {
+            throw stageFailure(
+                    "link track relationships",
+                    exception,
+                    contextOf(
+                            "albumTrackLinkCount", albumTrackLinks.size(),
+                            "artistTrackLinkCount", artistTrackLinks.size()
+                    )
+            );
+        }
     }
 
     private void collectArtists(
@@ -184,11 +224,11 @@ public class SpotifyPlaylistImportService {
         }
     }
 
-    private List<SpotifyArtist> resolveArtistsInSpotifyOrder(
+    private List<ArtistNode> resolveArtistsInSpotifyOrder(
             List<SpotifyArtistDTO> artists,
-            Map<String, SpotifyArtist> artistsBySpotifyId
+            Map<String, ArtistNode> artistsBySpotifyId
     ) {
-        List<SpotifyArtist> resolvedArtists = new ArrayList<>();
+        List<ArtistNode> resolvedArtists = new ArrayList<>();
         if (artists == null || artists.isEmpty()) {
             return resolvedArtists;
         }
@@ -198,37 +238,13 @@ public class SpotifyPlaylistImportService {
                 continue;
             }
 
-            var spotifyArtist = artistsBySpotifyId.get(artist.spotifyArtistId());
-            if (spotifyArtist != null) {
-                resolvedArtists.add(spotifyArtist);
+            var artistNode = artistsBySpotifyId.get(artist.spotifyArtistId());
+            if (artistNode != null) {
+                resolvedArtists.add(artistNode);
             }
         }
 
         return resolvedArtists;
-    }
-
-    private Map<String, SpotifyArtist> indexArtistsBySpotifyId(Collection<SpotifyArtist> artists) {
-        var artistsBySpotifyId = new LinkedHashMap<String, SpotifyArtist>();
-        for (SpotifyArtist artist : artists) {
-            artistsBySpotifyId.put(artist.getSpotifyArtistId(), artist);
-        }
-        return artistsBySpotifyId;
-    }
-
-    private Map<String, SpotifyAlbum> indexAlbumsBySpotifyId(Collection<SpotifyAlbum> albums) {
-        var albumsBySpotifyId = new LinkedHashMap<String, SpotifyAlbum>();
-        for (SpotifyAlbum album : albums) {
-            albumsBySpotifyId.put(album.getSpotifyAlbumId(), album);
-        }
-        return albumsBySpotifyId;
-    }
-
-    private Map<String, SpotifyTrack> indexTracksBySpotifyId(Collection<SpotifyTrack> tracks) {
-        var tracksBySpotifyId = new LinkedHashMap<String, SpotifyTrack>();
-        for (SpotifyTrack track : tracks) {
-            tracksBySpotifyId.put(track.getSpotifyTrackId(), track);
-        }
-        return tracksBySpotifyId;
     }
 
     private boolean isImportableTrack(SpotifyPlaylistTrackDTO track) {
@@ -244,5 +260,123 @@ public class SpotifyPlaylistImportService {
 
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
+    }
+
+    private void linkArtistsToAlbumsAsLeaders(List<ArtistAlbumLeaderLink> links) {
+        if (links.isEmpty()) {
+            return;
+        }
+
+        var batch = links.stream()
+                .map(link -> {
+                    var values = new LinkedHashMap<String, Object>();
+                    values.put("artistId", link.artistId());
+                    values.put("albumId", link.albumId());
+                    return values;
+                })
+                .toList();
+
+        neo4jClient.query("""
+                UNWIND $batch AS row
+                MATCH (artist:Artist {id: row.artistId})
+                MATCH (album:Album {id: row.albumId})
+                MERGE (artist)-[:LEADER_OF]->(album)
+                """)
+                .bind(batch).to("batch")
+                .run();
+    }
+
+    private void linkAlbumsToTracks(List<AlbumTrackLink> links) {
+        if (links.isEmpty()) {
+            return;
+        }
+
+        var batch = links.stream()
+                .map(link -> {
+                    var values = new LinkedHashMap<String, Object>();
+                    values.put("albumId", link.albumId());
+                    values.put("trackId", link.trackId());
+                    values.put("trackNumber", link.trackNumber());
+                    return values;
+                })
+                .toList();
+
+        neo4jClient.query("""
+                UNWIND $batch AS row
+                MATCH (album:Album {id: row.albumId})
+                MATCH (track:Track {id: row.trackId})
+                MERGE (album)-[relationship:CONTAINS]->(track)
+                SET relationship.trackNumber = row.trackNumber
+                """)
+                .bind(batch).to("batch")
+                .run();
+    }
+
+    private void linkArtistsToTracks(List<ArtistTrackPerformanceLink> links) {
+        if (links.isEmpty()) {
+            return;
+        }
+
+        var batch = links.stream()
+                .map(link -> {
+                    var values = new LinkedHashMap<String, Object>();
+                    values.put("artistId", link.artistId());
+                    values.put("trackId", link.trackId());
+                    values.put("position", link.position());
+                    values.put("primaryCredit", link.primaryCredit());
+                    return values;
+                })
+                .toList();
+
+        neo4jClient.query("""
+                UNWIND $batch AS row
+                MATCH (artist:Artist {id: row.artistId})
+                MATCH (track:Track {id: row.trackId})
+                MERGE (artist)-[relationship:PERFORMED_ON]->(track)
+                SET relationship.position = row.position,
+                    relationship.primaryCredit = row.primaryCredit
+                """)
+                .bind(batch).to("batch")
+                .run();
+    }
+
+    private RuntimeException stageFailure(
+            String stage,
+            RuntimeException cause,
+            Map<String, Object> context
+    ) {
+        log.error("Spotify playlist import failed during stage={} context={}", stage, context, cause);
+        return new IllegalStateException(
+                "Spotify playlist import failed during stage=%s context=%s rootCause=%s"
+                        .formatted(stage, context, rootCauseMessage(cause)),
+                cause
+        );
+    }
+
+    private String buildImportFailureMessage(RuntimeException exception) {
+        var message = exception.getMessage();
+        if (message != null && !message.isBlank()) {
+            return "Failed to import Spotify playlist tracks into catalog: " + message;
+        }
+        return "Failed to import Spotify playlist tracks into catalog: " + rootCauseMessage(exception);
+    }
+
+    private String rootCauseMessage(Throwable throwable) {
+        var current = throwable;
+        while (current.getCause() != null && current.getCause() != current) {
+            current = current.getCause();
+        }
+        var message = current.getMessage();
+        return message == null || message.isBlank()
+                ? current.getClass().getSimpleName()
+                : message;
+    }
+
+    private Map<String, Object> contextOf(Object... keyValues) {
+        var context = new LinkedHashMap<String, Object>();
+        for (int index = 0; index < keyValues.length; index += 2) {
+            context.put((String) keyValues[index], keyValues[index + 1]);
+        }
+        return context;
     }
 }

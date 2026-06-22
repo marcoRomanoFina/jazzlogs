@@ -43,14 +43,14 @@ public class UserSubscription {
     @Column(name = "plan", nullable = false)
     private Plan plan;
 
-    @Column(name = "usage_limit_micros_usd", nullable = false)
-    private Long tokenLimit;
+    @Column(name = "credit_limit", nullable = false)
+    private Long creditLimit;
 
-    @Column(name = "used_micros_usd", nullable = false)
-    private Long tokensUsed;
+    @Column(name = "credits_used", nullable = false)
+    private Long creditsUsed;
 
-    @Column(name = "remaining_micros_usd", nullable = false)
-    private Long tokensRemaining;
+    @Column(name = "credits_remaining", nullable = false)
+    private Long creditsRemaining;
 
     @Column(name = "period_start", nullable = false)
     private Instant periodStart;
@@ -67,7 +67,7 @@ public class UserSubscription {
     public static UserSubscription create(
             User user,
             Plan plan,
-            Long tokenLimit,
+            Long creditLimit,
             Instant periodStart,
             Instant periodEnd,
             Instant now
@@ -75,9 +75,9 @@ public class UserSubscription {
         var subscription = new UserSubscription();
         subscription.user = user;
         subscription.plan = plan;
-        subscription.tokenLimit = tokenLimit;
-        subscription.tokensUsed = 0L;
-        subscription.tokensRemaining = tokenLimit;
+        subscription.creditLimit = creditLimit;
+        subscription.creditsUsed = 0L;
+        subscription.creditsRemaining = creditLimit;
         subscription.periodStart = periodStart;
         subscription.periodEnd = periodEnd;
         subscription.createdAt = now;
@@ -91,24 +91,24 @@ public class UserSubscription {
 
     public void renew(
             Plan plan,
-            Long tokenLimit,
+            Long creditLimit,
             Instant periodStart,
             Instant periodEnd,
             Instant now
     ) {
         this.plan = plan;
-        this.tokenLimit = tokenLimit;
-        this.tokensUsed = 0L;
-        this.tokensRemaining = tokenLimit;
+        this.creditLimit = creditLimit;
+        this.creditsUsed = 0L;
+        this.creditsRemaining = creditLimit;
         this.periodStart = periodStart;
         this.periodEnd = periodEnd;
         this.updatedAt = now;
     }
 
-    public void consumeTokens(Long consumedTokens, Instant now) {
-        long safeConsumedTokens = Math.max(consumedTokens == null ? 0L : consumedTokens, 0L);
-        this.tokensUsed = this.tokensUsed + safeConsumedTokens;
-        this.tokensRemaining = Math.max(this.tokensRemaining - safeConsumedTokens, 0L);
+    public void consumeCredits(Long consumedCredits, Instant now) {
+        long safeConsumedCredits = Math.max(consumedCredits == null ? 0L : consumedCredits, 0L);
+        this.creditsUsed = this.creditsUsed + safeConsumedCredits;
+        this.creditsRemaining = Math.max(this.creditsRemaining - safeConsumedCredits, 0L);
         this.updatedAt = now;
     }
 
@@ -117,9 +117,9 @@ public class UserSubscription {
     }
 
     public double remainingPercentage() {
-        if (tokenLimit == null || tokenLimit == 0) {
+        if (creditLimit == null || creditLimit == 0) {
             return 0.0;
         }
-        return (tokensRemaining.doubleValue() / tokenLimit.doubleValue()) * 100.0;
+        return (creditsRemaining.doubleValue() / creditLimit.doubleValue()) * 100.0;
     }
 }

@@ -1,21 +1,22 @@
 # JazzLogs 🎵🎷
 
-## Software Design In Transition
+JazzLogs is a Spring Boot backend for a curated jazz recommendation product.
 
-I recently redesigned the system architecture and domain model from scratch, and the codebase is currently transitioning toward that new design.
+Today the project already supports:
 
-The new software design can be viewed here:
+- editorial upsert flows for albums, tracks, and artists
+- Spotify OAuth plus local sync that enriches the graph catalog and user taste snapshots
+- graph-native semantic retrieval over curated albums, tracks, and artists
+- authenticated chat sessions with memory
+- a cost-aware recommendation flow specialized in jazz
+- virtual-credit subscription limits, while still storing real `costMicrosUsd` for observability
 
-[Open the JazzLogs architecture diagram in Excalidraw](https://excalidraw.com/#json=fj2i-dBtDaUj46NVWsfjc,ab8twxLBDVg9MjkgozUhHw)
+The product is intentionally narrow:
 
-JazzLogs is a Spring Boot backend for a curated jazz knowledge base. It combines editorial music writing with Spotify catalog sync and a semantic indexing layer designed for retrieval-augmented recommendations.
-
-The project is currently optimized around three backend flows:
-
-- curated content management for `AlbumLog`, `TrackNote`, and `ArtistProfile`
-- Spotify playlist synchronization into a local normalized catalog
-- semantic document generation and indexing for future AI-powered recommendation experiences
-
+- JazzLogs only recommends jazz
+- recommendations are grounded only in local curated data
+- the assistant should not hallucinate artists, albums, tracks, or facts outside the retrieved catalog
+- recommendations are shaped by intent, recent chat context, session memory, and optional Spotify taste data
 
 ## Tech stack
 
@@ -23,151 +24,267 @@ The project is currently optimized around three backend flows:
 - Spring Boot
 - Spring Data JPA
 - PostgreSQL
+- Neo4j
 - Flyway
-- Spring AI abstractions for semantic/vector integration
+- Spring AI for embeddings
 - OpenAPI / Swagger UI
 - Maven
 
-## Current architecture
+## Local infrastructure
 
-### 1. Logbook domain
+For local development, `compose.yaml` currently brings up:
 
-The core knowledge base is split into three editorial entities:
+- PostgreSQL on `localhost:5433`
+- Neo4j on:
+  - `http://localhost:7474` for Neo4j Browser
+  - `bolt://localhost:7687` for app connectivity
+
+Relevant local env vars now include:
+
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD`
+- `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`
+- `NEO4J_AUTH`, `NEO4J_HTTP_PORT`, `NEO4J_BOLT_PORT`
+
+## Current backend flows
+
+### 1. Editorial curation
+
+The core curated domain is split into:
 
 - `AlbumLog`
-- `TrackNote`
-- `ArtistProfile`
+- `TrackLog`
+- `ArtistLog`
 
-These live under `src/main/java/com/marcoromanofinaa/jazzlogs/logbook` and represent the source of truth for JazzLogs' curation.
+These entities are the source of truth for JazzLogs' editorial voice. They hold the mood, recommendation cues, listening context, rhythm, and curatorial notes that later power retrieval and recommendation prompts.
 
-### 2. Curation write flow
+Admin upsert endpoints currently write this data directly:
 
-Admin-only upsert endpoints allow content to be created or updated directly through HTTP:
+- `PUT /api/v1/admin/editorial/albums`
+- `PUT /api/v1/admin/editorial/tracks`
+- `PUT /api/v1/admin/editorial/artists`
 
-- `POST /admin/curation/album-logs`
-- `POST /admin/curation/track-notes`
-- `POST /admin/curation/artist-profiles`
+### 2. Spotify integration
 
-This is the current write path of the application. The old JSON ingestion flow is no longer the product-facing path.
+Spotify currently serves two different product jobs:
 
-### 3. Spotify integration
+- syncing an official catalog / playlist context that enriches the graph
+- syncing per-user taste snapshots to personalize recommendations
 
-Spotify is currently modeled as a single admin-owned integration for the app, not as per-user Spotify connections.
+Current capabilities:
 
-That decision is intentional for now:
+- Authorization Code flow with persisted refresh tokens
+- graph enrichment for albums, tracks, artists, credits, and vocabulary relationships
+- official playlist sync
+- user taste snapshot sync (`topArtists`, `topTracks`) with configurable time range
 
-- it keeps the scope focused on the product core
-- it avoids premature auth complexity
-- it makes the project easier to ship, explain, and present
+Main endpoints:
 
-A future refactor can introduce user login and multiple Spotify connections when JazzLogs needs personalization.
+- `POST /api/v1/spotify/authorization-url`
+- `GET /api/v1/spotify/callback`
+- `POST /api/v1/admin/spotify/playlists/official/sync`
+- `POST /api/v1/spotify/taste-snapshot/sync`
 
-Current Spotify capabilities:
+### 3. Graph indexing
 
-- server-side Authorization Code flow
-- refresh-token persistence
-- periodic or manual playlist sync
-- normalized local catalog:
-  - `spotify_connections`
-  - `spotify_albums`
-  - `spotify_tracks`
-  - `spotify_artists`
-  - `spotify_track_secondary_artists`
+Curated logs are turned into embeddings and written directly onto the canonical Neo4j nodes.
 
-### 4. Semantic indexing
+That indexing layer is used to:
 
-Each curated entity can be transformed into a `SemanticDocument` with deterministic embedding text.
+- search albums or tracks semantically from user intent
+- retrieve editorial candidate sets for the recommender
+- keep recommendations grounded in curated text instead of external world knowledge
 
-The semantic layer currently supports:
+The indexing model is derived, not primary:
 
-- previewing generated semantic documents
-- manual full reindexing
-- point reindexing after curation changes
-- failure persistence and scheduled recovery
-
-The indexing flow is designed as:
-
-1. curation is written transactionally to PostgreSQL
-2. an internal indexing event is published
-3. indexing runs `AFTER_COMMIT`
+1. editorial data is written to PostgreSQL log tables
+2. the matching graph nodes are enriched
+3. embeddings are regenerated from curated text and stored on the graph nodes
 4. failures are persisted
-5. a scheduled recovery job retries failed items
+5. retry / recovery jobs can replay failed indexing work
 
-This keeps the relational database as the source of truth and treats semantic indexing as a derived projection.
+### 4. Authenticated chat product
 
-The next product step is to turn this semantic layer into a proper recommendation engine:
+JazzLogs now has real chat sessions and exchanges:
 
-- RAG over curated JazzLogs documents
-- LLM calls to synthesize answers in an editorial voice
-- personalized recommendations shaped by mood, context, and listening intent
-- lightweight plan limits for `free`, `plus`, and `pro` style experiences
+- create a chat
+- send follow-up messages
+- list chats
+- fetch a full session
+- soft-delete a session
 
-### 5. Recommendation product direction for free v1
+Main endpoints:
 
-The current recommendation prototype is intentionally opinionated and cost-aware.
+- `POST /api/v1/me/chats`
+- `POST /api/v1/me/chats/{chatSessionId}/exchanges`
+- `GET /api/v1/me/chats`
+- `GET /api/v1/me/chats/{chatSessionId}`
+- `DELETE /api/v1/me/chats/{chatSessionId}`
 
-For the first free version, the operating assumptions are:
+Each session persists recommendation memory so the recommender can understand things like:
 
-- single-turn recommendations only
-- no conversation memory
-- no web search or external sources
-- recommendations must be grounded only in JazzLogs curated data plus Spotify catalog metadata already synced locally
-- the assistant only handles jazz album or track recommendations and should politely refuse unrelated topics
-- the free plan should stay heavily rate-limited, with a likely starting point of `1 request per week`
+- `otro así`
+- `más de ese disco`
+- `algo parecido pero menos oscuro`
+- reactions to previous winners
 
-The current LLM setup is optimized for a low-cost first release:
+## Recommendation flows
 
-- model: `gpt-5.4-mini`
-- temperature: `0.5`
-- reasoning effort: `low`
-- verbosity: `low`
-- max completion tokens: `350`
+### BASIC flow
 
-This recommendation flow currently uses:
+`BASIC` is the current end-user recommendation mode and is fully chat-aware.
 
-- semantic retrieval from local `pgvector` documents
-- candidate assembly from `AlbumLog`, `TrackNote`, and synced Spotify metadata
-- a final LLM selection step with a strict editorial prompt
+The execution path is:
 
-Important product guardrails:
+1. the user sends a message inside a chat session
+2. JazzLogs loads recent exchanges plus persisted session memory
+3. the `ConversationRouter` runs first with a cheap model (`gpt-5.4-nano`)
+4. the router chooses one of three outcomes:
+   - `DIRECT_ANSWER`
+   - `CLARIFICATION_NEEDED`
+   - `MUSIC_RECOMMENDATION`
+5. if it is a music request, the system runs graph-aware semantic retrieval
+6. Neo4j vector search and graph filters produce explicit `RecommendationCandidate` objects
+7. the final recommendation prompt runs on `gpt-5.4-mini`
+8. the response is validated, normalized, stored in chat history, and folded back into session memory
 
-- JazzLogs should never recommend albums or tracks outside the retrieved candidate set
-- JazzLogs should not use outside knowledge when answering
-- JazzLogs should not hallucinate facts, credits, history, or musical traits not present in the stored data
-- album and track recommendations should always tie back to the JazzLogs post itself, especially `captionEssence`
-- responses should always mention the JazzLogs `logNumber`
+### Router behavior
 
-Prompt caching is also enabled for the recommendation prompts to help keep repeated prompt prefixes cheaper over time:
+The router is specialized for JazzLogs, not general chat.
 
-- album cache key: `recommend-album-v1`
-- track cache key: `recommend-track-v1`
+Its jobs are:
+
+- detect whether the user is asking for music, reacting, clarifying, or going out of scope
+- contextualize short or referential prompts into a retrieval query
+- decide whether retrieval is needed at all
+- produce `excludedWinners` so the system avoids obvious repetition
+- emit graph-aware filters such as styles, instruments, and typed references
+- maintain a compact session summary
+- optionally propose the first chat title
+
+Important constraints:
+
+- it should not hallucinate artists outside JazzLogs context
+- it should not route musical requests to a generic factual answer
+- it should keep the retrieval query faithful to the user's wording instead of over-poeticizing it
+
+### Retrieval behavior
+
+The retrieval layer is strict and jazz-only.
+
+Current behavior:
+
+- filters by recommendation target:
+  - albums query album nodes
+  - tracks query track nodes
+- uses Neo4j vector indexes directly
+- applies graph-aware filters from the router such as styles, instruments, and typed references
+- runs concentric fallback phases so a too-strict subgraph does not starve the candidate set
+- excludes prior winners before the final candidate set reaches the LLM
+
+### Candidate grounding
+
+The final recommender receives `RecommendationCandidate` objects built straight from graph query results.
+
+It now receives `RecommendationCandidate` objects with explicit fields such as:
+
+- recommendation type
+- title / album / track
+- artist info
+- tier
+- style / moods / energy / accessibility / rhythm
+- `captionEssence`
+- `editorialNote`
+- full editorial text
+
+This keeps the LLM grounded in:
+
+- structured candidate metadata
+- Marco's editorial take
+- the actual editorial text retrieved from the graph
+
+### No-candidate fallback
+
+If retrieval returns zero candidates:
+
+- JazzLogs does not call the full final recommender
+- instead it makes a short, cheaper fallback generation with the router-class model
+- that prompt still receives session context, current local time, recent conversation, session summary, and user taste context
+
+The fallback must:
+
+- stay in Rioplatense Spanish
+- acknowledge what the user asked for
+- avoid hallucinating any album / artist / track
+- pivot gently toward another jazz mood, era, or style
+
+### Session memory
+
+Each chat session stores recommendation memory with:
+
+- last recommended batch
+- ordered recommended items across the whole session
+- a session summary that the router updates over time
+
+That memory is the source of truth for follow-ups. The system does not rebuild recommendation memory heuristically from old exchanges if it can avoid it.
+
+### Personalization
+
+The recommender can currently personalize using:
+
+- explicit jazz preferences saved by the user
+- recent chat history
+- session summary and recommendation memory
+- Spotify top artists
+- Spotify top tracks
+- local time derived from the user's timezone
+
+### Quotas and pricing
+
+JazzLogs now separates:
+
+- real OpenAI cost tracking in `costMicrosUsd`
+- virtual user-facing quota through credits
+
+Current quota model:
+
+- subscription plans have a monthly credit limit
+- each recommendation stage has a fixed credit cost
+- usage records still keep raw token usage and real `costMicrosUsd`
+
+This makes product limits easy to understand while preserving real cost observability.
 
 ## API surface
 
-### Public read endpoints
+### Auth
 
-- `GET /logs`
-- `GET /logs/{logNumber}`
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
 
-### Admin curation endpoints
+### User / profile
 
-- `POST /admin/curation/album-logs`
-- `POST /admin/curation/track-notes`
-- `POST /admin/curation/artist-profiles`
+- `GET /api/v1/users/me`
+- `GET /api/v1/users/me/profile`
 
-### Admin Spotify endpoints
+### Chat / recommendation
 
-- `POST /admin/spotify/authorization-url`
-- `GET /admin/spotify/callback`
-- `POST /admin/spotify/playlist-items/sync`
+- `POST /api/v1/me/chats`
+- `POST /api/v1/me/chats/{chatSessionId}/exchanges`
+- `GET /api/v1/me/chats`
+- `GET /api/v1/me/chats/{chatSessionId}`
+- `DELETE /api/v1/me/chats/{chatSessionId}`
 
-### Admin AI / semantic endpoints
+### Editorial admin
 
-- `GET /admin/ai/semantic-documents/album-logs/{logNumber}/preview`
-- `GET /admin/ai/semantic-documents/track-notes/{spotifyTrackId}/preview`
-- `GET /admin/ai/semantic-documents/artist-profiles/{spotifyArtistId}/preview`
-- `POST /admin/ai/semantic-documents/index`
-- `POST /admin/ai/recommend` for the current internal recommendation prototype
+- `PUT /api/v1/admin/editorial/albums`
+- `PUT /api/v1/admin/editorial/tracks`
+- `PUT /api/v1/admin/editorial/artists`
+
+### Spotify
+
+- `POST /api/v1/spotify/authorization-url`
+- `GET /api/v1/spotify/callback`
+- `POST /api/v1/spotify/taste-snapshot/sync`
+- `POST /api/v1/admin/spotify/playlists/official/sync`
 
 ## Example data
 
@@ -175,47 +292,52 @@ Prompt caching is also enabled for the recommendation prompts to help keep repea
 
 ```json
 {
-  "album": "Spunky",
+  "logNumber": 1,
+  "albumName": "Spunky",
   "mainArtists": [
     {
-      "spotifyArtistId": "30V1rKijENF5MFcGidInfh",
-      "artistName": "Monty Alexander"
+      "name": "Monty Alexander",
+      "spotifyArtistId": "30V1rKijENF5MFcGidInfh"
     }
   ],
-  "caption": "Warm, groovy hard bop with a playful pulse and a late-night club feel.",
+  "captionEssence": "Warm, groovy hard bop with a playful pulse and a late-night club feel.",
   "postedAt": "2026-02-02",
   "instagramPermalink": "https://www.instagram.com/p/DUReEzNEfyX/",
-  "style": "Hard Bop / Soul Jazz",
-  "releaseYear": "1965",
-  "logNumber": 1,
+  "styles": ["Hard Bop", "Soul Jazz"],
+  "vocalProfile": "Instrumental",
+  "releaseYear": 1965,
   "moods": ["warm", "groovy", "energetic"],
-  "tier": "free",
-  "vibe": ["playful", "driving", "earthy"],
-  "energy": "medium-high",
+  "tier": "daily_rotation",
+  "energy": "medium",
   "moodIntensity": "medium",
-  "accessibility": "high",
+  "accessibility": "easy",
   "bestMoment": {
-    "introduccion": "This album lands best when you want something warm, direct, and full of groove.",
-    "momentos": [
+    "introduction": "This album lands best when you want something warm, direct, and full of groove.",
+    "moments": [
       {
-        "momento": "The lively evening walk",
-        "descripcion": "Perfect when you want momentum, movement, and something that feels upbeat without sounding rushed."
+        "contexts": ["urban_night_walk"],
+        "description": "Perfect when you want momentum, movement, and something that feels upbeat without sounding rushed."
       },
       {
-        "momento": "A small gathering with good speakers",
-        "descripcion": "It fills the room with personality and swing without becoming background wallpaper."
+        "contexts": ["casual_hang"],
+        "description": "It fills the room with personality and swing without becoming background wallpaper."
       }
     ],
     "conclusion": "Overall, it works best in social or active moments where you still want real musical character."
   },
-  "listeningContext": ["night", "walking", "small-group"],
-  "notes": "Standout track: Rattlesnake.",
+  "listeningContext": ["late_night_drive", "urban_night_walk", "casual_hang"],
   "whyItMatters": "A great entry point into soulful piano-led hard bop.",
   "editorialNote": "Monty Alexander sounds nimble, warm, and always in motion here.",
   "recommendedIf": "You like groove-first jazz that still swings hard.",
   "avoidIf": "You are looking for something austere or very abstract.",
   "albumContext": "Early-career Monty with an immediately inviting sound.",
-  "personnel": [],
+  "personnel": [
+    {
+      "name": "Monty Alexander",
+      "spotifyArtistId": "30V1rKijENF5MFcGidInfh",
+      "instruments": ["piano"]
+    }
+  ],
   "spotifyAlbumId": "4hJXfVG7xW2n3Zl5JH7K8o"
 }
 ```
@@ -227,28 +349,29 @@ Prompt caching is also enabled for the recommendation prompts to help keep repea
   "spotifyTrackId": "spotify-track-id",
   "spotifyAlbumId": "spotify-album-id",
   "logNumber": 1,
-  "track": "Rattlesnake",
-  "album": "Spunky",
-  "tier": "free",
-  "isInstrumental": true,
-  "isStandout": true,
-  "vibe": ["nimble", "swinging", "punchy"],
+  "trackName": "Rattlesnake",
+  "albumName": "Spunky",
+  "primaryArtist": "Monty Alexander",
+  "mainArtistSpotifyId": "30V1rKijENF5MFcGidInfh",
+  "tier": "daily_rotation",
+  "vocalProfile": "instrumental",
+  "standout": true,
+  "moods": ["playful", "energetic", "earthy"],
   "energy": "high",
   "moodIntensity": "medium-high",
-  "accessibility": "high",
-  "tempoFeel": "up-tempo",
-  "rhythmicFeel": "swing",
+  "accessibility": "easy",
+  "tempoFeel": "mid",
+  "rhythmFeel": "medium_swing",
   "trackRole": "standout",
   "compositionType": "original",
   "bestMoment": "When you want something lively but not chaotic.",
-  "listeningContext": ["commute", "focus", "night"],
+  "listeningContext": ["morning_commute", "deep_focus", "late_night_drive"],
   "whyItHits": "It lands quickly and keeps its momentum without losing warmth.",
   "editorialNote": "A sharp, welcoming track that gets straight to the point.",
   "recommendedIf": "You want hard bop with bounce and clarity.",
   "avoidIf": "You want something slow or atmospheric.",
-  "instrumentFocus": "piano",
-  "vocalStyle": null,
-  "standoutTags": ["groove", "swing", "entry-point"]
+  "instruments": ["piano"],
+  "vocalStyle": null
 }
 ```
 
@@ -311,7 +434,7 @@ JAZZLOGS_ADMIN_API_KEY=...
 SPOTIFY_CLIENT_ID=...
 SPOTIFY_CLIENT_SECRET=...
 SPOTIFY_PLAYLIST_ID=...
-SPOTIFY_REDIRECT_URI=http://127.0.0.1:8080/admin/spotify/callback
+SPOTIFY_REDIRECT_URI=http://127.0.0.1:8080/api/v1/spotify/callback
 SPOTIFY_SYNC_ENABLED=false
 SPOTIFY_SYNC_CRON=0 0 */12 * * *
 SPOTIFY_SYNC_ZONE=America/Argentina/Buenos_Aires
@@ -323,6 +446,24 @@ If enabled, the default Spotify sync runs every 12 hours.
 
 ```bash
 OPENAI_API_KEY=...
+```
+
+### Usage / credits
+
+```bash
+JAZZLOGS_CHAT_USAGE_MONTHLY_CREDIT_LIMIT_FREE=200
+JAZZLOGS_CHAT_USAGE_MONTHLY_CREDIT_LIMIT_TRIAL=400
+JAZZLOGS_CHAT_USAGE_MONTHLY_CREDIT_LIMIT_PLUS=1500
+JAZZLOGS_CHAT_USAGE_MONTHLY_CREDIT_LIMIT_PRO=6000
+
+JAZZLOGS_CHAT_USAGE_MIN_CREDITS_BASIC=1
+JAZZLOGS_CHAT_USAGE_MIN_CREDITS_PLAYLIST=5
+JAZZLOGS_CHAT_USAGE_MIN_CREDITS_PRO=15
+
+JAZZLOGS_CHAT_USAGE_CREDIT_COST_ROUTER=1
+JAZZLOGS_CHAT_USAGE_CREDIT_COST_EMPTY_FALLBACK=1
+JAZZLOGS_CHAT_USAGE_CREDIT_COST_BASIC_RECOMMENDATION=2
+JAZZLOGS_CHAT_USAGE_CREDIT_COST_AGENT=15
 ```
 
 ## Swagger and OpenAPI
@@ -352,9 +493,9 @@ For day-to-day verification of the Spotify integration, a manual smoke test is c
 Recommended Spotify smoke-test flow:
 
 1. Start the app
-2. Call `POST /admin/spotify/authorization-url`
+2. Call `POST /api/v1/spotify/authorization-url`
 3. Complete the OAuth flow in the browser
-4. Call `POST /admin/spotify/playlist-items/sync`
+4. Call `POST /api/v1/admin/spotify/playlists/official/sync`
 5. Verify that the local Spotify catalog tables were updated
 
 The current Spotify test classes compile, but Mockito inline mocking is not stable in this local setup because Byte Buddy cannot attach its agent cleanly. The product flow itself should be validated through the admin endpoints until that test infrastructure is cleaned up.
@@ -363,26 +504,29 @@ The current Spotify test classes compile, but Mockito inline mocking is not stab
 
 What is already solid:
 
-- editorial domain modeling
+- editorial domain modeling for albums, tracks, and artists
 - admin-first curation flow
-- Spotify OAuth and playlist sync
-- deterministic binding between curation and Spotify catalog data
-- semantic document generation
-- transactional-after-commit semantic indexing with persisted recovery
+- Spotify OAuth, official playlist sync, and user taste snapshots
+- deterministic binding between curation and local catalog data
+- graph embedding generation plus recovery-aware indexing
+- authenticated chat sessions with memory
+- BASIC recommendation flow with router + retrieval + final grounded generation
+- cost-aware recommendation operations with virtual credit enforcement
 
 What is still evolving:
 
-- the final end-user recommendation experience
-- public authentication and user accounts
-- tiered plans and usage limits
-- RAG orchestration plus LLM-backed personalized recommendation generation
+- more advanced recommendation modes beyond `BASIC`
+- richer plan management and credit tuning
+- better frontend presentation of sessions, winners, and enriched items
+- broader evaluation / analytics around recommendation quality
 
 ## Repo structure
 
 Main backend modules:
 
-- `logbook`: source-of-truth editorial domain
-- `curation`: admin upsert flow
-- `spotify`: OAuth, sync, catalog, and binding
-- `ai/semantic`: semantic document generation, preview, indexing, recovery
-- `core`: shared exceptions and foundational pieces
+- `admin/editorial`: admin upsert flows for curated logs
+- `spotify`: OAuth, playlist sync, taste sync, and normalized local catalog
+- `chat`: chat sessions, exchanges, memory, and recommendation integration
+- `recommendation`: router, retrieval, prompt building, orchestration, and LLM clients
+- `user`: profile, jazz preferences, plans, and subscriptions
+- `auth`: registration, login, JWT, and authenticated user context

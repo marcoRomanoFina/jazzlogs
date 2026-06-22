@@ -2,6 +2,7 @@ package com.marcoromanofinaa.jazzlogs.recommendation.basic.router.context;
 
 import com.marcoromanofinaa.jazzlogs.chat.exchange.ChatExchange;
 import com.marcoromanofinaa.jazzlogs.chat.session.ChatRecommendationMemory;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 import com.marcoromanofinaa.jazzlogs.recommendation.preferences.UserPreferencesContext;
 import com.marcoromanofinaa.jazzlogs.recommendation.preferences.UserPreferencesService;
 import com.marcoromanofinaa.jazzlogs.user.exception.UserNotFoundException;
@@ -38,8 +39,8 @@ public class ConversationRouterContextBuilder {
                 lastAssistantMessage(safeHistory).orElse(null),
                 summarizeRecentExchanges(safeHistory).orElse(null),
                 currentSessionSummary(recommendationMemory).orElse(null),
-                currentLastRecommendedItem(recommendationMemory).orElse(null),
-                orderedMemoryItems(recommendationMemory)
+                currentLastRecommendationBatch(recommendationMemory).orElse(null),
+                recommendationHistory(recommendationMemory)
         );
     }
 
@@ -53,18 +54,18 @@ public class ConversationRouterContextBuilder {
                 .filter(summary -> !summary.isBlank());
     }
 
-    private Optional<ChatRecommendationMemory.LastRecommendedItem> currentLastRecommendedItem(
+    private Optional<ChatRecommendationMemory.LastRecommendationBatch> currentLastRecommendationBatch(
             ChatRecommendationMemory recommendationMemory
     ) {
         return Optional.ofNullable(recommendationMemory)
-                .map(ChatRecommendationMemory::lastRecommendedItem);
+                .map(ChatRecommendationMemory::lastRecommendationBatch);
     }
 
-    private List<ChatRecommendationMemory.OrderedRecommendedItem> orderedMemoryItems(
+    private List<ChatRecommendationMemory.RecommendationHistoryEntry> recommendationHistory(
             ChatRecommendationMemory recommendationMemory
     ) {
         return Optional.ofNullable(recommendationMemory)
-                .map(ChatRecommendationMemory::orderedRecommendedItems)
+                .map(ChatRecommendationMemory::recommendationHistory)
                 .filter(items -> !items.isEmpty())
                 .orElse(List.of());
     }
@@ -84,14 +85,14 @@ public class ConversationRouterContextBuilder {
         var parts = new ArrayList<String>();
         if (context.jazzPreferences() != null) {
             var prefs = context.jazzPreferences();
-            append(parts, "experience: " + prefs.jazzExperienceLevel());
-            append(parts, joinList("favorite artists", prefs.favoriteArtists()));
-            append(parts, joinList("preferred subgenres", prefs.preferredSubgenres()));
-            append(parts, joinList("preferred moods", prefs.preferredMoods()));
-            append(parts, joinList("favorite instruments", prefs.favoriteInstruments()));
-            append(parts, prefs.tempoFeel() == null ? null : "tempo feel: " + prefs.tempoFeel());
+            append(parts, prefs.jazzExperienceLevelLabel() == null ? null : "experience: " + prefs.jazzExperienceLevelLabel());
+            append(parts, joinList("favorite artists", prefs.favoriteArtistLabels()));
+            append(parts, joinList("preferred subgenres", prefs.preferredSubgenreLabels()));
+            append(parts, joinList("preferred moods", prefs.preferredMoodLabels()));
+            append(parts, joinList("favorite instruments", prefs.favoriteInstrumentLabels()));
+            append(parts, prefs.tempoFeelLabel() == null ? null : "tempo feel: " + prefs.tempoFeelLabel());
             append(parts, "likes vocals: " + (prefs.likesVocals() ? "yes" : "no"));
-            append(parts, prefs.discoveryMode() == null ? null : "discovery mode: " + prefs.discoveryMode());
+            append(parts, prefs.discoveryModeLabel() == null ? null : "discovery mode: " + prefs.discoveryModeLabel());
         }
         append(parts, joinList("top spotify artists", context.topArtists().stream().map(artist -> artist.name()).toList()));
         append(parts, joinList("top spotify tracks", context.topTracks().stream().map(track -> track.name()).toList()));
@@ -110,7 +111,9 @@ public class ConversationRouterContextBuilder {
                     append(parts, "User: " + exchange.getUserMessage());
                     append(parts, "Assistant: " + exchange.getAssistantResponse());
                     if (exchange.getWinners() != null && !exchange.getWinners().isEmpty()) {
-                        append(parts, "Winners: " + String.join(", ", exchange.getWinners()));
+                        append(parts, "Winners: " + exchange.getWinners().stream()
+                                .map(this::renderWinner)
+                                .collect(Collectors.joining(", ")));
                     }
                     return String.join(" | ", parts);
                 })
@@ -137,6 +140,16 @@ public class ConversationRouterContextBuilder {
 
     private void append(List<String> parts, String value) {
         append(parts, Optional.ofNullable(value));
+    }
+
+    private String renderWinner(WinnerReference winner) {
+        if (winner == null || winner.name() == null || winner.name().isBlank()) {
+            return "";
+        }
+        if (winner.artistFullName() == null || winner.artistFullName().isBlank()) {
+            return winner.name();
+        }
+        return winner.name() + " — " + winner.artistFullName();
     }
 
 }

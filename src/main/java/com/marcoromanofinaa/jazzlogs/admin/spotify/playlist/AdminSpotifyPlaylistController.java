@@ -1,7 +1,9 @@
 package com.marcoromanofinaa.jazzlogs.admin.spotify.playlist;
 
+import com.marcoromanofinaa.jazzlogs.admin.AdminAccessRequiredException;
 import com.marcoromanofinaa.jazzlogs.auth.security.AuthenticatedUser;
 import com.marcoromanofinaa.jazzlogs.spotify.sync.playlist.SpotifyPlaylistSyncService;
+import com.marcoromanofinaa.jazzlogs.user.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,10 +20,21 @@ public class AdminSpotifyPlaylistController {
     public ResponseEntity<Void> syncOfficialJazzlogsPlaylist(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
     ) {
+        requireAdmin(authenticatedUser);
         spotifyPlaylistSyncService.syncOfficialPlaylist(
                 authenticatedUser.id()
         );
 
         return ResponseEntity.noContent().build();
+    }
+
+    private void requireAdmin(AuthenticatedUser authenticatedUser) {
+        if (authenticatedUser == null || authenticatedUser.role() == null) {
+            throw new AdminAccessRequiredException();
+        }
+
+        if (!UserRole.ADMIN.name().equalsIgnoreCase(authenticatedUser.role())) {
+            throw new AdminAccessRequiredException();
+        }
     }
 }

@@ -1,217 +1,211 @@
 package com.marcoromanofinaa.jazzlogs.recommendation.retrieval;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
-import com.marcoromanofinaa.jazzlogs.chat.session.ChatRecommendationMemory;
-import com.marcoromanofinaa.jazzlogs.chat.session.RecommendedItemMetadataLookupService;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.BasicRecommendationTarget;
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationSubgraphFilters;
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationSubgraphReference;
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationSubgraphReferenceType;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.data.neo4j.core.Neo4jClient;
 
 class RetrievalServiceTest {
 
     @Test
-    void retrieveRelevantDocumentsAppliesAnchorAndExcludeWinnerFilters() {
-        var vectorStore = Mockito.mock(VectorStore.class);
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
-        var retrievalService = new RetrievalService(vectorStore, resolver);
-
-        when(resolver.findByWinners(BasicRecommendationTarget.ALBUM, List.of("Blue Hour")))
-                .thenReturn(java.util.Map.of("blue hour", metadata("album-id-1")));
-        when(resolver.findByWinners(BasicRecommendationTarget.ALBUM, List.of("Track A")))
-                .thenReturn(java.util.Map.of("track a", metadata("track-id-1")));
-
-        retrievalService.retrieveRelevantDocuments(new RetrievalCommand(
-                "recommend something",
-                BasicRecommendationTarget.ALBUM,
-                3,
-                List.of("Blue Hour"),
-                List.of("Track A")
-        ));
-
-        var searchRequest = Mockito.mockingDetails(vectorStore)
-                .getInvocations().stream()
-                .filter(invocation -> invocation.getMethod().getName().equals("similaritySearch"))
-                .map(invocation -> (SearchRequest) invocation.getArgument(0))
-                .findFirst()
-                .orElseThrow();
-
-        assertThat(searchRequest.hasFilterExpression()).isTrue();
-        var filterStr = searchRequest.getFilterExpression().toString();
-        assertThat(filterStr).contains("album-id-1");
-        assertThat(filterStr).contains("track-id-1");
-    }
-
-    @Test
-    void retrieveRelevantDocumentsFiltersByAlbumSourceTypeForAlbumTarget() {
-        var vectorStore = Mockito.mock(VectorStore.class);
-        var retrievalService = new RetrievalService(
-                vectorStore,
-                Mockito.mock(RecommendedItemMetadataLookupService.class)
+    void trackWhereClauseConstrainsResultsToReferencedAlbum() throws Exception {
+        var service = new RetrievalService(
+                Mockito.mock(Neo4jClient.class),
+                Mockito.mock(EmbeddingModel.class),
+                new RetrievalPhasePlanner()
         );
 
-        retrievalService.retrieveRelevantDocuments(new RetrievalCommand(
-                "blue hour",
-                BasicRecommendationTarget.ALBUM,
-                3,
+        var filters = new ConversationSubgraphFilters(
+                List.of("Modal Jazz"),
                 List.of(),
-                List.of()
-        ));
-
-        var searchRequest = Mockito.mockingDetails(vectorStore)
-                .getInvocations().stream()
-                .filter(invocation -> invocation.getMethod().getName().equals("similaritySearch"))
-                .map(invocation -> (SearchRequest) invocation.getArgument(0))
-                .findFirst()
-                .orElseThrow();
-
-        assertThat(searchRequest.hasFilterExpression()).isTrue();
-        assertThat(searchRequest.getFilterExpression().toString()).contains("ALBUM_LOG");
-    }
-
-    @Test
-    void retrieveRelevantDocumentsPushesSourceTypeSectionAndMetadataFiltersIntoSearchRequest() {
-        var vectorStore = Mockito.mock(VectorStore.class);
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
-        var retrievalService = new RetrievalService(vectorStore, resolver);
-
-        when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of());
-        when(resolver.findByWinners(BasicRecommendationTarget.ALBUM, List.of("Blue Hour")))
-                .thenReturn(java.util.Map.of("blue hour", metadata("album-id-2")));
-
-        retrievalService.retrieveRelevantDocuments(new RetrievalCommand(
-                "miles",
-                BasicRecommendationTarget.ALBUM,
-                3,
                 List.of(),
-                List.of("Blue Hour")
-        ));
-
-        var searchRequest = Mockito.mockingDetails(vectorStore)
-                .getInvocations().stream()
-                .filter(invocation -> invocation.getMethod().getName().equals("similaritySearch"))
-                .map(invocation -> (SearchRequest) invocation.getArgument(0))
-                .findFirst()
-                .orElseThrow();
-
-        assertThat(searchRequest.hasFilterExpression()).isTrue();
-        assertThat(searchRequest.getFilterExpression().toString())
-                .contains("sourceType")
-                .contains("sourceId")
-                .contains("album-id-2");
-    }
-
-    @Test
-    void retrieveRelevantDocumentsExpandsTopKToCompensateForPostFiltering() {
-        var vectorStore = Mockito.mock(VectorStore.class);
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
-        var retrievalService = new RetrievalService(vectorStore, resolver);
-
-        when(resolver.findByWinners(BasicRecommendationTarget.ALBUM, List.of("Blue Hour", "Chet")))
-                .thenReturn(Map.of(
-                        "blue hour", metadata("album-id-1"),
-                        "chet", metadata("album-id-2")
-                ));
-
-        retrievalService.retrieveRelevantDocuments(new RetrievalCommand(
-                "night jazz",
-                BasicRecommendationTarget.ALBUM,
-                3,
-                List.of(),
-                List.of("Blue Hour", "Chet")
-        ));
-
-        var searchRequest = Mockito.mockingDetails(vectorStore)
-                .getInvocations().stream()
-                .filter(invocation -> invocation.getMethod().getName().equals("similaritySearch"))
-                .map(invocation -> (SearchRequest) invocation.getArgument(0))
-                .findFirst()
-                .orElseThrow();
-
-        assertThat(searchRequest.getTopK()).isGreaterThan(3);
-    }
-
-    @Test
-    void retrieveRelevantDocumentsPostFiltersBySourceIdWhenMetadataIsResolved() {
-        var vectorStore = Mockito.mock(VectorStore.class);
-        var resolver = Mockito.mock(RecommendedItemMetadataLookupService.class);
-        var retrievalService = new RetrievalService(vectorStore, resolver);
-
-        when(resolver.findByWinners(BasicRecommendationTarget.TRACKS, List.of("Tenderly")))
-                .thenReturn(Map.of("tenderly", trackMetadata("track-id-1")));
-        when(vectorStore.similaritySearch(any(SearchRequest.class))).thenReturn(List.of(
-                new Document("Track one", Map.of("sourceType", "TRACK_LOG", "sourceId", "track-id-1", "track", "Tenderly")),
-                new Document("Track two", Map.of("sourceType", "TRACK_LOG", "sourceId", "track-id-2", "track", "Tenderly"))
-        ));
-
-        var results = retrievalService.retrieveRelevantDocuments(new RetrievalCommand(
-                "tenderly",
+                List.of(new ConversationSubgraphReference(
+                        ConversationSubgraphReferenceType.ALBUM,
+                        "Kind Of Blue"
+                ))
+        );
+        var command = new RetrievalCommand(
+                "temas de kind of blue",
                 BasicRecommendationTarget.TRACKS,
-                5,
+                12,
                 List.of(),
-                List.of("Tenderly")
+                filters
+        );
+
+        var method = RetrievalService.class.getDeclaredMethod("buildTrackWhereClause", RetrievalCommand.class);
+        method.setAccessible(true);
+
+        var whereClause = (String) method.invoke(service, command);
+
+        assertThat(whereClause).contains("referenceAlbumRefs");
+        assertThat(whereClause).contains("album.name");
+        assertThat(whereClause).contains("leader.name");
+    }
+
+    @Test
+    void trackQueryFiltersAfterOptionalAlbumMatchSoExcludedTracksAreRemoved() throws Exception {
+        var service = new RetrievalService(
+                Mockito.mock(Neo4jClient.class),
+                Mockito.mock(EmbeddingModel.class),
+                new RetrievalPhasePlanner()
+        );
+
+        var method = RetrievalService.class.getDeclaredMethod("buildTrackQuery", RetrievalCommand.class);
+        method.setAccessible(true);
+
+        var query = (String) method.invoke(service, new RetrievalCommand(
+                "algo",
+                BasicRecommendationTarget.TRACKS,
+                12,
+                List.of("track-node-1"),
+                null
         ));
 
-        assertThat(results).hasSize(1);
-        assertThat(results.getFirst().getMetadata().get("sourceId")).isEqualTo("track-id-2");
+        assertThat(query).contains("OPTIONAL MATCH (album:Album)-[:CONTAINS]->(track)");
+        assertThat(query).contains("WITH track, album, score");
+        assertThat(query).contains("WHERE NOT track.id IN $excludedNodeIds");
     }
 
-    private ChatRecommendationMemory.RecommendedItemMetadata metadata(String sourceId) {
-        return new ChatRecommendationMemory.RecommendedItemMetadata(
-                "ALBUM_LOG",
-                sourceId,
-                "Blue Hour",
+    @Test
+    void candidateKeyUsesNodeIdInsteadOfTitleOnly() throws Exception {
+        var service = new RetrievalService(
+                Mockito.mock(Neo4jClient.class),
+                Mockito.mock(EmbeddingModel.class),
+                new RetrievalPhasePlanner()
+        );
+
+        var method = RetrievalService.class.getDeclaredMethod("candidateKey", com.marcoromanofinaa.jazzlogs.recommendation.basic.RecommendationCandidate.class);
+        method.setAccessible(true);
+
+        var first = new com.marcoromanofinaa.jazzlogs.recommendation.basic.RecommendationCandidate(
+                "track-node-1",
+                BasicRecommendationTarget.TRACKS,
                 null,
-                "Stanley Turrentine",
-                "Stanley Turrentine",
-                List.of(),
-                "spotify-album",
                 null,
-                "A",
-                "1961",
-                "Hard Bop",
-                "Instrumental",
+                null,
+                "Summertime",
+                "Porgy and Bess",
+                "Summertime",
+                "Miles Davis",
                 List.of(),
+                null,
+                null,
+                null,
                 List.of(),
-                "medium",
-                "high",
+                null,
+                null,
+                null,
+                null,
+                List.of(),
+                null,
+                null,
                 null,
                 null,
                 null,
                 null
         );
-    }
-
-    private ChatRecommendationMemory.RecommendedItemMetadata trackMetadata(String sourceId) {
-        return new ChatRecommendationMemory.RecommendedItemMetadata(
-                "TRACK_LOG",
-                sourceId,
-                "Some Album",
-                "Tenderly",
-                "Artist",
-                "Artist",
+        var second = new com.marcoromanofinaa.jazzlogs.recommendation.basic.RecommendationCandidate(
+                "track-node-2",
+                BasicRecommendationTarget.TRACKS,
+                null,
+                null,
+                null,
+                "Summertime",
+                "Summertime",
+                "Summertime",
+                "Ella Fitzgerald",
                 List.of(),
-                "spotify-album",
-                "spotify-track",
-                "A",
-                "1961",
-                "Ballad",
-                "Vocal",
+                null,
+                null,
+                null,
                 List.of(),
+                null,
+                null,
+                null,
+                null,
                 List.of(),
-                "low",
-                "medium",
+                null,
+                null,
                 null,
                 null,
                 null,
                 null
         );
+
+        var firstKey = (String) method.invoke(service, first);
+        var secondKey = (String) method.invoke(service, second);
+
+        assertThat(firstKey).isNotEqualTo(secondKey);
+        assertThat(firstKey).contains("track-node-1");
+        assertThat(secondKey).contains("track-node-2");
+    }
+
+    @Test
+    void albumQueryProximityScoreUsesReferenceAlbumNameWithoutMissingArtistField() throws Exception {
+        var service = new RetrievalService(
+                Mockito.mock(Neo4jClient.class),
+                Mockito.mock(EmbeddingModel.class),
+                new RetrievalPhasePlanner()
+        );
+
+        var method = RetrievalService.class.getDeclaredMethod("buildAlbumQuery", RetrievalCommand.class);
+        method.setAccessible(true);
+
+        var query = (String) method.invoke(service, new RetrievalCommand(
+                "algo de kind of blue",
+                BasicRecommendationTarget.ALBUM,
+                8,
+                List.of(),
+                new ConversationSubgraphFilters(
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(new ConversationSubgraphReference(
+                                ConversationSubgraphReferenceType.ALBUM,
+                                "Kind Of Blue"
+                        ))
+                )
+        ));
+
+        assertThat(query).contains("referenceAlbum.name");
+        assertThat(query).doesNotContain("referenceAlbum.artistName");
+    }
+
+    @Test
+    void trackQueryProximityScoreUsesReferenceTrackNameWithoutMissingArtistField() throws Exception {
+        var service = new RetrievalService(
+                Mockito.mock(Neo4jClient.class),
+                Mockito.mock(EmbeddingModel.class),
+                new RetrievalPhasePlanner()
+        );
+
+        var method = RetrievalService.class.getDeclaredMethod("buildTrackQuery", RetrievalCommand.class);
+        method.setAccessible(true);
+
+        var query = (String) method.invoke(service, new RetrievalCommand(
+                "quiero summertime",
+                BasicRecommendationTarget.TRACKS,
+                12,
+                List.of(),
+                new ConversationSubgraphFilters(
+                        List.of(),
+                        List.of(),
+                        List.of(),
+                        List.of(new ConversationSubgraphReference(
+                                ConversationSubgraphReferenceType.TRACK,
+                                "Summertime"
+                        ))
+                )
+        ));
+
+        assertThat(query).contains("referenceTrack.name");
+        assertThat(query).doesNotContain("referenceTrack.artistName");
     }
 }

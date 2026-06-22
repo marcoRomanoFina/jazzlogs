@@ -10,7 +10,7 @@ import java.util.List;
 
 public record RecommendationResult(
         @NotBlank String assistantResponse,
-        @NotNull List<@NotBlank String> winners,
+        @NotNull List<@NotNull WinnerReference> winners,
         BasicRecommendationTarget recommendationType,
         String suggestedChatTitle,
         String updatedSessionSummary,

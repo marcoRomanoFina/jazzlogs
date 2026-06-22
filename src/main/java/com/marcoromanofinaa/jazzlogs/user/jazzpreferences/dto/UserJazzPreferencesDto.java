@@ -1,23 +1,42 @@
 package com.marcoromanofinaa.jazzlogs.user.jazzpreferences.dto;
 
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.Artist;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.DiscoveryMode;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.Instrument;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.JazzExperienceLevel;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.Mood;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.Subgenre;
-import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.model.TempoFeel;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.util.List;
 
 public record UserJazzPreferencesDto(
-        @NotNull JazzExperienceLevel jazzExperienceLevel,
-        @NotNull @Size(max = 5) List<Artist> favoriteArtists,
-        @NotNull @Size(max = 3) List<Subgenre> preferredSubgenres,
-        @NotNull @Size(max = 3) List<Mood> preferredMoods,
-        @NotNull @Size(max = 3) List<Instrument> favoriteInstruments,
-        @NotNull TempoFeel tempoFeel,
+        String jazzExperienceLevel,
+        List<String> favoriteArtists,
+        List<String> preferredSubgenres,
+        List<String> preferredMoods,
+        List<String> favoriteInstruments,
+        String tempoFeel,
         boolean likesVocals,
-        @NotNull DiscoveryMode discoveryMode
-) {}
+        String discoveryMode
+) {
+    public List<String> favoriteArtistLabels() {
+        return favoriteArtists == null ? List.of() : favoriteArtists;
+    }
+
+    public List<String> preferredSubgenreLabels() {
+        return preferredSubgenres == null ? List.of() : preferredSubgenres;
+    }
+
+    public List<String> preferredMoodLabels() {
+        return preferredMoods == null ? List.of() : preferredMoods;
+    }
+
+    public List<String> favoriteInstrumentLabels() {
+        return favoriteInstruments == null ? List.of() : favoriteInstruments;
+    }
+
+    public String jazzExperienceLevelLabel() {
+        return jazzExperienceLevel;
+    }
+
+    public String tempoFeelLabel() {
+        return tempoFeel;
+    }
+
+    public String discoveryModeLabel() {
+        return discoveryMode;
+    }
+}

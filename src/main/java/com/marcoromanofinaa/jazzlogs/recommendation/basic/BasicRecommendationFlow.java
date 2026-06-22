@@ -1,5 +1,7 @@
 package com.marcoromanofinaa.jazzlogs.recommendation.basic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marcoromanofinaa.jazzlogs.chat.session.ChatRecommendationMemory;
 import com.marcoromanofinaa.jazzlogs.chat.usage.ModelUsage;
 import com.marcoromanofinaa.jazzlogs.chat.usage.UsageRecordStage;
@@ -16,14 +18,17 @@ import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.Recommendation
 import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationFlowCommand;
 import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationResult;
 import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.RecommendationTiming;
+import com.marcoromanofinaa.jazzlogs.recommendation.orchestration.WinnerReference;
 import com.marcoromanofinaa.jazzlogs.recommendation.preferences.UserPreferencesContext;
 import com.marcoromanofinaa.jazzlogs.recommendation.preferences.UserPreferencesService;
+import com.marcoromanofinaa.jazzlogs.recommendation.retrieval.ReferenceResolutionService;
 import com.marcoromanofinaa.jazzlogs.recommendation.retrieval.RetrievalCommand;
 import com.marcoromanofinaa.jazzlogs.recommendation.retrieval.RetrievalService;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.ConversationRouter;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationRoute;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationRouterCommand;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationRouterResponse;
+import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationSubgraphReferenceType;
 import com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationUserIntent;
 import com.marcoromanofinaa.jazzlogs.recommendation.config.OpenAIRecommendationProperties;
 import jakarta.validation.constraints.NotBlank;
@@ -38,13 +43,11 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -54,17 +57,20 @@ public class BasicRecommendationFlow implements RecommendationFlow {
 
     private static final int BASIC_ALBUM_TOP_K = 8;
     private static final int BASIC_TRACKS_TOP_K = 12;
+    private static final int BASIC_MAX_TRACK_WINNERS = 3;
     private static final int NO_CANDIDATES_HISTORY_LIMIT = 3;
     private static final DateTimeFormatter NO_CANDIDATES_TIME_FORMATTER =
             DateTimeFormatter.ofPattern("hh:mm a", Locale.US);
 
     private final UserPreferencesService userPreferencesService;
     private final RetrievalService retrievalService;
+    private final ReferenceResolutionService referenceResolutionService;
     private final BasicPromptBuilder basicPromptBuilder;
     private final LLMClientResolver llmClientResolver;
     private final LLMResponseValidator llmResponseValidator;
     private final ConversationRouter conversationRouter;
     private final OpenAIRecommendationProperties openAIRecommendationProperties;
+    private final ObjectMapper objectMapper;
     private final Clock clock;
 
     @Override
@@ -88,6 +94,18 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         ));
         var routerLatencyMs = elapsedMillis(routerStartedAt);
         var route = routingResult.response().route();
+
+        if (routingResult.response().userIntent() == ConversationUserIntent.FACTUAL_QUESTION) {
+            return new RecommendationResult(
+                    factualQuestionUnsupportedResponse(),
+                    List.of(),
+                    null,
+                    routingResult.response().suggestedChatTitle(),
+                    routingResult.response().updatedSessionSummary(),
+                    new RecommendationTiming(routerLatencyMs, 0L, elapsedMillis(totalStartedAt)),
+                    routingResult.usageEntries()
+            );
+        }
 
         if (route == ConversationRoute.DIRECT_ANSWER) {
             return new RecommendationResult(
@@ -125,29 +143,28 @@ public class BasicRecommendationFlow implements RecommendationFlow {
     ) {
         var target = toTarget(routerResponse);
         var retrievalQuery = routerResponse.contextualizedQuery().trim();
+        var resolvedSubgraphFilters = referenceResolutionService.resolve(routerResponse.subgraphFilters());
         var topK = target == BasicRecommendationTarget.ALBUM ? BASIC_ALBUM_TOP_K : BASIC_TRACKS_TOP_K;
 
-        var candidateDocuments = retrievalService.retrieveRelevantDocuments(
+        var effectiveExcludedNodeIds = excludedWinnerNodeIds(
+                target,
+                resolvedSubgraphFilters,
+                routerResponse.contextualizedQuery(),
+                routerResponse.excludedNodeIds(),
+                command.recommendationMemory()
+        );
+
+        var candidates = retrievalService.retrieveCandidates(
                 new RetrievalCommand(
                         retrievalQuery,
                         target,
                         topK,
-                        List.of(),
-                        excludedWinners(routerResponse, command.recommendationMemory())
+                        effectiveExcludedNodeIds,
+                        resolvedSubgraphFilters
                 )
         );
-        var candidates = toCandidates(target, candidateDocuments);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Basic flow candidates for query '{}' (target: {}):", retrievalQuery, target);
-            if (candidates.isEmpty()) {
-                log.debug("  No candidates found.");
-            } else {
-                for (int i = 0; i < candidates.size(); i++) {
-                    log.debug("  Candidate {}: {}", i + 1, candidates.get(i).title());
-                }
-            }
-        }
+        logCandidateSnapshot(retrievalQuery, target, routerResponse, effectiveExcludedNodeIds, candidates);
 
         if (candidates.isEmpty()) {
             var userPreferencesContext = userPreferencesService.getPreferencesContext(command.userId());
@@ -193,15 +210,13 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         var content = llmResponseValidator.validate(result.content(), BasicRecommendationResponse.class);
         validateRecommendationType(target, content.recommendationType());
 
-        var winners = content.winners() == null ? List.<String>of() : content.winners().stream()
-                .filter(winner -> winner != null && !winner.isBlank())
-                .map(String::trim)
-                .toList();
-        winners = normalizeWinners(target, winners, candidates);
-
-        if (!winners.isEmpty()) {
-            validateWinners(target, winners, candidates);
+        var winnerIds = sanitizeWinnerIds(content.winners());
+        if (!winnerIds.isEmpty()) {
+            validateWinners(target, winnerIds, candidates);
         }
+        var winners = toWinnerReferences(target, winnerIds, candidates);
+
+        logRecommendationSnapshot(retrievalQuery, target, candidates, content, winnerIds, result);
 
         var usageEntries = new ArrayList<>(routerUsageEntries);
         usageEntries.add(basicUsage(result));
@@ -220,6 +235,7 @@ public class BasicRecommendationFlow implements RecommendationFlow {
     public record BasicRecommendationResponse(
             @NotBlank String assistantResponse,
             @jakarta.validation.constraints.NotNull BasicRecommendationTarget recommendationType,
+            @Size(max = BASIC_MAX_TRACK_WINNERS)
             List<@Size(min = 1) String> winners,
             String suggestedChatTitle
     ) {
@@ -236,69 +252,83 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         );
     }
 
-    private List<String> normalizeWinners(
-            BasicRecommendationTarget target,
-            List<String> winners,
-            List<RecommendationCandidate> candidates
-    ) {
-        if (target != BasicRecommendationTarget.ALBUM || winners.isEmpty()) {
-            return winners;
-        }
-
-        var albumTitles = candidates.stream()
-                .map(RecommendationCandidate::album)
-                .map(this::normalizeKey)
-                .filter(value -> !value.isBlank())
-                .collect(java.util.stream.Collectors.toSet());
-
-        var trackToAlbum = new LinkedHashMap<String, String>();
-        for (var candidate : candidates) {
-            var track = candidate.track();
-            var album = candidate.album();
-            if (track == null || album == null) {
-                continue;
-            }
-            trackToAlbum.putIfAbsent(normalizeKey(track), album);
-        }
-
-        return winners.stream()
-                .map(String::trim)
-                .map(winner -> normalizeAlbumWinner(winner, albumTitles, trackToAlbum))
-                .toList();
-    }
-
-    private String normalizeAlbumWinner(String winner, Set<String> albumTitles, Map<String, String> trackToAlbum) {
-        var normalizedWinner = normalizeKey(winner);
-        if (albumTitles.contains(normalizedWinner)) {
-            return winner;
-        }
-        return trackToAlbum.getOrDefault(normalizedWinner, winner);
+    private String factualQuestionUnsupportedResponse() {
+        return """
+                En basic me quedo en recomendacion pura: te puedo recomendar albumes o temas, pero no meterme en contexto, historia o analisis de una obra.
+                Si queres, te sigo por ese lado y te saco algo mas de ese disco, de ese artista, o en esa misma linea.
+                """;
     }
 
     private void validateWinners(
             BasicRecommendationTarget target,
-            List<String> winners,
+            List<String> winnerIds,
             List<RecommendationCandidate> candidates
     ) {
-        if (target == BasicRecommendationTarget.TRACKS) {
-            return;
-        }
-
-        var allowedAlbums = candidates.stream()
-                .map(RecommendationCandidate::album)
-                .filter(value -> value != null && !value.isBlank())
-                .map(this::normalizeKey)
-                .collect(java.util.stream.Collectors.toSet());
-
-        var invalidWinners = winners.stream()
-                .filter(winner -> !allowedAlbums.contains(normalizeKey(winner)))
-                .toList();
-
+        var invalidWinners = invalidWinnerIds(target, winnerIds, candidates);
         if (!invalidWinners.isEmpty()) {
             throw new IllegalArgumentException(
-                    "Basic recommendation flow returned non-album winners for album target: " + invalidWinners
+                    "Basic recommendation flow returned winners outside candidate node ids: " + invalidWinners
             );
         }
+    }
+
+    private List<String> invalidWinnerIds(
+            BasicRecommendationTarget target,
+            List<String> winnerIds,
+            List<RecommendationCandidate> candidates
+    ) {
+        if (target == BasicRecommendationTarget.TRACKS && winnerIds.size() > BASIC_MAX_TRACK_WINNERS) {
+            throw new IllegalArgumentException(
+                    "Basic recommendation flow returned more than %s track winners".formatted(BASIC_MAX_TRACK_WINNERS)
+            );
+        }
+
+        var allowedNodeIds = candidates.stream()
+                .map(RecommendationCandidate::nodeId)
+                .filter(value -> value != null && !value.isBlank())
+                .collect(java.util.stream.Collectors.toSet());
+
+        var invalidWinners = winnerIds.stream()
+                .filter(winner -> !allowedNodeIds.contains(winner))
+                .toList();
+        return invalidWinners;
+    }
+
+    private List<String> sanitizeWinnerIds(List<String> winners) {
+        return winners == null ? List.of() : winners.stream()
+                .filter(winner -> winner != null && !winner.isBlank())
+                .map(String::trim)
+                .toList();
+    }
+
+    private List<WinnerReference> toWinnerReferences(
+            BasicRecommendationTarget target,
+            List<String> winnerIds,
+            List<RecommendationCandidate> candidates
+    ) {
+        if (winnerIds.isEmpty()) {
+            return List.of();
+        }
+
+        var candidatesByNodeId = candidates.stream()
+                .filter(candidate -> candidate.nodeId() != null && !candidate.nodeId().isBlank())
+                .collect(java.util.stream.Collectors.toMap(
+                        RecommendationCandidate::nodeId,
+                        candidate -> candidate,
+                        (left, right) -> left,
+                        LinkedHashMap::new
+                ));
+
+        return winnerIds.stream()
+                .map(candidatesByNodeId::get)
+                .filter(candidate -> candidate != null)
+                .map(candidate -> new WinnerReference(
+                        target,
+                        candidate.nodeId(),
+                        candidate.title(),
+                        renderArtistFullName(candidate)
+                ))
+                .toList();
     }
 
     private BasicRecommendationTarget toTarget(ConversationRouterResponse response) {
@@ -319,54 +349,109 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         }
     }
 
-    private List<String> excludedWinners(
-            ConversationRouterResponse response,
+    private List<String> excludedWinnerNodeIds(
+            BasicRecommendationTarget target,
+            com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationSubgraphFilters resolvedSubgraphFilters,
+            String contextualizedQuery,
+            List<String> explicitExcludedNodeIds,
             ChatRecommendationMemory recommendationMemory
     ) {
         var excluded = new LinkedHashSet<String>();
-        if (response.excludedWinners() != null) {
-            response.excludedWinners().stream()
+        if (explicitExcludedNodeIds != null) {
+            explicitExcludedNodeIds.stream()
                     .filter(value -> value != null && !value.isBlank())
                     .forEach(excluded::add);
         }
 
-        if (response.userIntent() == ConversationUserIntent.RECOMMEND_TRACK) {
-            excluded.addAll(previouslyRecommendedTracksFromReferencedAlbum(response, recommendationMemory));
+        if (target == BasicRecommendationTarget.TRACKS) {
+            excluded.addAll(previouslyRecommendedTracksFromReferencedAlbum(contextualizedQuery, recommendationMemory));
         }
+
+        excluded.addAll(previouslyRecommendedWinnersFromReferencedArtists(resolvedSubgraphFilters, recommendationMemory));
+        excluded.addAll(lastRecommendedWinnerIdsForSession(recommendationMemory));
 
         return List.copyOf(excluded);
     }
 
-    private List<String> previouslyRecommendedTracksFromReferencedAlbum(
-            ConversationRouterResponse response,
-            ChatRecommendationMemory recommendationMemory
-    ) {
+    private List<String> lastRecommendedWinnerIdsForSession(ChatRecommendationMemory recommendationMemory) {
         if (recommendationMemory == null
-                || recommendationMemory.orderedRecommendedItems() == null
-                || recommendationMemory.orderedRecommendedItems().isEmpty()
-                || response.contextualizedQuery() == null
-                || response.contextualizedQuery().isBlank()) {
+                || recommendationMemory.lastRecommendationBatch() == null
+                || recommendationMemory.lastRecommendationBatch().winners() == null
+                || recommendationMemory.lastRecommendationBatch().winners().isEmpty()) {
             return List.of();
         }
 
-        var referencedAlbum = referencedAlbumFromMemory(response.contextualizedQuery(), recommendationMemory);
+        return recommendationMemory.lastRecommendationBatch().winners().stream()
+                .filter(winner -> winner != null && winner.id() != null && !winner.id().isBlank())
+                .map(WinnerReference::id)
+                .toList();
+    }
+
+    private List<String> previouslyRecommendedWinnersFromReferencedArtists(
+            com.marcoromanofinaa.jazzlogs.recommendation.basic.router.model.ConversationSubgraphFilters resolvedSubgraphFilters,
+            ChatRecommendationMemory recommendationMemory
+    ) {
+        if (recommendationMemory == null
+                || recommendationMemory.recommendationHistory() == null
+                || recommendationMemory.recommendationHistory().isEmpty()
+                || resolvedSubgraphFilters == null
+                || resolvedSubgraphFilters.references() == null
+                || resolvedSubgraphFilters.references().isEmpty()) {
+            return List.of();
+        }
+
+        var referencedArtists = resolvedSubgraphFilters.references().stream()
+                .filter(reference -> reference != null && reference.type() == ConversationSubgraphReferenceType.ARTIST)
+                .map(reference -> normalize(reference.name()))
+                .filter(name -> !name.isBlank())
+                .collect(java.util.stream.Collectors.toSet());
+
+        if (referencedArtists.isEmpty()) {
+            return List.of();
+        }
+
+        var excluded = new ArrayList<String>();
+        for (var item : recommendationMemory.recommendationHistory()) {
+            if (item == null || item.winner() == null || item.winner().id() == null || item.winner().id().isBlank()) {
+                continue;
+            }
+            if (matchesReferencedArtist(item, referencedArtists)) {
+                excluded.add(item.winner().id());
+            }
+        }
+        return excluded;
+    }
+
+    private List<String> previouslyRecommendedTracksFromReferencedAlbum(
+            String contextualizedQuery,
+            ChatRecommendationMemory recommendationMemory
+    ) {
+        if (recommendationMemory == null
+                || recommendationMemory.recommendationHistory() == null
+                || recommendationMemory.recommendationHistory().isEmpty()
+                || contextualizedQuery == null
+                || contextualizedQuery.isBlank()) {
+            return List.of();
+        }
+
+        var referencedAlbum = referencedAlbumFromMemory(contextualizedQuery, recommendationMemory);
         if (referencedAlbum.isEmpty()) {
             return List.of();
         }
 
         var normalizedAlbum = normalize(referencedAlbum.orElseThrow());
         var excluded = new ArrayList<String>();
-        for (var item : recommendationMemory.orderedRecommendedItems()) {
-            if (item == null || item.item() == null || item.winnerName() == null || item.winnerName().isBlank()) {
+        for (var item : recommendationMemory.recommendationHistory()) {
+            if (item == null || item.winner() == null || item.winner().id() == null || item.winner().id().isBlank()) {
                 continue;
             }
-            var itemAlbum = item.item().album();
-            var itemTrack = item.item().track();
+            var itemAlbum = item.album();
+            var itemTrack = item.track();
             if (itemTrack == null || itemTrack.isBlank() || itemAlbum == null || itemAlbum.isBlank()) {
                 continue;
             }
             if (normalize(itemAlbum).equals(normalizedAlbum)) {
-                excluded.add(item.winnerName());
+                excluded.add(item.winner().id());
             }
         }
         return excluded;
@@ -378,22 +463,11 @@ public class BasicRecommendationFlow implements RecommendationFlow {
     ) {
         var normalizedQuery = normalize(contextualizedQuery);
 
-        if (recommendationMemory.lastRecommendedItem() != null && recommendationMemory.lastRecommendedItem().items() != null) {
-            for (var item : recommendationMemory.lastRecommendedItem().items()) {
-                if (item == null || item.album() == null || item.album().isBlank()) {
-                    continue;
-                }
-                if (normalizedQuery.contains(normalize(item.album()))) {
-                    return Optional.of(item.album());
-                }
-            }
-        }
-
-        for (var orderedItem : recommendationMemory.orderedRecommendedItems()) {
-            if (orderedItem == null || orderedItem.item() == null || orderedItem.item().album() == null) {
+        for (var orderedItem : recommendationMemory.recommendationHistory()) {
+            if (orderedItem == null || orderedItem.album() == null) {
                 continue;
             }
-            var album = orderedItem.item().album();
+            var album = orderedItem.album();
             if (!album.isBlank() && normalizedQuery.contains(normalize(album))) {
                 return Optional.of(album);
             }
@@ -402,89 +476,20 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         return Optional.empty();
     }
 
-    private List<RecommendationCandidate> toCandidates(
-            BasicRecommendationTarget target,
-            List<Document> candidateDocuments
+    private boolean matchesReferencedArtist(
+            ChatRecommendationMemory.RecommendationHistoryEntry item,
+            Set<String> referencedArtists
     ) {
-        if (candidateDocuments == null || candidateDocuments.isEmpty()) {
-            return List.of();
+        if (item == null) {
+            return false;
         }
-
-        return candidateDocuments.stream()
-                .map(document -> toCandidate(target, document))
-                .toList();
-    }
-
-    private RecommendationCandidate toCandidate(BasicRecommendationTarget target, Document document) {
-        var metadata = document.getMetadata();
-        return new RecommendationCandidate(
-                target,
-                stringValue(metadata == null ? null : metadata.get("sourceType")),
-                stringValue(metadata == null ? null : metadata.get("sourceId")),
-                candidateTitle(target, metadata),
-                stringValue(metadata == null ? null : metadata.get("album")),
-                stringValue(metadata == null ? null : metadata.get("track")),
-                stringValue(metadata == null ? null : metadata.get("primaryArtist")),
-                stringListValue(metadata == null ? null : metadata.get("secondaryArtists")),
-                stringValue(metadata == null ? null : metadata.get("tier")),
-                stringValue(metadata == null ? null : metadata.get("style")),
-                stringValue(metadata == null ? null : metadata.get("vocalProfile")),
-                stringListValue(metadata == null ? null : metadata.get("moods")),
-                stringListValue(metadata == null ? null : metadata.get("vibe")),
-                stringValue(metadata == null ? null : metadata.get("energy")),
-                stringValue(metadata == null ? null : metadata.get("accessibility")),
-                stringValue(metadata == null ? null : metadata.get("tempoFeel")),
-                stringValue(metadata == null ? null : metadata.get("instrumentFocus")),
-                stringListValue(metadata == null ? null : metadata.get("listeningContext")),
-                stringValue(metadata == null ? null : metadata.get("standout")),
-                stringValue(metadata == null ? null : metadata.get("albumRole")),
-                stringValue(metadata == null ? null : metadata.get("compositionType")),
-                stringValue(metadata == null ? null : metadata.get("captionEssence")),
-                stringValue(metadata == null ? null : metadata.get("editorialNote")),
-                document.getText()
-        );
-    }
-
-    private String candidateTitle(BasicRecommendationTarget target, Map<String, Object> metadata) {
-        if (metadata == null || metadata.isEmpty()) {
-            return "Unknown";
+        if (referencedArtists.contains(normalize(item.primaryArtist()))) {
+            return true;
         }
-        var preferredKey = target == BasicRecommendationTarget.ALBUM ? "album" : "track";
-        var fallbackKey = target == BasicRecommendationTarget.ALBUM ? "track" : "album";
-        return Optional.ofNullable(stringValue(metadata.get(preferredKey)))
-                .or(() -> Optional.ofNullable(stringValue(metadata.get(fallbackKey))))
-                .orElse("Unknown");
-    }
-
-    private String normalizeKey(Object value) {
-        var stringValue = stringValue(value);
-        if (stringValue == null) {
-            return "";
+        if (item.winner() != null && referencedArtists.contains(normalize(item.winner().artistFullName()))) {
+            return true;
         }
-        return stringValue.trim().toLowerCase(Locale.ROOT);
-    }
-
-    private String stringValue(Object value) {
-        if (value == null) {
-            return null;
-        }
-        var rendered = value.toString().trim();
-        return rendered.isBlank() ? null : rendered;
-    }
-
-    private List<String> stringListValue(Object value) {
-        if (value == null) {
-            return List.of();
-        }
-        if (value instanceof Collection<?> collection) {
-            return collection.stream()
-                    .map(String::valueOf)
-                    .map(String::trim)
-                    .filter(item -> !item.isBlank())
-                    .toList();
-        }
-        var singleValue = stringValue(value);
-        return singleValue == null ? List.of() : List.of(singleValue);
+        return false;
     }
 
     private String normalize(String value) {
@@ -523,7 +528,7 @@ public class BasicRecommendationFlow implements RecommendationFlow {
 
                 SCENARIO:
                 The user requested music, and the system attempted to search the database using the failed search query below.
-                However, the search returned ZERO results. The requested music is either outside our strict jazz domain, too specific, or simply not in our curated catalog yet.
+                However, there is no solid continuation for that exact line of listening right now.
 
                 YOUR TASK:
                 Generate one short fallback response in natural Rioplatense Spanish.
@@ -540,11 +545,12 @@ public class BasicRecommendationFlow implements RecommendationFlow {
                 RULES:
                 1. You MUST sound natural, colloquial, and warm in Rioplatense Spanish.
                 2. Acknowledge what the user specifically asked for, so it feels clear that you understood the request.
-                3. Explain with a friendly boutique-record-store vibe that this specific material is not in the current curated catalog.
-                4. DO NOT hallucinate, recommend, or name any specific artist, album, or track.
-                5. End by pivoting gently: offer to look for a different jazz mood, era, or style instead.
-                6. Keep it concise: 2 or 3 short sentences maximum.
-                7. Return ONLY the assistant message text, with no JSON and no extra formatting.
+                3. NEVER mention catalog limitations, failed search, zero results, system constraints, or that you "couldn't find" something.
+                4. Frame it naturally as: for that exact line, thread, or mood, no more solid picks remain right now without forcing it.
+                5. DO NOT hallucinate, recommend, or name any specific artist, album, or track.
+                6. End by pivoting gently: ask whether they want you to look for something parecido, in the same onda, mood, era, or style instead.
+                7. Keep it concise: 2 or 3 short sentences maximum.
+                8. Return ONLY the assistant message text, with no JSON and no extra formatting.
                 """.formatted(
                 target == BasicRecommendationTarget.TRACKS ? "tracks or songs" : "album or record",
                 currentLocalTime.format(NO_CANDIDATES_TIME_FORMATTER),
@@ -582,7 +588,7 @@ public class BasicRecommendationFlow implements RecommendationFlow {
 
     private ModelUsage noCandidatesUsage(LLMResult result) {
         return new ModelUsage(
-                UsageRecordStage.BASIC_RECOMMENDATION,
+                UsageRecordStage.EMPTY_FALLBACK,
                 result.modelUsed(),
                 result.providerModelName(),
                 result.inputTokens(),
@@ -608,6 +614,72 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         return "User: %s | Assistant: %s".formatted(userMessage, assistantResponse);
     }
 
+    private void logCandidateSnapshot(
+            String retrievalQuery,
+            BasicRecommendationTarget target,
+            ConversationRouterResponse routerResponse,
+            List<String> effectiveExcludedNodeIds,
+            List<RecommendationCandidate> candidates
+    ) {
+        if (!log.isInfoEnabled()) {
+            return;
+        }
+
+        var lines = new ArrayList<String>();
+        lines.add("");
+        lines.add("=== Basic Flow Candidates ===");
+        lines.add("target: " + target);
+        lines.add("query: " + compact(retrievalQuery));
+        appendIfPresent(lines, "routerExcludedNodeIds: " + compactJson(routerResponse.excludedNodeIds()));
+        appendIfPresent(lines, "effectiveExcludedNodeIds: " + compactJson(effectiveExcludedNodeIds));
+        appendIfPresent(lines, "subgraphFilters: " + compactJson(routerResponse.subgraphFilters()));
+        lines.add("candidateCount: " + candidates.size());
+        if (candidates.isEmpty()) {
+            lines.add("candidates: []");
+        } else {
+            for (int index = 0; index < candidates.size(); index++) {
+                lines.add("  " + formatCandidate(index + 1, candidates.get(index)));
+            }
+        }
+        lines.add("=============================");
+        log.info(String.join("\n", lines));
+    }
+
+    private void logRecommendationSnapshot(
+            String retrievalQuery,
+            BasicRecommendationTarget target,
+            List<RecommendationCandidate> candidates,
+            BasicRecommendationResponse content,
+            List<String> winnerIds,
+            StructuredLLMResult<BasicRecommendationResponse> result
+    ) {
+        if (!log.isInfoEnabled()) {
+            return;
+        }
+
+        var lines = new ArrayList<String>();
+        lines.add("");
+        lines.add("=== Basic Flow Result ===");
+        lines.add("model: " + result.providerModelName());
+        lines.add("target: " + target);
+        lines.add("query: " + compact(retrievalQuery));
+        lines.add("candidateCount: " + candidates.size());
+        lines.add("returnedType: " + content.recommendationType());
+        lines.add("winnerIds: " + compactJson(winnerIds));
+        appendIfPresent(lines, "suggestedChatTitle: " + compact(content.suggestedChatTitle()));
+        appendIfPresent(lines, "assistantResponse: " + compact(content.assistantResponse()));
+        lines.add("usageTokens: in=%d cached=%d out=%d".formatted(
+                result.inputTokens(),
+                result.cachedInputTokens(),
+                result.outputTokens()
+        ));
+        if (Boolean.TRUE.equals(openAIRecommendationProperties.rawResponseLoggingEnabled())) {
+            lines.add("rawStructuredContent: " + compactJson(content));
+        }
+        lines.add("=========================");
+        log.info(String.join("\n", lines));
+    }
+
     private String summarizeUserPreferences(UserPreferencesContext context) {
         if (context == null) {
             return "NONE";
@@ -615,14 +687,14 @@ public class BasicRecommendationFlow implements RecommendationFlow {
         var parts = new ArrayList<String>();
         if (context.jazzPreferences() != null) {
             var prefs = context.jazzPreferences();
-            if (prefs.preferredMoods() != null && !prefs.preferredMoods().isEmpty()) {
-                parts.add("Preferred moods: " + renderValues(prefs.preferredMoods()));
+            if (!prefs.preferredMoodLabels().isEmpty()) {
+                parts.add("Preferred moods: " + renderValues(prefs.preferredMoodLabels()));
             }
-            if (prefs.preferredSubgenres() != null && !prefs.preferredSubgenres().isEmpty()) {
-                parts.add("Preferred subgenres: " + renderValues(prefs.preferredSubgenres()));
+            if (!prefs.preferredSubgenreLabels().isEmpty()) {
+                parts.add("Preferred subgenres: " + renderValues(prefs.preferredSubgenreLabels()));
             }
-            if (prefs.favoriteArtists() != null && !prefs.favoriteArtists().isEmpty()) {
-                parts.add("Favorite artists: " + renderValues(prefs.favoriteArtists()));
+            if (!prefs.favoriteArtistLabels().isEmpty()) {
+                parts.add("Favorite artists: " + renderValues(prefs.favoriteArtistLabels()));
             }
             parts.add("Likes vocals: " + (prefs.likesVocals() ? "yes" : "no"));
         }
@@ -656,6 +728,58 @@ public class BasicRecommendationFlow implements RecommendationFlow {
                 .filter(value -> !value.isBlank())
                 .reduce((left, right) -> left + ", " + right)
                 .orElse("");
+    }
+
+    private String formatCandidate(int rank, RecommendationCandidate candidate) {
+        var payload = new LinkedHashMap<String, Object>();
+        payload.put("title", candidate.title());
+        payload.put("nodeId", candidate.nodeId());
+        payload.put("album", candidate.album());
+        payload.put("track", candidate.track());
+        payload.put("primaryArtist", candidate.primaryArtist());
+        payload.put("logNumber", candidate.logNumber());
+        payload.put("tier", candidate.tier());
+        payload.put("style", candidate.style());
+        payload.put("energy", candidate.energy());
+        payload.put("instrumentFocus", candidate.instrumentFocus());
+        payload.put("moods", candidate.moods() == null ? List.of() : candidate.moods());
+        return "#%d %s".formatted(rank, compactJson(payload));
+    }
+
+    private String renderArtistFullName(RecommendationCandidate candidate) {
+        if (candidate.primaryArtist() == null || candidate.primaryArtist().isBlank()) {
+            return "Unknown Artist";
+        }
+        if (candidate.secondaryArtists() == null || candidate.secondaryArtists().isEmpty()) {
+            return candidate.primaryArtist();
+        }
+        return candidate.primaryArtist() + " feat. " + String.join(", ", candidate.secondaryArtists());
+    }
+
+    private String compactJson(Object value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException exception) {
+            return String.valueOf(value);
+        }
+    }
+
+    private void appendIfPresent(List<String> lines, String line) {
+        if (line == null || line.isBlank() || line.endsWith("null")) {
+            return;
+        }
+        lines.add(line);
+    }
+
+    private String compact(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        var inline = value.replaceAll("\\s+", " ").trim();
+        return inline.length() > 500 ? inline.substring(0, 500) + "...[truncated]" : inline;
     }
 
     private long elapsedMillis(long startedAtNanos) {

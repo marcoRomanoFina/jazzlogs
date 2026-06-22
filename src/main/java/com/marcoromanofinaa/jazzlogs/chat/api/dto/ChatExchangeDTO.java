@@ -11,7 +11,6 @@ public record ChatExchangeDTO(
         String userMessage,
         AIModelType requestedModel,
         String assistantResponse,
-        List<String> winners,
         BasicRecommendationTarget recommendationType,
         List<RecommendedItemDTO> recommendedItems,
         AIModelType modelUsed,

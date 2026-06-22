@@ -9,7 +9,7 @@ public record ConversationRouterContext(
         String lastAssistantMessage,
         String recentExchangesSummary,
         String existingSessionSummary,
-        ChatRecommendationMemory.LastRecommendedItem lastRecommendedItem,
-        List<ChatRecommendationMemory.OrderedRecommendedItem> orderedRecommendedItems
+        ChatRecommendationMemory.LastRecommendationBatch lastRecommendationBatch,
+        List<ChatRecommendationMemory.RecommendationHistoryEntry> recommendationHistory
 ) {
 }

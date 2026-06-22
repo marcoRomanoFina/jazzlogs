@@ -9,9 +9,9 @@ public class UserSubscriptionMapper {
 
     public UsageSummaryDTO toUsageSummary(UserSubscription subscription) {
         return new UsageSummaryDTO(
-                subscription.getTokenLimit(),
-                subscription.getTokensUsed(),
-                subscription.getTokensRemaining(),
+                subscription.getCreditLimit(),
+                subscription.getCreditsUsed(),
+                subscription.getCreditsRemaining(),
                 subscription.remainingPercentage(),
                 subscription.getPeriodStart(),
                 subscription.getPeriodEnd()

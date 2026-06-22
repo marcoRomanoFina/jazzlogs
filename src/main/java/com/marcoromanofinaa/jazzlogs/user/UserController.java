@@ -4,6 +4,7 @@ import com.marcoromanofinaa.jazzlogs.auth.security.AuthenticatedUser;
 import com.marcoromanofinaa.jazzlogs.user.dto.UserProfileDto;
 import com.marcoromanofinaa.jazzlogs.user.dto.UserDto;
 import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.dto.PreferencesRequest;
+import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.dto.UserJazzPreferencesOptionsDto;
 import com.marcoromanofinaa.jazzlogs.user.jazzpreferences.service.UserJazzPreferencesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,13 @@ public class UserController {
     @GetMapping("/me/profile")
     public ResponseEntity<UserProfileDto> getMyProfile(@AuthenticationPrincipal AuthenticatedUser authUser) {
         return ResponseEntity.ok(userService.getProfile(authUser.id()));
+    }
+
+    @GetMapping("/me/preferences/options")
+    public ResponseEntity<UserJazzPreferencesOptionsDto> getPreferenceOptions(
+            @AuthenticationPrincipal AuthenticatedUser authUser
+    ) {
+        return ResponseEntity.ok(userJazzPreferencesService.getPreferencesOptions());
     }
 
     @PutMapping("/me/preferences")

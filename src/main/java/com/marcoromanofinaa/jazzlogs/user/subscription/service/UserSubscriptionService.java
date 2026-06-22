@@ -54,7 +54,7 @@ public class UserSubscriptionService {
     }
 
     @Transactional
-    public void consumeTokens(
+    public void consumeCredits(
             UUID userId,
             UUID chatSessionId,
             UUID chatExchangeId,
@@ -81,11 +81,11 @@ public class UserSubscriptionService {
                     );
                 })
                 .toList();
-        var totalTokens = usageRecords.stream()
-                .mapToLong(UsageRecord::getTotalTokens)
+        var totalCredits = usages.stream()
+                .mapToLong(usage -> usageLimitProperties.creditCostFor(usage.stage()))
                 .sum();
 
-        subscription.consumeTokens(totalTokens, now);
+        subscription.consumeCredits(totalCredits, now);
         usageRecordRepository.saveAll(usageRecords);
         userSubscriptionRepository.save(subscription);
     }
@@ -93,7 +93,7 @@ public class UserSubscriptionService {
     @Transactional
     public void renewSubscription(UUID userId, Plan plan) {
         var now = Instant.now(clock);
-        var monthlyTokenLimit = usageLimitProperties.monthlyTokenLimitFor(plan);
+        var monthlyCreditLimit = usageLimitProperties.monthlyCreditLimitFor(plan);
         var periodEnd = now.plus(usageLimitProperties.periodDuration());
         var user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
@@ -102,14 +102,14 @@ public class UserSubscriptionService {
                 .orElseGet(() -> UserSubscription.create(
                         user,
                         plan,
-                        monthlyTokenLimit,
+                        monthlyCreditLimit,
                         now,
                         periodEnd,
                         now
                 ));
 
         if (subscription.getId() != null) {
-            subscription.renew(plan, monthlyTokenLimit, now, periodEnd, now);
+            subscription.renew(plan, monthlyCreditLimit, now, periodEnd, now);
         }
 
         userSubscriptionRepository.save(subscription);
