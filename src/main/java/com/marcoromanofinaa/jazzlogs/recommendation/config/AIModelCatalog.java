@@ -36,7 +36,7 @@ public class AIModelCatalog {
                 new AIModelDefinition(
                         AIModelType.PRO,
                         AIProvider.OPENAI,
-                        "gpt-5.4",
+                        "gpt-5.4-mini",
                         true,
                         List.of(Plan.PLUS, Plan.PRO),
                         16_000,

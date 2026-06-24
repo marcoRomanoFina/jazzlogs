@@ -80,6 +80,21 @@ class JazzToolDispatcherTest {
         }
 
         @Override
+        public String description() {
+            return "Dummy album context tool";
+        }
+
+        @Override
+        public Map<String, Object> parametersSchema() {
+            return Map.of(
+                    "type", "object",
+                    "additionalProperties", false,
+                    "properties", Map.of(),
+                    "required", List.of()
+            );
+        }
+
+        @Override
         public JazzToolExecutionResult execute(JazzToolCall call, JazzAgentContext context) {
             return new JazzToolExecutionResult(call.toolName(), "ok", Map.of());
         }

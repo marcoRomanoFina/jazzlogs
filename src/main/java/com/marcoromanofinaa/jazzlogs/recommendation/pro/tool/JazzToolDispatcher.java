@@ -2,6 +2,7 @@ package com.marcoromanofinaa.jazzlogs.recommendation.pro.tool;
 
 import com.marcoromanofinaa.jazzlogs.recommendation.pro.agent.JazzAgentContext;
 import java.util.EnumMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,5 +41,9 @@ public class JazzToolDispatcher {
 
     public boolean supports(JazzToolName toolName) {
         return toolName != null && toolsByName.containsKey(toolName);
+    }
+
+    public Collection<JazzTool> registeredTools() {
+        return List.copyOf(toolsByName.values());
     }
 }
