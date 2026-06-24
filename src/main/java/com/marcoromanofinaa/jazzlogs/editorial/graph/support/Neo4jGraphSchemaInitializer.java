@@ -28,8 +28,8 @@ public class Neo4jGraphSchemaInitializer implements ApplicationRunner {
         ensureUniqueConstraint("track_spotify_id_unique", "Track", "spotify_track_id");
         ensureUniqueConstraint("artist_spotify_id_unique", "Artist", "spotifyArtistId");
         ensureUniqueConstraint("user_user_id_unique", "User", "userId");
+        ensureUniqueConstraint("album_log_number_unique", "Album", "logNumber");
 
-        ensurePropertyIndex("album_log_number_index", "Album", "logNumber");
         ensurePropertyIndex("track_log_number_index", "Track", "logNumber");
 
         ensurePropertyIndex("album_normalized_name_index", "Album", "normalizedName");

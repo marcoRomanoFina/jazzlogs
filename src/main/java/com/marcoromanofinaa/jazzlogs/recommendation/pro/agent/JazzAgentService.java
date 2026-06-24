@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class JazzAgentService {
 
     private static final int DEFAULT_MAX_TOOL_STEPS = 3;
+    private static final int LOG_PREVIEW_LIMIT = 2_000;
 
     private final JazzToolDispatcher toolDispatcher;
     private final JazzAgentPromptBuilder promptBuilder;
@@ -53,6 +54,7 @@ public class JazzAgentService {
             }
 
             run.incrementToolStepCount();
+            logPlannedToolCalls(run.toolStepCount(), turn.toolCalls());
             var toolResults = turn.toolCalls().stream()
                     .map(toolCall -> executeTool(toolCall, run))
                     .toList();
@@ -100,6 +102,7 @@ public class JazzAgentService {
                 run.context()
         );
         run.addToolExecution(execution);
+        logToolExecution(run.toolStepCount(), toolCall, execution);
         return new JazzAgentToolResult(toolCall.callId(), execution);
     }
 
@@ -127,6 +130,7 @@ public class JazzAgentService {
                         step: {}
                         responseId: {}
                         toolCalls: {}
+                        toolNames: {}
                         inputTokens: {}
                         cachedInputTokens: {}
                         outputTokens: {}
@@ -137,6 +141,7 @@ public class JazzAgentService {
                 step,
                 turn.responseId(),
                 turn.toolCalls().size(),
+                turn.toolCalls().stream().map(toolCall -> toolCall.toolName().name()).toList(),
                 safe(usage.inputTokens()),
                 safe(usage.cachedInputTokens()),
                 safe(usage.outputTokens()),
@@ -153,6 +158,7 @@ public class JazzAgentService {
                         recommendationType: {}
                         winners: {}
                         totalSteps: {}
+                        totalToolsExecuted: {}
                         totalInputTokens: {}
                         totalCachedInputTokens: {}
                         totalOutputTokens: {}
@@ -162,13 +168,67 @@ public class JazzAgentService {
                 finalAnswer.recommendationType(),
                 finalAnswer.winners().stream().map(winner -> winner.name() + " (" + winner.id() + ")").toList(),
                 run.toolStepCount(),
+                run.toolExecutions().size(),
                 run.usageEntries().stream().mapToInt(usage -> safe(usage.inputTokens())).sum(),
                 run.usageEntries().stream().mapToInt(usage -> safe(usage.cachedInputTokens())).sum(),
                 run.usageEntries().stream().mapToInt(usage -> safe(usage.outputTokens())).sum()
         );
     }
 
+    private void logPlannedToolCalls(int step, List<JazzAgentToolCallRequest> toolCalls) {
+        log.info(
+                """
+                        
+                        === Jazz Agent Tool Plan ===
+                        step: {}
+                        toolCalls: {}
+                        ============================
+                        """,
+                step,
+                toolCalls.stream()
+                        .map(toolCall -> toolCall.toolName().name() + " args=" + preview(toolCall.arguments()))
+                        .toList()
+        );
+    }
+
+    private void logToolExecution(
+            int step,
+            JazzAgentToolCallRequest toolCall,
+            com.marcoromanofinaa.jazzlogs.recommendation.pro.tool.JazzToolExecutionResult execution
+    ) {
+        log.info(
+                """
+                        
+                        === Jazz Agent Tool Result ===
+                        step: {}
+                        callId: {}
+                        tool: {}
+                        arguments: {}
+                        output: {}
+                        metadata: {}
+                        ==============================
+                        """,
+                step,
+                toolCall.callId(),
+                toolCall.toolName(),
+                preview(toolCall.arguments()),
+                preview(execution.content()),
+                preview(execution.metadata())
+        );
+    }
+
     private int safe(Integer value) {
         return value == null ? 0 : value;
+    }
+
+    private String preview(Object value) {
+        if (value == null) {
+            return "null";
+        }
+        var rendered = String.valueOf(value).trim();
+        if (rendered.length() <= LOG_PREVIEW_LIMIT) {
+            return rendered;
+        }
+        return rendered.substring(0, LOG_PREVIEW_LIMIT) + "...[truncated]";
     }
 }

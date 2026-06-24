@@ -95,7 +95,7 @@ class JazzAgentPromptBuilderTest {
                                 true,
                                 List.of(Plan.PLUS, Plan.PRO),
                                 16_000,
-                                4_000,
+                                8_000,
                                 RecommendationFlowType.PRO
                         )
                 ),

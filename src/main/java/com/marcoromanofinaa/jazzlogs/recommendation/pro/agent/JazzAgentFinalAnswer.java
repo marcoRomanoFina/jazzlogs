@@ -21,9 +21,9 @@ public record JazzAgentFinalAnswer(
         winners = winners == null ? List.of() : List.copyOf(winners);
     }
 
-    @AssertTrue(message = "must include winners and recommendationType for MUSIC_RECOMMENDATION")
-    boolean hasRecommendationPayloadWhenNeeded() {
-        return resultType != JazzAgentResultType.MUSIC_RECOMMENDATION
+    @AssertTrue(message = "must include winners and recommendationType for CATALOG_RESPONSE")
+    boolean hasCatalogPayloadWhenNeeded() {
+        return resultType != JazzAgentResultType.CATALOG_RESPONSE
                 || !winners.isEmpty() && recommendationType != null;
     }
 

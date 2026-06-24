@@ -63,7 +63,7 @@ class JazzAgentServiceTest {
                         "resp_2",
                         List.of(),
                         new JazzAgentFinalAnswer(
-                                JazzAgentResultType.MUSIC_RECOMMENDATION,
+                                JazzAgentResultType.CATALOG_RESPONSE,
                                 "Te llevo por una línea más profunda y cinematográfica.",
                                 List.of(new WinnerReference(
                                         BasicRecommendationTarget.ALBUM,
@@ -110,7 +110,7 @@ class JazzAgentServiceTest {
                         true,
                         List.of(Plan.PLUS, Plan.PRO),
                         16_000,
-                        4_000,
+                        8_000,
                         RecommendationFlowType.PRO
                 )
         );

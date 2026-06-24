@@ -105,12 +105,16 @@ public class OpenAIJazzAgentModelClient implements JazzAgentModelClient {
                 .map(this::toFunctionTool)
                 .forEach(builder::addTool);
 
-        properties.reasoning().ifPresent(builder::reasoning);
+        properties.proReasoning().or(properties::reasoning).ifPresent(builder::reasoning);
 
         properties.temperatureForModel(context.modelDefinition().providerModelName())
                 .ifPresent(builder::temperature);
 
-        builder.text(buildFinalAnswerTextConfig(properties.responseVerbosity().orElse(null)));
+        builder.text(buildFinalAnswerTextConfig(
+                properties.proResponseVerbosity()
+                        .or(properties::responseVerbosity)
+                        .orElse(null)
+        ));
 
         return builder;
     }
@@ -292,7 +296,7 @@ public class OpenAIJazzAgentModelClient implements JazzAgentModelClient {
         properties.put("resultType", Map.of(
                 "type", "string",
                 "enum", List.of(
-                        JazzAgentResultType.MUSIC_RECOMMENDATION.name(),
+                        JazzAgentResultType.CATALOG_RESPONSE.name(),
                         JazzAgentResultType.DIRECT_RESPONSE.name()
                 )
         ));
@@ -303,7 +307,7 @@ public class OpenAIJazzAgentModelClient implements JazzAgentModelClient {
         ));
         properties.put("recommendationType", Map.of(
                 "type", List.of("string", "null"),
-                "enum", List.of(
+                "enum", java.util.Arrays.asList(
                         BasicRecommendationTarget.ALBUM.name(),
                         BasicRecommendationTarget.TRACKS.name(),
                         null
