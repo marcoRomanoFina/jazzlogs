@@ -11,8 +11,6 @@ import com.openai.errors.OpenAIException;
 import com.openai.errors.OpenAIIoException;
 import com.openai.errors.OpenAIRetryableException;
 import com.openai.errors.RateLimitException;
-import com.openai.models.Reasoning;
-import com.openai.models.ReasoningEffort;
 import com.openai.models.responses.ResponseCreateParams;
 import com.openai.models.responses.StructuredResponseCreateParams;
 import com.openai.models.responses.ResponseTextConfig;
@@ -138,25 +136,18 @@ public class OpenAIResponsesClient implements LLMClient {
                 .input(command.prompt().getContents())
                 .maxOutputTokens(Long.valueOf(command.modelDefinition().outputTokenLimit()));
 
-        if (supportsTemperature(command.modelDefinition().providerModelName()) && properties.temperature() != null) {
-            builder.temperature(properties.temperature());
-        }
+        properties.temperatureForModel(command.modelDefinition().providerModelName())
+                .ifPresent(builder::temperature);
 
-        if (properties.reasoningEffort() != null && !properties.reasoningEffort().isBlank()) {
-            builder.reasoning(
-                    Reasoning.builder()
-                            .effort(ReasoningEffort.of(properties.reasoningEffort()))
-                            .build()
-            );
-        }
+        properties.reasoning().ifPresent(builder::reasoning);
 
-        if (properties.verbosity() != null && !properties.verbosity().isBlank()) {
-            builder.text(
-                    ResponseTextConfig.builder()
-                            .verbosity(ResponseTextConfig.Verbosity.of(properties.verbosity()))
-                            .build()
-            );
-        }
+        properties.responseVerbosity().ifPresent(verbosity ->
+                builder.text(
+                        ResponseTextConfig.builder()
+                                .verbosity(verbosity)
+                                .build()
+                )
+        );
 
         return builder.build();
     }
@@ -167,24 +158,15 @@ public class OpenAIResponsesClient implements LLMClient {
                 .input(command.prompt().getContents())
                 .maxOutputTokens(Long.valueOf(command.modelDefinition().outputTokenLimit()));
 
-        if (supportsTemperature(command.modelDefinition().providerModelName()) && properties.temperature() != null) {
-            builder.temperature(properties.temperature());
-        }
+        properties.temperatureForModel(command.modelDefinition().providerModelName())
+                .ifPresent(builder::temperature);
 
         var textConfigBuilder = StructuredResponseTextConfig.<T>builder()
                 .format(command.responseType());
 
-        if (properties.reasoningEffort() != null && !properties.reasoningEffort().isBlank()) {
-            builder.reasoning(
-                    Reasoning.builder()
-                            .effort(ReasoningEffort.of(properties.reasoningEffort()))
-                            .build()
-            );
-        }
+        properties.reasoning().ifPresent(builder::reasoning);
 
-        if (properties.verbosity() != null && !properties.verbosity().isBlank()) {
-            textConfigBuilder.verbosity(ResponseTextConfig.Verbosity.of(properties.verbosity()));
-        }
+        properties.responseVerbosity().ifPresent(textConfigBuilder::verbosity);
 
         builder.text(textConfigBuilder.build());
 
@@ -203,10 +185,6 @@ public class OpenAIResponsesClient implements LLMClient {
         return exception.getMessage() == null || exception.getMessage().isBlank()
                 ? exception.getClass().getSimpleName()
                 : exception.getMessage();
-    }
-
-    private boolean supportsTemperature(String providerModelName) {
-        return providerModelName == null || !providerModelName.equalsIgnoreCase("gpt-5-nano");
     }
 
     private void logRawResponseIfEnabled(String mode, String providerModelName, Object response) {

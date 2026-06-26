@@ -20,8 +20,6 @@ import com.openai.errors.OpenAIException;
 import com.openai.errors.OpenAIIoException;
 import com.openai.errors.OpenAIRetryableException;
 import com.openai.errors.RateLimitException;
-import com.openai.models.Reasoning;
-import com.openai.models.ReasoningEffort;
 import com.openai.models.responses.ResponseCreateParams;
 import com.openai.models.responses.ResponseFormatTextJsonSchemaConfig;
 import com.openai.models.responses.ResponseTextConfig;
@@ -97,13 +95,7 @@ public class OpenAIConversationRouterClient {
                         buildTextConfig()
                 );
 
-        if (properties.reasoningEffort() != null && !properties.reasoningEffort().isBlank()) {
-            builder.reasoning(
-                    Reasoning.builder()
-                            .effort(ReasoningEffort.of(properties.reasoningEffort()))
-                            .build()
-            );
-        }
+        properties.reasoning().ifPresent(builder::reasoning);
 
         return builder.build();
     }
@@ -120,9 +112,7 @@ public class OpenAIConversationRouterClient {
             }
 
             var builder = ResponseTextConfig.builder().format(routerJsonSchema());
-            if (properties.verbosity() != null && !properties.verbosity().isBlank()) {
-                builder.verbosity(ResponseTextConfig.Verbosity.of(properties.verbosity()));
-            }
+            properties.responseVerbosity().ifPresent(builder::verbosity);
             cachedTextConfig = builder.build();
             return cachedTextConfig;
         }

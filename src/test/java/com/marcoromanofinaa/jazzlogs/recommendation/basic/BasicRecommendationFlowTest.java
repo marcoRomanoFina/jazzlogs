@@ -730,6 +730,8 @@ class BasicRecommendationFlowTest {
                 300,
                 false,
                 null,
+                null,
+                null,
                 null
         );
     }

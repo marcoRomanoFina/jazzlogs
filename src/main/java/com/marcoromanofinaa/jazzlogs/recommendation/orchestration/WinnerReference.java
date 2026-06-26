@@ -10,4 +10,15 @@ public record WinnerReference(
         @NotBlank String name,
         @NotBlank String artistFullName
 ) {
+    public WinnerReference {
+        id = normalize(id);
+    }
+
+    private static String normalize(String value) {
+        if (value == null) {
+            return null;
+        }
+        var trimmed = value.trim();
+        return trimmed.isBlank() ? null : trimmed;
+    }
 }
