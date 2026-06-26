@@ -19,6 +19,8 @@ public class Neo4jGraphSchemaInitializer implements ApplicationRunner {
 
     @Override
     public void run(org.springframework.boot.ApplicationArguments args) {
+        dropIndexIfExists("album_log_number_index");
+
         ensureUniqueConstraint("album_id_unique", "Album", "id");
         ensureUniqueConstraint("track_id_unique", "Track", "id");
         ensureUniqueConstraint("artist_id_unique", "Artist", "id");
@@ -46,6 +48,15 @@ public class Neo4jGraphSchemaInitializer implements ApplicationRunner {
         createVectorIndex("album_embeddings", "Album");
         createVectorIndex("track_embeddings", "Track");
         createVectorIndex("artist_embeddings", "Artist");
+    }
+
+    private void dropIndexIfExists(String indexName) {
+        var query = """
+                DROP INDEX %s IF EXISTS
+                """.formatted(indexName);
+
+        neo4jClient.query(query).run();
+        log.info("Dropped Neo4j index '{}' if it existed", indexName);
     }
 
     private void ensureUniqueConstraint(String constraintName, String label, String property) {

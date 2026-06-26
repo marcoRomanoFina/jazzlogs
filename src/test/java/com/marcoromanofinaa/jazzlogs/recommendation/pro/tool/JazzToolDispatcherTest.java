@@ -15,11 +15,11 @@ class JazzToolDispatcherTest {
         var dispatcher = new JazzToolDispatcher(List.of(new DummyTool()));
 
         var result = dispatcher.dispatch(
-                new JazzToolCall(JazzToolName.ALBUM_CONTEXT, Map.of("albumNodeId", "123")),
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of("albumNodeId", "123")),
                 new JazzAgentContext(null, null, "msg", "America/Argentina/Buenos_Aires", null, List.of(), null)
         );
 
-        assertThat(result.toolName()).isEqualTo(JazzToolName.ALBUM_CONTEXT);
+        assertThat(result.toolName()).isEqualTo(JazzToolName.CATALOG_CONTEXT);
         assertThat(result.content()).isEqualTo("ok");
     }
 
@@ -28,7 +28,7 @@ class JazzToolDispatcherTest {
         var dispatcher = new JazzToolDispatcher(List.of());
 
         assertThatThrownBy(() -> dispatcher.dispatch(
-                new JazzToolCall(JazzToolName.ALBUM_CONTEXT, Map.of()),
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of()),
                 new JazzAgentContext(null, null, "msg", "America/Argentina/Buenos_Aires", null, List.of(), null)
         ))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -40,7 +40,7 @@ class JazzToolDispatcherTest {
         var dispatcher = new JazzToolDispatcher(List.of(new DummyTool()));
 
         assertThatThrownBy(() -> dispatcher.dispatch(
-                new JazzToolCall(JazzToolName.ALBUM_CONTEXT, Map.of()),
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of()),
                 null
         ))
                 .isInstanceOf(NullPointerException.class)
@@ -56,7 +56,7 @@ class JazzToolDispatcherTest {
 
     @Test
     void toolCallDefaultsArgumentsToEmptyImmutableMap() {
-        var call = new JazzToolCall(JazzToolName.ALBUM_CONTEXT, null);
+        var call = new JazzToolCall(JazzToolName.CATALOG_CONTEXT, null);
 
         assertThat(call.arguments()).isEmpty();
         assertThatThrownBy(() -> call.arguments().put("x", "y"))
@@ -65,7 +65,7 @@ class JazzToolDispatcherTest {
 
     @Test
     void executionResultDefaultsMetadataToEmptyImmutableMap() {
-        var result = new JazzToolExecutionResult(JazzToolName.ALBUM_CONTEXT, "ok", null);
+        var result = new JazzToolExecutionResult(JazzToolName.CATALOG_CONTEXT, "ok", null);
 
         assertThat(result.metadata()).isEmpty();
         assertThatThrownBy(() -> result.metadata().put("x", "y"))
@@ -76,7 +76,7 @@ class JazzToolDispatcherTest {
 
         @Override
         public JazzToolName name() {
-            return JazzToolName.ALBUM_CONTEXT;
+            return JazzToolName.CATALOG_CONTEXT;
         }
 
         @Override

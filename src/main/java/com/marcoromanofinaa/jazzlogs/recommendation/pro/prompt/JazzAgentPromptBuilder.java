@@ -74,8 +74,10 @@ public class JazzAgentPromptBuilder {
                 - If a detail such as a date, label, studio, opening track, personnel note, or album framing did not come
                   from a tool result or trusted session context below, do not state it as fact.
                 - Never emit a fake tool call inside plain text or JSON fields. Use native tool calling when a tool is needed.
-                - Use EDITORIAL_CONTEXT when the user asks about a specific JazzLogs post, log number, caption framing, or the curatorial context behind an album that was featured in a known log.
-                - When using EDITORIAL_CONTEXT with a known log reference, start with lookupMode LOG_NUMBER.
+                - Use RESOLVE_JAZZLOGS_ENTITY when the user names an album, track, or artist but you do not yet have a stable catalog id.
+                - After RESOLVE_JAZZLOGS_ENTITY returns a clear candidate, use CATALOG_CONTEXT with that candidate id when you need trusted factual context.
+                - Use CATALOG_CONTEXT when the user asks about a specific JazzLogs post, log number, album, or track and you need trusted catalog grounding.
+                - CATALOG_CONTEXT currently supports lookupMode LOG_NUMBER, ALBUM_ID, and TRACK_ID.
                 - Do not promise follow-up actions, extra analyses, track-by-track guides, comparisons, or catalog operations unless you can actually support them with the tools available in this turn.
                 - If a capability is not available through the current tools or trusted session context, do not present it as something you can do right now.
 

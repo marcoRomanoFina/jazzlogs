@@ -8,28 +8,29 @@ import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EditorialContextTool implements JazzTool {
+public class CatalogContextTool implements JazzTool {
 
-    private final List<EditorialContextLookupStrategy> lookupStrategies;
+    private final List<CatalogContextLookupStrategy> lookupStrategies;
 
-    public EditorialContextTool(List<EditorialContextLookupStrategy> lookupStrategies) {
+    public CatalogContextTool(List<CatalogContextLookupStrategy> lookupStrategies) {
         this.lookupStrategies = lookupStrategies == null ? List.of() : List.copyOf(lookupStrategies);
     }
 
     @Override
     public JazzToolName name() {
-        return JazzToolName.EDITORIAL_CONTEXT;
+        return JazzToolName.CATALOG_CONTEXT;
     }
 
     @Override
     public String description() {
         return """
-                Use this when you need JazzLogs' editorial context for a catalog entry:
-                what album was featured in a given log, what caption essence or curatorial framing was sent,
-                and the key contextual note attached to that entry.
-                Start with lookupMode LOG_NUMBER when the user refers to a specific log or post.
-                If the lookup finds a catalog item, treat that resolution as a concrete catalog album you can cite
-                as a winner in a CATALOG_RESPONSE final result when appropriate.
+                Use this when you need trusted JazzLogs catalog context for a concrete catalog item.
+                Supported lookup modes:
+                - LOG_NUMBER: resolve the album featured in a JazzLogs log/post number.
+                - ALBUM_ID: resolve a concrete album by catalog id.
+                - TRACK_ID: resolve a concrete track by catalog id.
+                If the lookup finds a catalog item, treat that resolution as a concrete catalog winner you can cite
+                in a CATALOG_RESPONSE final result when appropriate.
                 """;
     }
 
@@ -57,10 +58,27 @@ public class EditorialContextTool implements JazzTool {
         return resolveStrategy(lookupMode).execute(query, context);
     }
 
+    private CatalogContextLookupStrategy resolveStrategy(String lookupMode) {
+        return lookupStrategies.stream()
+                .filter(Objects::nonNull)
+                .filter(strategy -> strategy.supports(lookupMode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported CATALOG_CONTEXT lookupMode: " + lookupMode));
+    }
+
+    private List<String> supportedLookupModes() {
+        return lookupStrategies.stream()
+                .filter(Objects::nonNull)
+                .map(CatalogContextLookupStrategy::lookupMode)
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+    }
+
     private String requiredString(Map<String, Object> arguments, String key) {
         var value = normalize(arguments.get(key));
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("EDITORIAL_CONTEXT requires non-blank " + key);
+            throw new IllegalArgumentException("CATALOG_CONTEXT requires non-blank " + key);
         }
         return value;
     }
@@ -71,22 +89,5 @@ public class EditorialContextTool implements JazzTool {
         }
         var rendered = value.toString().trim();
         return rendered.isBlank() ? null : rendered;
-    }
-
-    private EditorialContextLookupStrategy resolveStrategy(String lookupMode) {
-        return lookupStrategies.stream()
-                .filter(Objects::nonNull)
-                .filter(strategy -> strategy.supports(lookupMode))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Unsupported EDITORIAL_CONTEXT lookupMode: " + lookupMode));
-    }
-
-    private List<String> supportedLookupModes() {
-        return lookupStrategies.stream()
-                .filter(Objects::nonNull)
-                .map(EditorialContextLookupStrategy::lookupMode)
-                .filter(Objects::nonNull)
-                .distinct()
-                .toList();
     }
 }

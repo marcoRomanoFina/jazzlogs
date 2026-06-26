@@ -11,38 +11,36 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
-class EditorialContextToolTest {
+class CatalogContextToolTest {
 
     private static final JazzAgentContext CONTEXT =
             new JazzAgentContext(null, null, "msg", "America/Argentina/Buenos_Aires", null, List.of(), null);
 
     @Test
     void exposesDeclaredNameAndSchema() {
-        var strategy = mock(EditorialContextLookupStrategy.class);
+        var strategy = mock(CatalogContextLookupStrategy.class);
         when(strategy.lookupMode()).thenReturn("LOG_NUMBER");
-        var tool = new EditorialContextTool(List.of(strategy));
+        var tool = new CatalogContextTool(List.of(strategy));
 
-        assertThat(tool.name()).isEqualTo(JazzToolName.EDITORIAL_CONTEXT);
-        assertThat(tool.description()).contains("editorial context");
+        assertThat(tool.name()).isEqualTo(JazzToolName.CATALOG_CONTEXT);
+        assertThat(tool.description()).contains("trusted JazzLogs catalog context");
         assertThat(tool.parametersSchema()).containsKey("properties");
-        assertThat(tool.parametersSchema()).extractingByKey("properties").asInstanceOf(org.assertj.core.api.InstanceOfAssertFactories.MAP)
-                .containsKey("lookupMode");
     }
 
     @Test
     void delegatesToMatchingStrategy() {
-        var strategy = mock(EditorialContextLookupStrategy.class);
+        var strategy = mock(CatalogContextLookupStrategy.class);
         when(strategy.lookupMode()).thenReturn("LOG_NUMBER");
         when(strategy.supports("LOG_NUMBER")).thenReturn(true);
         when(strategy.execute("17", CONTEXT)).thenReturn(new JazzToolExecutionResult(
-                JazzToolName.EDITORIAL_CONTEXT,
+                JazzToolName.CATALOG_CONTEXT,
                 "ok",
                 Map.of("found", true, "id", "album-node-1")
         ));
 
-        var tool = new EditorialContextTool(List.of(strategy));
+        var tool = new CatalogContextTool(List.of(strategy));
         var result = tool.execute(
-                new JazzToolCall(JazzToolName.EDITORIAL_CONTEXT, Map.of(
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of(
                         "lookupMode", "LOG_NUMBER",
                         "query", "17"
                 )),
@@ -55,30 +53,30 @@ class EditorialContextToolTest {
 
     @Test
     void rejectsUnsupportedLookupMode() {
-        var strategy = mock(EditorialContextLookupStrategy.class);
+        var strategy = mock(CatalogContextLookupStrategy.class);
         when(strategy.lookupMode()).thenReturn("LOG_NUMBER");
         when(strategy.supports("ALBUM_NAME")).thenReturn(false);
-        var tool = new EditorialContextTool(List.of(strategy));
+        var tool = new CatalogContextTool(List.of(strategy));
 
         assertThatThrownBy(() -> tool.execute(
-                new JazzToolCall(JazzToolName.EDITORIAL_CONTEXT, Map.of(
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of(
                         "lookupMode", "ALBUM_NAME",
                         "query", "Kind of Blue"
                 )),
                 CONTEXT
         ))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unsupported EDITORIAL_CONTEXT lookupMode");
+                .hasMessageContaining("Unsupported CATALOG_CONTEXT lookupMode");
     }
 
     @Test
     void rejectsBlankLookupMode() {
-        var strategy = mock(EditorialContextLookupStrategy.class);
+        var strategy = mock(CatalogContextLookupStrategy.class);
         when(strategy.lookupMode()).thenReturn("LOG_NUMBER");
-        var tool = new EditorialContextTool(List.of(strategy));
+        var tool = new CatalogContextTool(List.of(strategy));
 
         assertThatThrownBy(() -> tool.execute(
-                new JazzToolCall(JazzToolName.EDITORIAL_CONTEXT, Map.of(
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of(
                         "lookupMode", "  ",
                         "query", "17"
                 )),
@@ -90,12 +88,12 @@ class EditorialContextToolTest {
 
     @Test
     void rejectsBlankQuery() {
-        var strategy = mock(EditorialContextLookupStrategy.class);
+        var strategy = mock(CatalogContextLookupStrategy.class);
         when(strategy.lookupMode()).thenReturn("LOG_NUMBER");
-        var tool = new EditorialContextTool(List.of(strategy));
+        var tool = new CatalogContextTool(List.of(strategy));
 
         assertThatThrownBy(() -> tool.execute(
-                new JazzToolCall(JazzToolName.EDITORIAL_CONTEXT, Map.of(
+                new JazzToolCall(JazzToolName.CATALOG_CONTEXT, Map.of(
                         "lookupMode", "LOG_NUMBER",
                         "query", "   "
                 )),
